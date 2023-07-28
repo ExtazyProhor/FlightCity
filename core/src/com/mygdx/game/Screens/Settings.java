@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.game.Languages;
 import com.mygdx.game.Main;
 import com.mygdx.game.RealClasses.Button;
 import com.mygdx.game.RealClasses.PictureBox;
@@ -13,7 +14,7 @@ public class Settings implements Screen {
     Main game;
     final String path = "settings/";
 
-    String localSelectedLanguage;
+    int localSelectedLanguage;
     float localSoundVolume;
     float localMusicVolume;
     int localSoundOn;
@@ -160,11 +161,11 @@ public class Settings implements Screen {
                 break;
         }
 
-        if (localSelectedLanguage.equals("eng_")) englishLabel.setColor(1, 1, 0);
+        if (localSelectedLanguage==0) englishLabel.setColor(1, 1, 0);
         else englishLabel.setColor(1, 1, 1);
-        if (localSelectedLanguage.equals("rus_")) russianLabel.setColor(1, 1, 0);
+        if (localSelectedLanguage==1) russianLabel.setColor(1, 1, 0);
         else russianLabel.setColor(1, 1, 1);
-        if (localSelectedLanguage.equals("bel_")) belorussianLabel.setColor(1, 1, 0);
+        if (localSelectedLanguage==2) belorussianLabel.setColor(1, 1, 0);
         else belorussianLabel.setColor(1, 1, 1);
 
         englishLabel.draw(englishLabel.getX(), englishLabel.getY() + positionY);
@@ -261,15 +262,15 @@ public class Settings implements Screen {
                 flagBelorussian.setY(90 * Main.pppY - 9 * Main.pppX);
                 soundBar.setY(65 * Main.pppY - 9 * Main.pppX);
                 musicBar.setY(45 * Main.pppY - 9 * Main.pppX);
-                game.startMenu.buttonPlay.changeText(Main.language.getString(Main.selectedLanguage + "play"));
-                game.startMenu.buttonSettings.changeText(Main.language.getString(Main.selectedLanguage + "settings"));
+                game.startMenu.buttonPlay.changeText(Languages.play[Main.selectedLanguage]);
+                game.startMenu.buttonSettings.changeText(Languages.settings[Main.selectedLanguage]);
                 game.setScreen(game.startMenu);
             } else if (flagEngland.isTouched()) {
-                localSelectedLanguage = "eng_";
+                localSelectedLanguage = 0;
             } else if (flagRussian.isTouched()) {
-                localSelectedLanguage = "rus_";
+                localSelectedLanguage = 1;
             } else if (flagBelorussian.isTouched()) {
-                localSelectedLanguage = "bel_";
+                localSelectedLanguage = 2;
             } else if (saveButton.isTouched()) {
                 Main.selectedLanguage = localSelectedLanguage;
                 Main.soundVolume = localSoundVolume;
@@ -278,6 +279,11 @@ public class Settings implements Screen {
                 Main.musicOn = localMusicOn;
 
                 game.savePrefs();
+
+                languageLabel.changeText(Languages.language[]);
+                soundsLabel.changeText(Main.language.getString(Languages.sound);
+                musicLabel.changeText(Main.language.getString(Languages.music);
+                saveButton.changeText(Main.language.getString(Languages.save);
 
                 languageLabel.changeText(Main.language.getString(Main.selectedLanguage + "language"));
                 soundsLabel.changeText(Main.language.getString(Main.selectedLanguage + "sound"));

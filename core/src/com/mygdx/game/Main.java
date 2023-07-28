@@ -26,7 +26,6 @@ public class Main extends Game {
 	public static OrthographicCamera camera;
 
 	public static Preferences prefs;
-	public static Preferences language;
 
 	public static FreeTypeFontGenerator generator;
 	public static FreeTypeFontGenerator.FreeTypeFontParameter parameter;
@@ -40,7 +39,7 @@ public class Main extends Game {
 	//     1.33 - 1.77
 
 	//saves:
-	public static String selectedLanguage = "eng_";
+	public static int selectedLanguage = 0;
 	public static float soundVolume = 1f;
 	public static float musicVolume = 1f;
 	public static int soundOn = 1;
@@ -64,9 +63,7 @@ public class Main extends Game {
 		pppY = (float)scrY/100;
 
 		prefs = Gdx.app.getPreferences("FlightCityInventory");
-		language = Gdx.app.getPreferences("language");
 		loadPrefs();
-		//saveText();
 
 		initializationFont();
 		batch = new SpriteBatch();
@@ -103,7 +100,7 @@ public class Main extends Game {
 	}
 
 	public void savePrefs(){
-		prefs.putString("selectedLanguage", selectedLanguage);
+		prefs.putInteger("selectedLanguage", selectedLanguage);
 		prefs.putFloat("soundVolume", soundVolume);
 		prefs.putFloat("musicVolume", musicVolume);
 		prefs.putInteger("soundOn", soundOn);
@@ -118,13 +115,13 @@ public class Main extends Game {
 		musicVolume = prefs.getFloat("musicVolume", 1f);
 		soundOn = prefs.getInteger("soundOn", 1);
 		musicOn = prefs.getInteger("musicOn", 1);
-		selectedLanguage = prefs.getString("selectedLanguage", "eng_");
+		selectedLanguage = prefs.getInteger("selectedLanguage", 0);
 
 		money = prefs.getInteger("money", 0);
 	}
 
 	void RESETPREFS(){
-		prefs.putString("selectedLanguage", "eng_");
+		prefs.putInteger("selectedLanguage", 0);
 		prefs.putFloat("soundVolume", 1f);
 		prefs.putFloat("musicVolume", 1f);
 		prefs.putInteger("soundOn", 1);
@@ -132,41 +129,6 @@ public class Main extends Game {
 
 		prefs.putInteger("money", 0);
 		prefs.flush();
-	}
-
-	public void saveText(){
-		// english - eng_
-		// russian - rus_
-		// belorussian - bel_
-		language.putString("eng_play", "play");
-		language.putString("rus_play", "играть");
-		language.putString("bel_play", "гуляць");
-
-		language.putString("eng_settings", "settings");
-		language.putString("rus_settings", "настройки");
-		language.putString("bel_settings", "наладкі");
-
-		language.putString("eng_sound", "sounds");
-		language.putString("rus_sound", "звуки");
-		language.putString("bel_sound", "гукі");
-
-		language.putString("eng_music", "music");
-		language.putString("rus_music", "музыка");
-		language.putString("bel_music", "музыка");
-
-		language.putString("eng_language", "language");
-		language.putString("rus_language", "язык");
-		language.putString("bel_language", "мова");
-
-		language.putString("eng_save", "save");
-		language.putString("rus_save", "сохранить");
-		language.putString("bel_save", "захаваць");
-/*
-		language.putString("eng_", "");
-		language.putString("rus_", "");
-		language.putString("bel_", "");
-*/
-		language.flush();
 	}
 
 	public static float textureAspectRatio(Texture texture, boolean toHeight){
