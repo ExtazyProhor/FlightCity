@@ -31,7 +31,8 @@ public class Main extends Game {
 	public static FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 	public static GlyphLayout gl;
 
-	public static float scrX, scrY;
+	public static float scrX;
+	public static float scrY;
 	public static float pppX; // pixels per percent width
 	public static float pppY; // pixels per percent height
 	//     16:10      4:3       3:2       5:3       16:9
@@ -59,8 +60,8 @@ public class Main extends Game {
 		house = new Texture("city/Cafe.png");
 		scrX = Gdx.graphics.getWidth();
 		scrY = Gdx.graphics.getHeight();
-		pppX = (float)scrX/100;
-		pppY = (float)scrY/100;
+		pppX = scrX/100;
+		pppY = scrY/100;
 
 		prefs = Gdx.app.getPreferences("FlightCityInventory");
 		loadPrefs();
@@ -97,6 +98,12 @@ public class Main extends Game {
 	public void dispose () {
 		batch.dispose();
 		generator.dispose();
+
+		city.dispose();
+		planeGame.dispose();
+		settings.dispose();
+		shop.dispose();
+		startMenu.dispose();
 	}
 
 	public void savePrefs(){

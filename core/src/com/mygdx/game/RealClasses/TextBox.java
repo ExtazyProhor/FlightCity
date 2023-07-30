@@ -41,4 +41,8 @@ public class TextBox extends Rectangle {
     public void setColor(float r, float g, float b){
         this.font.setColor(r, g, b, 1);
     }
+
+    public void dispose(){
+        this.font.dispose();
+    }
 }

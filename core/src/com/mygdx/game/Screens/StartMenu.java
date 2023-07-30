@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.game.Languages;
 import com.mygdx.game.Main;
 import com.mygdx.game.RealClasses.Button;
 
@@ -90,11 +91,11 @@ public class StartMenu implements Screen {
         backGroundCoordinateX = (Main.scrX - backGroundWidth)/2;
 
         buttonPlay = new Button(0, 63 * Main.pppY, Main.textureAspectRatio(buttonTexture, true) * 20 * Main.pppY,
-                20 * Main.pppY, buttonTexture, Main.language.getString(Main.selectedLanguage + "play"),
+                20 * Main.pppY, buttonTexture, Languages.play[Main.selectedLanguage],
                 0xffffffff, (int) (5 * Main.pppY));
         buttonPlay.placeCenter();
         buttonSettings = new Button(0, 38 * Main.pppY, Main.textureAspectRatio(buttonTexture, true) * 20 * Main.pppY,
-                20 * Main.pppY, buttonTexture, Main.language.getString(Main.selectedLanguage + "settings"),
+                20 * Main.pppY, buttonTexture, Languages.settings[Main.selectedLanguage],
                 0xffffffff, (int) (5 * Main.pppY));
         buttonSettings.placeCenter();
         buttonExit = new Button(3 * Main.pppY, 82 * Main.pppY, 15 * Main.pppY, 15 * Main.pppY, exitButtonTexture);
@@ -108,5 +109,6 @@ public class StartMenu implements Screen {
 /*        for (int i = 0; i < carsTexture.length; ++i) {
             carsTexture[i].dispose();
         }*/
+
     }
 }

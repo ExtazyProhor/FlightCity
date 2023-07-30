@@ -119,5 +119,10 @@ public class City implements Screen {
 
     @Override
     public void dispose() {
+        windowBackGround.dispose();
+        cancelButton.dispose();
+
+        backGround.dispose();
+        shopButton.dispose();
     }
 }

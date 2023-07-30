@@ -72,4 +72,9 @@ public class Button extends Rectangle {
     public void setY(float y){
         this.y = y;
     }
+
+    public void dispose(){
+        this.picture.dispose();
+        if(withText) this.font.dispose();
+    }
 }

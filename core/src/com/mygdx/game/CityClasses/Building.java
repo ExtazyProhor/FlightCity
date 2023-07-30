@@ -1,6 +1,5 @@
 package com.mygdx.game.CityClasses;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.Main;
 import com.mygdx.game.RealClasses.Rectangle;
 

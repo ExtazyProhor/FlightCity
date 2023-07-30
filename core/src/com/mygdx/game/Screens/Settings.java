@@ -55,21 +55,26 @@ public class Settings implements Screen {
         this.game = game;
 
         // labels
-        languageLabel = new TextBox(Main.scrX / 2, Main.pppY * 97,
-                Main.language.getString(Main.selectedLanguage + "language"), 0xffffffff, (int) (5 * Main.pppY));
-        englishLabel = new TextBox(29 * Main.pppX, 87 * Main.pppY - 9 * Main.pppX, "english", 0xffffffff, (int) (3 * Main.pppY));
-        russianLabel = new TextBox(50 * Main.pppX, 87 * Main.pppY - 9 * Main.pppX, "русский", 0xffffffff, (int) (3 * Main.pppY));
-        belorussianLabel = new TextBox(71 * Main.pppX, 87 * Main.pppY - 9 * Main.pppX, "беларуская", 0xffffffff,
-                (int) (3 * Main.pppY));
-        soundsLabel = new TextBox(Main.scrX/2, 80 * Main.pppY - 9 * Main.pppX,
-                Main.language.getString(Main.selectedLanguage + "sound"), 0xffffffff, (int) (5 * Main.pppY));
-        musicLabel = new TextBox(Main.scrX/2, 60 * Main.pppY - 9 * Main.pppX,
-                Main.language.getString(Main.selectedLanguage + "music"), 0xffffffff, (int) (5 * Main.pppY));
+        languageLabel = new TextBox(Main.scrX / 2, Main.pppY * 97, Languages.language[Main.selectedLanguage],
+                0xffffffff, (int) (5 * Main.pppY));
+        englishLabel = new TextBox(29 * Main.pppX, 87 * Main.pppY - 9 * Main.pppX, "english",
+                0xffffffff, (int) (3 * Main.pppY));
+        russianLabel = new TextBox(50 * Main.pppX, 87 * Main.pppY - 9 * Main.pppX, "русский",
+                0xffffffff, (int) (3 * Main.pppY));
+        belorussianLabel = new TextBox(71 * Main.pppX, 87 * Main.pppY - 9 * Main.pppX, "беларуская",
+                0xffffffff, (int) (3 * Main.pppY));
+        soundsLabel = new TextBox(Main.scrX/2, 80 * Main.pppY - 9 * Main.pppX, Languages.sound[Main.selectedLanguage],
+                0xffffffff, (int) (5 * Main.pppY));
+        musicLabel = new TextBox(Main.scrX/2, 60 * Main.pppY - 9 * Main.pppX, Languages.music[Main.selectedLanguage],
+                0xffffffff, (int) (5 * Main.pppY));
 
         // pictures
-        settingsBackGround = new PictureBox(19 * Main.pppX, 0, 62 * Main.pppX, Main.scrY, path + "settingsBackGround.png");
-        frame = new PictureBox(0, 0, 18 * Main.pppX, 9 * Main.pppX, path + "frame.png");
-        tick = new PictureBox(23 * Main.pppX, 45 * Main.pppY - 9 * Main.pppX, 5 * Main.pppX, 5 * Main.pppX, path + "tick.png");
+        settingsBackGround = new PictureBox(19 * Main.pppX, 0, 62 * Main.pppX, Main.scrY,
+                path + "settingsBackGround.png");
+        frame = new PictureBox(0, 0, 18 * Main.pppX, 9 * Main.pppX,
+                path + "frame.png");
+        tick = new PictureBox(23 * Main.pppX, 45 * Main.pppY - 9 * Main.pppX, 5 * Main.pppX, 5 * Main.pppX,
+                path + "tick.png");
         emptyString = new PictureBox(31 * Main.pppX, 45 * Main.pppY - 7 * Main.pppX, 46 * Main.pppX, Main.pppX,
                 path + "emptyString.png");
         fullString = new PictureBox(31 * Main.pppX, 45 * Main.pppY - 7 * Main.pppX, 46 * Main.pppX, Main.pppX,
@@ -77,7 +82,7 @@ public class Settings implements Screen {
 
         // buttons
         saveButton = new Button(81 * Main.pppX, 97 * Main.pppY - 10 * Main.pppX, 18 * Main.pppX, 10 * Main.pppX,
-                new Texture("buttons/button 3-2.png"), Main.language.getString(Main.selectedLanguage + "save"),
+                new Texture("buttons/button 3-2.png"), Languages.save[Main.selectedLanguage],
                 0xffffffff, (int) (3 * Main.pppY));
         flagEngland = new Button(20 * Main.pppX, 90 * Main.pppY - 9 * Main.pppX, 18 * Main.pppX, 9 * Main.pppX,
                 new Texture(path + "flagEngland.png"));
@@ -150,13 +155,13 @@ public class Settings implements Screen {
         flagBelorussian.draw();
 
         switch (localSelectedLanguage) {
-            case "eng_":
+            case 0:
                 frame.draw(flagEngland.getX(), flagEngland.getY());
                 break;
-            case "rus_":
+            case 1:
                 frame.draw(flagRussian.getX(), flagRussian.getY());
                 break;
-            case "bel_":
+            case 2:
                 frame.draw(flagBelorussian.getX(), flagBelorussian.getY());
                 break;
         }
@@ -280,15 +285,11 @@ public class Settings implements Screen {
 
                 game.savePrefs();
 
-                languageLabel.changeText(Languages.language[]);
-                soundsLabel.changeText(Main.language.getString(Languages.sound);
-                musicLabel.changeText(Main.language.getString(Languages.music);
-                saveButton.changeText(Main.language.getString(Languages.save);
+                languageLabel.changeText(Languages.language[Main.selectedLanguage]);
+                soundsLabel.changeText(Languages.sound[Main.selectedLanguage]);
+                musicLabel.changeText(Languages.music[Main.selectedLanguage]);
+                saveButton.changeText(Languages.save[Main.selectedLanguage]);
 
-                languageLabel.changeText(Main.language.getString(Main.selectedLanguage + "language"));
-                soundsLabel.changeText(Main.language.getString(Main.selectedLanguage + "sound"));
-                musicLabel.changeText(Main.language.getString(Main.selectedLanguage + "music"));
-                saveButton.changeText(Main.language.getString(Main.selectedLanguage + "save"));
             } else if (soundBar.isTouched()) {
                 localSoundOn = Math.abs(localSoundOn - 1);
             } else if (musicBar.isTouched()) {
