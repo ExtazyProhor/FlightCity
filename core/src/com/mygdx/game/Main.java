@@ -16,6 +16,7 @@ import com.mygdx.game.Screens.PlaneGame;
 import com.mygdx.game.Screens.Settings;
 import com.mygdx.game.Screens.Shop;
 import com.mygdx.game.Screens.StartMenu;
+import com.mygdx.game.Screens.SubwayGame;
 
 public class Main extends Game {
 	public static Texture house;///////////////////
@@ -59,6 +60,7 @@ public class Main extends Game {
 	public City city;
 	public PlaneGame planeGame;
 	public Shop shop;
+	public SubwayGame subwayGame;
 	
 	@Override
 	public void create () {
@@ -73,6 +75,7 @@ public class Main extends Game {
 
 		initializationFont();
 		batch = new SpriteBatch();
+		batch.begin();
 		clickSound = Gdx.audio.newSound(Gdx.files.internal("general/click.mp3"));
 
 		coinPicture = new PictureBox(scrX - 8 * pppY, 92 * pppY, 5 * pppY, 5 * pppY, "general/coin.png");
@@ -89,8 +92,9 @@ public class Main extends Game {
 		city = new City(this);
 		planeGame = new PlaneGame(this);
 		shop = new Shop(this);
+		subwayGame = new SubwayGame(this);
 
-		setScreen(startMenu);
+		setScreen(subwayGame);
 	}
 
 	void initializationFont(){
@@ -115,6 +119,7 @@ public class Main extends Game {
 		settings.dispose();
 		shop.dispose();
 		startMenu.dispose();
+		subwayGame.dispose();
 
 		coinPicture.dispose();
 		coinText.dispose();
