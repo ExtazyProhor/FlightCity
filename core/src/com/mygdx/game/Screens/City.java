@@ -1,15 +1,19 @@
 package com.mygdx.game.Screens;
 
+import static com.mygdx.game.Main.*;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.CityClasses.Building;
-import com.mygdx.game.CityClasses.ShopState;
+import com.mygdx.game.CityClasses.ShopInfo;
 import com.mygdx.game.Languages;
 import com.mygdx.game.Main;
 import com.mygdx.game.RealClasses.Button;
 import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.RealClasses.TextBox;
+
+import java.util.Random;
 
 public class City implements Screen {
     Main game;
@@ -25,7 +29,6 @@ public class City implements Screen {
 
     Button sellButton;
     TextBox sellText;
-
     Button upgradeButton;
     TextBox upgradeText;
     PictureBox nonUpgradeButton;
@@ -33,57 +36,64 @@ public class City implements Screen {
 
     PictureBox backGround;
     Button shopButton;
+
     Building[] buildings;
+    public static Texture[][] houses;
 
     public City(Main game) {
         this.game = game;
-        screenDelta = Main.scrX - Main.scrY;
+        screenDelta = scrX - scrY;
 
         // pictures
-        backGround = new PictureBox((Main.scrX - 2 * Main.scrY) / 2, 0, 2 * Main.scrY, Main.scrY, path + "backGround.png");
-        windowBackGround = new PictureBox(screenDelta / 2, Main.scrY / 4, Main.scrY, Main.scrY / 2, path + "window.png");
+        backGround = new PictureBox((scrX - 2 * scrY) / 2, 0, 2 * scrY, scrY, path + "backGround.png");
+        windowBackGround = new PictureBox(screenDelta / 2, scrY / 4, scrY, scrY / 2, path + "window.png");
         moneyBackGround = new Texture(path + "moneyBG.png");
 
         // buttons
-        cancelButton = new Button(screenDelta / 2 + Main.pppY * 82, Main.pppY * 57, 15 * Main.pppY, 15 * Main.pppY,
+        cancelButton = new Button(screenDelta / 2 + pppY * 82, pppY * 57, 15 * pppY, 15 * pppY,
                 new Texture("buttons/xButton.png"));
-        shopButton = new Button(3 * Main.pppY, 64 * Main.pppY, 15 * Main.pppY, 15 * Main.pppY,
+        shopButton = new Button(3 * pppY, 64 * pppY, 15 * pppY, 15 * pppY,
                 new Texture("buttons/shop.png"));
-        sellButton = new Button(screenDelta / 2 + 6 * Main.pppY, 28 * Main.pppY, 40 * Main.pppY, 16 * Main.pppY,
-                new Texture("buttons/red button.png"), Languages.sell[Main.selectedLanguage] + "\n\n", 0xffffffff, (int) (4 * Main.pppY));
-        upgradeButton = new Button(screenDelta / 2 + 54 * Main.pppY, 28 * Main.pppY, 40 * Main.pppY, 16 * Main.pppY,
-                new Texture("buttons/blue button.png"), Languages.upgrade[Main.selectedLanguage] + "\n\n", 0xffffffff, (int) (4 * Main.pppY));
-        nonUpgradeButton = new PictureBox(screenDelta / 2 + 54 * Main.pppY, 28 * Main.pppY, 40 * Main.pppY, 16 * Main.pppY, "buttons/grey button.png");
+        sellButton = new Button(screenDelta / 2 + 6 * pppY, 28 * pppY, 40 * pppY, 16 * pppY,
+                new Texture("buttons/red button.png"), Languages.sell[selectedLanguage] + "\n\n", 0xffffffff, (int) (4 * pppY));
+        upgradeButton = new Button(screenDelta / 2 + 54 * pppY, 28 * pppY, 40 * pppY, 16 * pppY,
+                new Texture("buttons/blue button.png"), Languages.upgrade[selectedLanguage] + "\n\n", 0xffffffff, (int) (4 * pppY));
+        nonUpgradeButton = new PictureBox(screenDelta / 2 + 54 * pppY, 28 * pppY, 40 * pppY, 16 * pppY, "buttons/grey button.png");
 
         // text
-        sellText = new TextBox(screenDelta / 2 + 26 * Main.pppY, 36 * Main.pppY, "", 0xffff00ff, (int) (4 * Main.pppY));
-        upgradeText = new TextBox(screenDelta / 2 + 74 * Main.pppY, 36 * Main.pppY, "", 0xffff00ff, (int) (4 * Main.pppY));
-        nonUpgradeText = new TextBox(screenDelta / 2 + 74 * Main.pppY, 40 * Main.pppY, "", 0xffffffff, (int) (3 * Main.pppY));
+        sellText = new TextBox(screenDelta / 2 + 26 * pppY, 36 * pppY, "", 0xffff00ff, (int) (4 * pppY));
+        upgradeText = new TextBox(screenDelta / 2 + 74 * pppY, 36 * pppY, "", 0xffff00ff, (int) (4 * pppY));
+        nonUpgradeText = new TextBox(screenDelta / 2 + 74 * pppY, 40 * pppY, "", 0xffffffff, (int) (3 * pppY));
 
         // buildings
         buildings = new Building[20];
+        Random rand = new Random();
         for (int i = 0; i < buildings.length; ++i) {
-            buildings[i] = new Building(screenDelta / 2 + Main.scrY / 36 + (i % 5) * 5 * Main.scrY / 24,
-                    29 * Main.scrY / 36 - (float) (i / 5) * Main.scrY / 4);
-            buildings[i].spawn(0);///////////////////
+            buildings[i] = new Building(screenDelta / 2 + scrY / 36 + (i % 5) * 5 * scrY / 24,
+                    29 * scrY / 36 - (float) (i / 5) * scrY / 4);
+            buildings[i].spawn(rand.nextInt(ShopInfo.quantityHouses));///////////////////
         }
-        buildings[0].upgrade();//////////////////////////////
-        buildings[0].upgrade();//////////////////////////////
-        buildings[0].upgrade();//////////////////////////////
-        buildings[0].upgrade();//////////////////////////////
+
+        houses = new Texture[ShopInfo.quantityHouses][ShopInfo.maxLevel+1];
+        for (int i = 0; i < ShopInfo.quantityHouses; i++) {
+            for (int j = 0; j < ShopInfo.maxLevel+1; j++) {
+                houses[i][j] = new Texture("city/houses/house-id-" + i + ".png");////////////////////////
+                //houses[i][j] = new Texture("city/houses/house-id-" + i + "-level-" + j + ".png");
+            }
+        }
     }
 
 
     @Override
     public void render(float delta) {
-        Main.batch.begin();
+        batch.begin();
         backGround.draw();
-        float moneyBGX = Math.min(Main.coinText.getX(), Main.sapphireText.getX()) - 3 * Main.pppY;
-        Main.batch.draw(moneyBackGround, moneyBGX, 81 * Main.pppY, 57 * Main.pppY, 19 * Main.pppY);
+        float moneyBGX = Math.min(coinText.getX(), sapphireText.getX()) - 3 * pppY;
+        batch.draw(moneyBackGround, moneyBGX, 81 * pppY, 57 * pppY, 19 * pppY);
         for (Building building : buildings) {
             if (building.isExist()) building.draw();
         }
-        Main.showMoney();
+        showMoney();
 
         if (windowIsOpened) {
             windowBackGround.draw();
@@ -105,7 +115,7 @@ public class City implements Screen {
                 else if(sellButton.isTouched()){
 
                 }
-                else if(!buildings[touchedBuilding].isMaxLevel() && upgradeButton.isTouched() && Main.money >= buildings[touchedBuilding].getUpgradeCost()){
+                else if(!buildings[touchedBuilding].isMaxLevel() && upgradeButton.isTouched() && money >= buildings[touchedBuilding].getUpgradeCost()){
 
                 }
             }
@@ -122,14 +132,14 @@ public class City implements Screen {
                         if (!buildings[i].isExist()) {
                             continue;
                         }
-                        if (buildings[i].isTouched(Gdx.input.getX(), Main.scrY - Gdx.input.getY())) {
+                        if (buildings[i].isTouched(Gdx.input.getX(), scrY - Gdx.input.getY())) {
                             windowIsOpened = true;
                             touchedBuilding = i;
                             sellText.changeText(Integer.toString(buildings[touchedBuilding].saleIncome()));
-                            nonUpgradeText.changeText(Languages.maxLevel[Main.selectedLanguage]);
+                            nonUpgradeText.changeText(Languages.maxLevel[selectedLanguage]);
                             if(!buildings[touchedBuilding].isMaxLevel()) {
                                 upgradeText.changeText(Integer.toString(buildings[touchedBuilding].getUpgradeCost()));
-                                if(Main.money < buildings[touchedBuilding].getUpgradeCost()) upgradeText.setColor(1, 0, 0);
+                                if(money < buildings[touchedBuilding].getUpgradeCost()) upgradeText.setColor(1, 0, 0);
                                 else upgradeText.setColor(1, 1, 0);
                             }
                             break;
@@ -139,7 +149,7 @@ public class City implements Screen {
             }
         }
 
-        Main.batch.end();
+        batch.end();
     }
 
     @Override
@@ -176,5 +186,11 @@ public class City implements Screen {
 
         backGround.dispose();
         shopButton.dispose();
+
+        for (int i = 0; i < ShopInfo.quantityHouses; i++) {
+            for (int j = 0; j < ShopInfo.maxLevel+1; j++) {
+                houses[i][j].dispose();
+            }
+        }
     }
 }

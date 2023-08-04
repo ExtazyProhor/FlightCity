@@ -18,8 +18,6 @@ import com.mygdx.game.Screens.Shop;
 import com.mygdx.game.Screens.StartMenu;
 
 public class Main extends Game {
-	public static Texture house;///////////////////
-
 	public static SpriteBatch batch;
 	public static Sound clickSound;
 
@@ -62,7 +60,6 @@ public class Main extends Game {
 	
 	@Override
 	public void create () {
-		house = new Texture("city/Cafe.png");
 		scrX = Gdx.graphics.getWidth();
 		scrY = Gdx.graphics.getHeight();
 		pppX = scrX/100;

@@ -1,8 +1,12 @@
 package com.mygdx.game.Screens;
 
+import static com.mygdx.game.Main.*;
+import static com.mygdx.game.Screens.City.*;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.CityClasses.ShopInfo;
 import com.mygdx.game.CityClasses.ShopState;
 import com.mygdx.game.Languages;
 import com.mygdx.game.Main;
@@ -17,6 +21,15 @@ public class Shop implements Screen {
 
     PictureBox backGround;
 
+    //coins:
+    Button[] coinsPurchase;
+    PictureBox sapphire;
+    TextBox[] coinsPrices;
+
+    //houses:
+    Button[] housesShop;
+
+    //menu:
     TextBox shopText;
     TextBox housesText;
     TextBox territoryText;
@@ -32,33 +45,52 @@ public class Shop implements Screen {
         state = ShopState.MENU;
 
         //pictures:
-        backGround = new PictureBox(0, 0, Main.scrX, Main.scrY, path + "brickWall.png");
+        backGround = new PictureBox(0, 0, scrX, scrY, path + "brickWall.png");
+
+        //coins:
+        coinsPurchase = new Button[ShopInfo.quantityCoins];
+        coinsPrices = new TextBox[ShopInfo.quantityCoins];
+        for (int i = 0; i < ShopInfo.quantityCoins; i++) {
+            coinsPurchase[i] = new Button((15 + (i%3) * 25) * pppX, (30 - 25 * (i / 3)) * pppX, 20 * pppX, 20 * pppX,
+                    new Texture("city/shop/orangeWindow.png"));////////
+            coinsPrices[i] = new TextBox(0, 0, Integer.toString(ShopInfo.sapphires[i]), 0xffffffff, (int)(3 * pppY));
+            coinsPrices[i].positionToRight((30 + (i%3) * 25) * pppX);
+            coinsPrices[i].positionToMiddleY((32.5f - 25 * (i / 3)) * pppX);
+        }
+        sapphire = new PictureBox(0, 0, pppX * 3, pppX * 3, "general/sapphire.png");
+
+        //houses:
+        housesShop = new Button[ShopInfo.quantityHouses];
+        for (int i = 0; i < ShopInfo.quantityHouses; i++) {
+            housesShop[i] = new Button((15 + (i%3) * 25) * pppX, (30 - 25 * (i / 3)) * pppX, 20 * pppX, 20 * pppX,
+                    houses[i][0]);////////
+        }
 
         //text:
-        Main.parameter.borderWidth = Main.pppY/2;
-        shopText = new TextBox(Main.scrX/2, 85 * Main.pppY, Languages.shop[Main.selectedLanguage], 0xf192f7ff, (int)(15 * Main.pppY));
-        Main.parameter.borderWidth = 3;
-        housesText = new TextBox(Main.pppX * 25, 0, Languages.houses[Main.selectedLanguage], 0xffffffff, (int)(3 * Main.pppY));
-        housesText.positionToDown(Main.pppY * 28);
-        territoryText = new TextBox(Main.pppX * 50, 0, Languages.territory[Main.selectedLanguage], 0xffffffff, (int)(3 * Main.pppY));
-        territoryText.positionToDown(Main.pppY * 28);
-        coinsText = new TextBox(Main.pppX * 75, 0, Languages.coins[Main.selectedLanguage], 0xffffffff, (int)(3 * Main.pppY));
-        coinsText.positionToDown(Main.pppY * 28);
+        parameter.borderWidth = pppY/2;
+        shopText = new TextBox(scrX/2, 85 * pppY, Languages.shop[selectedLanguage], 0xf192f7ff, (int)(15 * pppY));
+        parameter.borderWidth = 3;
+        housesText = new TextBox(pppX * 25, 0, Languages.houses[selectedLanguage], 0xffffffff, (int)(3 * pppY));
+        housesText.positionToDown(pppY * 28);
+        territoryText = new TextBox(pppX * 50, 0, Languages.territory[selectedLanguage], 0xffffffff, (int)(3 * pppY));
+        territoryText.positionToDown(pppY * 28);
+        coinsText = new TextBox(pppX * 75, 0, Languages.coins[selectedLanguage], 0xffffffff, (int)(3 * pppY));
+        coinsText.positionToDown(pppY * 28);
 
         //buttons:
-        housesButton = new Button(Main.pppX * 15, Main.pppY * 25, Main.pppX * 20, Main.pppX * 20, new Texture(path + "housesButton.png"));
-        territoryButton = new Button(Main.pppX * 40, Main.pppY * 25, Main.pppX * 20, Main.pppX * 20, new Texture(path + "orangeWindow.png"));
-        coinsButton = new Button(Main.pppX * 65, Main.pppY * 25, Main.pppX * 20, Main.pppX * 20, new Texture(path + "coinsButton.png"));
+        housesButton = new Button(pppX * 15, pppY * 25, pppX * 20, pppX * 20, new Texture(path + "housesButton.png"));
+        territoryButton = new Button(pppX * 40, pppY * 25, pppX * 20, pppX * 20, new Texture(path + "orangeWindow.png"));
+        coinsButton = new Button(pppX * 65, pppY * 25, pppX * 20, pppX * 20, new Texture(path + "coinsButton.png"));
     }
 
     @Override
     public void render(float delta) {
-        Main.batch.begin();
+        batch.begin();
         backGround.draw();
         game.startMenu.buttonExit.draw();
-        float moneyBGX = Math.min(Main.coinText.getX(), Main.sapphireText.getX()) - 3 * Main.pppY;
-        Main.batch.draw(game.city.moneyBackGround, moneyBGX, 81 * Main.pppY, 57 * Main.pppY, 19 * Main.pppY);
-        Main.showMoney();
+        float moneyBGX = Math.min(coinText.getX(), sapphireText.getX()) - 3 * pppY;
+        batch.draw(game.city.moneyBackGround, moneyBGX, 81 * pppY, 57 * pppY, 19 * pppY);
+        showMoney();
 
         switch (state){
             case MENU:
@@ -75,7 +107,7 @@ public class Shop implements Screen {
                 break;
         }
 
-        Main.batch.end();
+        batch.end();
     }
 
     void showMenu(){
@@ -101,9 +133,18 @@ public class Shop implements Screen {
     }
 
     void showHouses(){
+        for (int i = 0; i < ShopInfo.quantityHouses; i++) {
+            housesShop[i].draw();
+        }
         if (Gdx.input.justTouched()) {
             if (game.startMenu.buttonExit.isTouched()) {
                 state = ShopState.MENU;
+            }else{
+                for (int i = 0; i < ShopInfo.quantityHouses; i++) {
+                    if(housesShop[i].isTouched()){
+
+                    }
+                }
             }
         }
     }
@@ -117,6 +158,11 @@ public class Shop implements Screen {
     }
 
     void showCoins(){
+        for(int i = 0; i < ShopInfo.quantityCoins; ++i){
+            coinsPurchase[i].draw();
+            sapphire.draw((31 + (i%3) * 25) * pppX, (31 - 25 * (i / 3)) * pppX);
+            coinsPrices[i].draw();
+        }
         if (Gdx.input.justTouched()) {
             if (game.startMenu.buttonExit.isTouched()) {
                 state = ShopState.MENU;
@@ -151,5 +197,14 @@ public class Shop implements Screen {
         territoryButton.dispose();
         coinsButton.dispose();
         shopText.dispose();
+
+        for (int i = 0; i < ShopInfo.quantityCoins; i++) {
+            coinsPurchase[i].dispose();
+            coinsPrices[i].dispose();
+        }
+        sapphire.dispose();
+        for (int i = 0; i < ShopInfo.quantityHouses; i++) {
+            housesShop[i].dispose();
+        }
     }
 }
