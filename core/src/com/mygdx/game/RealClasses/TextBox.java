@@ -5,10 +5,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.mygdx.game.Main;
 
 public class TextBox extends Rectangle {
+    Position3 position;
     BitmapFont font;
     String text;
 
     public TextBox(float centerX, float y, String text, int textColor, int textSize) {
+        position = Position3.MIDDLE;
         font = new BitmapFont();
         Main.parameter.color = new Color(textColor);
         Main.parameter.size = textSize;
@@ -21,6 +23,24 @@ public class TextBox extends Rectangle {
         this.y = y;
     }
 
+    public void positionToLeft(float leftX){
+        position = Position3.LEFT;
+        this.x = leftX;
+    }
+
+    public void positionToRight(float rightX){
+        position = Position3.RIGHT;
+        this.x = rightX - this.sizeX;
+    }
+
+    public void positionToMiddleY(float middleY){
+        this.y = middleY + this.sizeY/2;
+    }
+
+    public void positionToDown(float downY){
+        this.y = downY + sizeY;
+    }
+
     public void draw() {
         this.font.draw(Main.batch, this.text, x, y);
     }
@@ -30,12 +50,26 @@ public class TextBox extends Rectangle {
     }
 
     public void changeText(String newText){
-        this.x += sizeX/2;
+        switch (this.position){
+            case MIDDLE:
+                this.x += sizeX/2;
+                break;
+            case RIGHT:
+                this.x += sizeX;
+                break;
+        }
         this.text = newText;
         Main.gl.setText(font, text);
         this.sizeX = (int) Main.gl.width;
         this.sizeY = (int) Main.gl.height;
-        this.x -= sizeX/2;
+        switch (this.position){
+            case MIDDLE:
+                this.x -= sizeX/2;
+                break;
+            case RIGHT:
+                this.x -= sizeX;
+                break;
+        }
     }
 
     public void setColor(float r, float g, float b){

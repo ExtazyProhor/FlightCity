@@ -81,7 +81,7 @@ public class Settings implements Screen {
                 path + "fullString.png");
 
         // buttons
-        saveButton = new Button(81 * Main.pppX, 97 * Main.pppY - 10 * Main.pppX, 18 * Main.pppX, 10 * Main.pppX,
+        saveButton = new Button(81.5f * Main.pppX, 97 * Main.pppY - 10 * Main.pppX, 18 * Main.pppX, 10 * Main.pppX,
                 new Texture("buttons/button 3-2.png"), Languages.save[Main.selectedLanguage],
                 0xffffffff, (int) (3 * Main.pppY));
         flagEngland = new Button(20 * Main.pppX, 90 * Main.pppY - 9 * Main.pppX, 18 * Main.pppX, 9 * Main.pppX,
@@ -276,7 +276,8 @@ public class Settings implements Screen {
                 localSelectedLanguage = 1;
             } else if (flagBelorussian.isTouched()) {
                 localSelectedLanguage = 2;
-            } else if (saveButton.isTouched()) {
+            } else if (saveButton.isTouched(false)) {
+                Main.clickSound.play(localSoundVolume * localSoundOn);
                 Main.selectedLanguage = localSelectedLanguage;
                 Main.soundVolume = localSoundVolume;
                 Main.musicVolume = localMusicVolume;
@@ -289,6 +290,10 @@ public class Settings implements Screen {
                 soundsLabel.changeText(Languages.sound[Main.selectedLanguage]);
                 musicLabel.changeText(Languages.music[Main.selectedLanguage]);
                 saveButton.changeText(Languages.save[Main.selectedLanguage]);
+
+                game.city.sellButton.changeText(Languages.sell[Main.selectedLanguage] + "\n\n");
+                game.city.upgradeButton.changeText(Languages.upgrade[Main.selectedLanguage] + "\n\n");
+                game.city.nonUpgradeText.changeText(Languages.maxLevel[Main.selectedLanguage]);
 
             } else if (soundBar.isTouched()) {
                 localSoundOn = Math.abs(localSoundOn - 1);

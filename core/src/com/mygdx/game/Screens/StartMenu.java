@@ -12,8 +12,7 @@ public class StartMenu implements Screen {
     Main game;
 
     Texture menuBackGround;
-    Texture buttonTexture;
-    Texture exitButtonTexture;
+
     //Texture[] carsTexture;
     //Texture[] planesTexture;
 
@@ -51,8 +50,6 @@ public class StartMenu implements Screen {
             }
         }
 
-        Main.camera.update();
-        Main.batch.setProjectionMatrix(Main.camera.combined);
         Main.batch.begin();
 
         Main.batch.draw(menuBackGround, backGroundCoordinateX, 0, backGroundWidth, Main.scrY);
@@ -85,27 +82,26 @@ public class StartMenu implements Screen {
 
     private void initializationTexturesAndButtons(){
         menuBackGround = new Texture("startMenu/cityBackGround.png");
-        buttonTexture = new Texture("buttons/button 5-2.png");
-        exitButtonTexture = new Texture("buttons/exitButton.png");
         backGroundWidth = Main.scrY * Main.textureAspectRatio(menuBackGround, true);
         backGroundCoordinateX = (Main.scrX - backGroundWidth)/2;
 
-        buttonPlay = new Button(0, 63 * Main.pppY, Main.textureAspectRatio(buttonTexture, true) * 20 * Main.pppY,
-                20 * Main.pppY, buttonTexture, Languages.play[Main.selectedLanguage],
+        buttonPlay = new Button(0, 63 * Main.pppY, Main.textureAspectRatio(new Texture("buttons/button 5-2.png"), true) * 20 * Main.pppY,
+                20 * Main.pppY, new Texture("buttons/button 5-2.png"), Languages.play[Main.selectedLanguage],
                 0xffffffff, (int) (5 * Main.pppY));
         buttonPlay.placeCenter();
-        buttonSettings = new Button(0, 38 * Main.pppY, Main.textureAspectRatio(buttonTexture, true) * 20 * Main.pppY,
-                20 * Main.pppY, buttonTexture, Languages.settings[Main.selectedLanguage],
+        buttonSettings = new Button(0, 38 * Main.pppY, Main.textureAspectRatio(new Texture("buttons/button 5-2.png"), true) * 20 * Main.pppY,
+                20 * Main.pppY, new Texture("buttons/button 5-2.png"), Languages.settings[Main.selectedLanguage],
                 0xffffffff, (int) (5 * Main.pppY));
         buttonSettings.placeCenter();
-        buttonExit = new Button(3 * Main.pppY, 82 * Main.pppY, 15 * Main.pppY, 15 * Main.pppY, exitButtonTexture);
+        buttonExit = new Button(3 * Main.pppY, 82 * Main.pppY, 15 * Main.pppY, 15 * Main.pppY, new Texture("buttons/exitButton.png"));
     }
 
     @Override
     public void dispose() {
         menuBackGround.dispose();
-        buttonTexture.dispose();
-        exitButtonTexture.dispose();
+        buttonPlay.dispose();
+        buttonExit.dispose();
+        buttonSettings.dispose();
 /*        for (int i = 0; i < carsTexture.length; ++i) {
             carsTexture[i].dispose();
         }*/

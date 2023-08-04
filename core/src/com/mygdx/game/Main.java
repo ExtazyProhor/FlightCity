@@ -5,13 +5,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.game.RealClasses.PictureBox;
+import com.mygdx.game.RealClasses.TextBox;
 import com.mygdx.game.Screens.City;
 import com.mygdx.game.Screens.PlaneGame;
 import com.mygdx.game.Screens.Settings;
@@ -19,11 +18,10 @@ import com.mygdx.game.Screens.Shop;
 import com.mygdx.game.Screens.StartMenu;
 
 public class Main extends Game {
-	public static Texture house;
+	public static Texture house;///////////////////
 
 	public static SpriteBatch batch;
 	public static Sound clickSound;
-	public static OrthographicCamera camera;
 
 	public static Preferences prefs;
 
@@ -47,7 +45,14 @@ public class Main extends Game {
 	public static int musicOn = 1;
 
 	//game saves:
-	public static int money = 0;
+	public static long money = 0;
+	public static long sapphires = 0;
+
+	//money:
+	public static PictureBox coinPicture;
+	public static PictureBox sapphirePicture;
+	public static TextBox coinText;
+	public static TextBox sapphireText;
 
 	public StartMenu startMenu;
 	public Settings settings;
@@ -69,9 +74,15 @@ public class Main extends Game {
 		initializationFont();
 		batch = new SpriteBatch();
 		clickSound = Gdx.audio.newSound(Gdx.files.internal("general/click.mp3"));
-		camera = new OrthographicCamera(scrX, scrY);
-		camera.position.set(scrX/2, scrY/2, 0);
-		camera.update();
+
+		coinPicture = new PictureBox(scrX - 8 * pppY, 92 * pppY, 5 * pppY, 5 * pppY, "general/coin.png");
+		sapphirePicture = new PictureBox(scrX - 8 * pppY, 84 * pppY, 5 * pppY, 5 * pppY, "general/sapphire.png");
+		coinText = new TextBox(0, 0, divisionDigits(money), 0xffffffff, (int) (3 * pppY));
+		coinText.positionToRight(scrX - 10 * pppY);
+		coinText.positionToMiddleY(94.5f * pppY);
+		sapphireText = new TextBox(0, 0, divisionDigits(sapphires), 0xffffffff, (int) (3 * pppY));
+		sapphireText.positionToRight(scrX - 10 * pppY);
+		sapphireText.positionToMiddleY(86.5f * pppY);
 
 		startMenu = new StartMenu(this);
 		settings = new Settings(this);
@@ -104,6 +115,11 @@ public class Main extends Game {
 		settings.dispose();
 		shop.dispose();
 		startMenu.dispose();
+
+		coinPicture.dispose();
+		coinText.dispose();
+		sapphirePicture.dispose();
+		sapphireText.dispose();
 	}
 
 	public void savePrefs(){
@@ -113,7 +129,9 @@ public class Main extends Game {
 		prefs.putInteger("soundOn", soundOn);
 		prefs.putInteger("musicOn", musicOn);
 
-		prefs.putInteger("money", money);
+		prefs.putLong("money", money);
+		prefs.putLong("sapphires", sapphires);
+
 		prefs.flush();
 	}
 
@@ -124,7 +142,8 @@ public class Main extends Game {
 		musicOn = prefs.getInteger("musicOn", 1);
 		selectedLanguage = prefs.getInteger("selectedLanguage", 0);
 
-		money = prefs.getInteger("money", 0);
+		money = prefs.getLong("money", 0);
+		sapphires = prefs.getLong("sapphires", 0);
 	}
 
 	void RESETPREFS(){
@@ -134,12 +153,37 @@ public class Main extends Game {
 		prefs.putInteger("soundOn", 1);
 		prefs.putInteger("musicOn", 1);
 
-		prefs.putInteger("money", 0);
+		prefs.putLong("money", 0);
+		prefs.putLong("sapphires", 0);
+
 		prefs.flush();
 	}
 
 	public static float textureAspectRatio(Texture texture, boolean toHeight){
 		if(toHeight) return (float) texture.getWidth() / texture.getHeight();
 		return (float) texture.getHeight() / texture.getWidth();
+	}
+
+	public static void showMoney(){
+		coinPicture.draw();
+		coinText.draw();
+		sapphirePicture.draw();
+		sapphireText.draw();
+	}
+
+	public static String divisionDigits(long value){
+		String number = Long.toString(value);
+		String newNumber = "";
+		if(number.length() % 3 != 0){
+			newNumber += number.substring(0, number.length() % 3);
+			number = number.substring(number.length() % 3);
+			if(number.length() > 0) newNumber += '.';
+		}
+		while(number.length() != 0){
+			newNumber += number.substring(0, 3);
+			number = number.substring(3);
+			if(number.length() > 0) newNumber += '.';
+		}
+		return newNumber;
 	}
 }

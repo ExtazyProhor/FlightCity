@@ -9,7 +9,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(120);
 		config.setTitle("Flight City");
-		config.setWindowedMode(1920, 1200);
+		config.setWindowedMode(2560, 1440);
 		new Lwjgl3Application(new Main(), config);
 	}
 }

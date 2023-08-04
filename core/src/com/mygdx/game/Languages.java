@@ -7,7 +7,7 @@ public abstract class Languages {
 //	  belorussian - 2
 
     /*
-    public static final String[]  = {
+    public static final String[] g = {
             "",
             "",
             ""
@@ -43,5 +43,40 @@ public abstract class Languages {
             "save",
             "сохранить",
             "захаваць"
+    };
+    public static final String[] sell = {
+            "sell",
+            "продать",
+            "прадаць"
+    };
+    public static final String[] upgrade = {
+            "upgrage",
+            "улучшить",
+            "палепшыць"
+    };
+    public static final String[] maxLevel = {
+            "maximum\n level",
+            "максимальный\n   уровень",
+            "максімальны\n  ўзровень"
+    };
+    public static final String[] shop = {
+            "shop",
+            "магазин",
+            "крама"
+    };
+    public static final String[] houses = {
+            "houses",
+            "дома",
+            "будынкі"
+    };
+    public static final String[] territory = {
+            "territory",
+            "территория",
+            "тэрыторыя"
+    };
+    public static final String[] coins = {
+            "coins",
+            "монеты",
+            "манеты"
     };
 }
