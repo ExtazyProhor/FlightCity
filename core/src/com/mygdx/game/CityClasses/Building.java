@@ -63,7 +63,6 @@ public class Building extends Rectangle {
     private static final int maxLevel = 4;
 
     private static final int[] cost = {
-
             100, /* house */
             500, /* shop */
             800, /* restaurant */
@@ -71,7 +70,6 @@ public class Building extends Rectangle {
             1200  /* hotel */
     };
     private static final int[][] upgradeCost = {
-
             {50, 200, 500, 1000}, /* house */
             {200, 700, 1500, 3500}, /* shop */
             {300, 1200, 2500, 5000}, /* restaurant */

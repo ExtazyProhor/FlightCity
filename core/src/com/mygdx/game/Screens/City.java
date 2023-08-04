@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.CityClasses.Building;
+import com.mygdx.game.CityClasses.ShopState;
 import com.mygdx.game.Languages;
 import com.mygdx.game.Main;
 import com.mygdx.game.RealClasses.Button;
@@ -115,10 +116,6 @@ public class City implements Screen {
                 if (game.startMenu.buttonExit.isTouched()) {
                     game.setScreen(game.startMenu);
                 } else if (shopButton.isTouched()) {
-                    game.shop.shopText.changeText(Languages.shop[Main.selectedLanguage]);
-                    game.shop.housesText.changeText(Languages.houses[Main.selectedLanguage]);
-                    game.shop.territoryText.changeText(Languages.territory[Main.selectedLanguage]);
-                    game.shop.coinsText.changeText(Languages.coins[Main.selectedLanguage]);
                     game.setScreen(game.shop);
                 } else {
                     for (int i = 0; i < buildings.length; ++i) {

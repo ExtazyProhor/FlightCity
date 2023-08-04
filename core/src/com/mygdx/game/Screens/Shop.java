@@ -3,6 +3,7 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.CityClasses.ShopState;
 import com.mygdx.game.Languages;
 import com.mygdx.game.Main;
 import com.mygdx.game.RealClasses.Button;
@@ -12,6 +13,7 @@ import com.mygdx.game.RealClasses.TextBox;
 public class Shop implements Screen {
     Main game;
     String path;
+    ShopState state;
 
     PictureBox backGround;
 
@@ -27,6 +29,7 @@ public class Shop implements Screen {
     public Shop(Main game){
         this.game = game;
         path = "city/shop/";
+        state = ShopState.MENU;
 
         //pictures:
         backGround = new PictureBox(0, 0, Main.scrX, Main.scrY, path + "brickWall.png");
@@ -56,8 +59,27 @@ public class Shop implements Screen {
         float moneyBGX = Math.min(Main.coinText.getX(), Main.sapphireText.getX()) - 3 * Main.pppY;
         Main.batch.draw(game.city.moneyBackGround, moneyBGX, 81 * Main.pppY, 57 * Main.pppY, 19 * Main.pppY);
         Main.showMoney();
-        shopText.draw();
 
+        switch (state){
+            case MENU:
+                showMenu();
+                break;
+            case HOUSES:
+                showHouses();
+                break;
+            case TERRITORY:
+                showTerritory();
+                break;
+            case COINS:
+                showCoins();
+                break;
+        }
+
+        Main.batch.end();
+    }
+
+    void showMenu(){
+        shopText.draw();
         housesButton.draw();
         housesText.draw();
         territoryButton.draw();
@@ -69,15 +91,37 @@ public class Shop implements Screen {
             if (game.startMenu.buttonExit.isTouched()) {
                 game.setScreen(game.city);
             } else if (housesButton.isTouched()){
-
+                state = ShopState.HOUSES;
             } else if (territoryButton.isTouched()){
-
+                state = ShopState.TERRITORY;
             } else if (coinsButton.isTouched()){
-
+                state = ShopState.COINS;
             }
         }
+    }
 
-        Main.batch.end();
+    void showHouses(){
+        if (Gdx.input.justTouched()) {
+            if (game.startMenu.buttonExit.isTouched()) {
+                state = ShopState.MENU;
+            }
+        }
+    }
+
+    void showTerritory(){
+        if (Gdx.input.justTouched()) {
+            if (game.startMenu.buttonExit.isTouched()) {
+                state = ShopState.MENU;
+            }
+        }
+    }
+
+    void showCoins(){
+        if (Gdx.input.justTouched()) {
+            if (game.startMenu.buttonExit.isTouched()) {
+                state = ShopState.MENU;
+            }
+        }
     }
 
     @Override
