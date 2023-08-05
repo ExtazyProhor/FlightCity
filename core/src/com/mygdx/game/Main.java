@@ -20,6 +20,8 @@ import com.mygdx.game.Screens.StartMenu;
 public class Main extends Game {
 	public static SpriteBatch batch;
 	public static Sound clickSound;
+	public static Sound sellSound;
+	public static Sound upgradeSound;
 
 	public static Preferences prefs;
 
@@ -71,6 +73,8 @@ public class Main extends Game {
 		initializationFont();
 		batch = new SpriteBatch();
 		clickSound = Gdx.audio.newSound(Gdx.files.internal("general/click.mp3"));
+		sellSound = Gdx.audio.newSound(Gdx.files.internal("city/sellSound.mp3"));
+		upgradeSound = Gdx.audio.newSound(Gdx.files.internal("city/upgradeSound.mp3"));
 
 		coinPicture = new PictureBox(scrX - 8 * pppY, 92 * pppY, 5 * pppY, 5 * pppY, "general/coin.png");
 		sapphirePicture = new PictureBox(scrX - 8 * pppY, 84 * pppY, 5 * pppY, 5 * pppY, "general/sapphire.png");
@@ -119,7 +123,7 @@ public class Main extends Game {
 		sapphireText.dispose();
 	}
 
-	public void savePrefs(){
+	public static void savePrefs(){
 		prefs.putInteger("selectedLanguage", selectedLanguage);
 		prefs.putFloat("soundVolume", soundVolume);
 		prefs.putFloat("musicVolume", musicVolume);
@@ -166,6 +170,11 @@ public class Main extends Game {
 		coinText.draw();
 		sapphirePicture.draw();
 		sapphireText.draw();
+	}
+
+	public static void updateMoney(){
+		coinText.changeText(divisionDigits(money));
+		sapphireText.changeText(divisionDigits(sapphires));
 	}
 
 	public static String divisionDigits(long value){

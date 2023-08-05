@@ -4,6 +4,7 @@ import static com.mygdx.game.Main.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.CityClasses.Building;
 import com.mygdx.game.CityClasses.ShopInfo;
@@ -19,6 +20,7 @@ public class City implements Screen {
     Main game;
     String path = "city/";
     float screenDelta;
+
 
     // window
     PictureBox windowBackGround;
@@ -71,7 +73,7 @@ public class City implements Screen {
         for (int i = 0; i < buildings.length; ++i) {
             buildings[i] = new Building(screenDelta / 2 + scrY / 36 + (i % 5) * 5 * scrY / 24,
                     29 * scrY / 36 - (float) (i / 5) * scrY / 4);
-            buildings[i].spawn(rand.nextInt(ShopInfo.quantityHouses));///////////////////
+            if(rand.nextInt()%3 != 0) buildings[i].spawn(rand.nextInt(ShopInfo.quantityHouses));/////////////////////////////////////
         }
 
         houses = new Texture[ShopInfo.quantityHouses][ShopInfo.maxLevel+1];
@@ -112,11 +114,26 @@ public class City implements Screen {
                 if (cancelButton.isTouched()) {
                     windowIsOpened = false;
                 }
-                else if(sellButton.isTouched()){
-
+                else if(sellButton.isTouched(false)){
+                    sellSound.play(soundVolume * soundOn);
+                    buildings[touchedBuilding].sell();
+                    money += buildings[touchedBuilding].saleIncome();
+                    savePrefs();
+                    updateMoney();
+                    windowIsOpened = false;
                 }
-                else if(!buildings[touchedBuilding].isMaxLevel() && upgradeButton.isTouched() && money >= buildings[touchedBuilding].getUpgradeCost()){
-
+                else if(!buildings[touchedBuilding].isMaxLevel() && upgradeButton.isTouched(false) && money >= buildings[touchedBuilding].getUpgradeCost()){
+                    upgradeSound.play(soundVolume * soundOn);
+                    money -= buildings[touchedBuilding].getUpgradeCost();
+                    buildings[touchedBuilding].upgrade();
+                    savePrefs();
+                    updateMoney();
+                    sellText.changeText(divisionDigits(buildings[touchedBuilding].saleIncome()));
+                    if(!buildings[touchedBuilding].isMaxLevel()) {
+                        upgradeText.changeText(divisionDigits(buildings[touchedBuilding].getUpgradeCost()));
+                        if(money < buildings[touchedBuilding].getUpgradeCost()) upgradeText.setColor(1, 0, 0);
+                        else upgradeText.setColor(1, 1, 0);
+                    }
                 }
             }
         } else {
@@ -135,10 +152,10 @@ public class City implements Screen {
                         if (buildings[i].isTouched(Gdx.input.getX(), scrY - Gdx.input.getY())) {
                             windowIsOpened = true;
                             touchedBuilding = i;
-                            sellText.changeText(Integer.toString(buildings[touchedBuilding].saleIncome()));
+                            sellText.changeText(divisionDigits(buildings[touchedBuilding].saleIncome()));
                             nonUpgradeText.changeText(Languages.maxLevel[selectedLanguage]);
                             if(!buildings[touchedBuilding].isMaxLevel()) {
-                                upgradeText.changeText(Integer.toString(buildings[touchedBuilding].getUpgradeCost()));
+                                upgradeText.changeText(divisionDigits(buildings[touchedBuilding].getUpgradeCost()));
                                 if(money < buildings[touchedBuilding].getUpgradeCost()) upgradeText.setColor(1, 0, 0);
                                 else upgradeText.setColor(1, 1, 0);
                             }

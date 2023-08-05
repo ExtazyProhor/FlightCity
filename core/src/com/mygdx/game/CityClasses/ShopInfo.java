@@ -2,15 +2,15 @@ package com.mygdx.game.CityClasses;
 
 public abstract class ShopInfo {
     public static final int quantityCoins = 6;
-    public static final int[] coins = {
+    public static final int[] coinsInShop = {
             100,
-            600,
-            2000,
-            10000,
-            100000,
-            750000
+            500,
+            1500,
+            8000,
+            75000,
+            600000
     };
-    public static final int[] sapphires = {
+    public static final int[] sapphiresInShop = {
             10,
             40,
             100,
@@ -23,16 +23,16 @@ public abstract class ShopInfo {
     public static final int[] cost = {
             100, /* house */
             500, /* shop */
-            800, /* restaurant */
-            1000, /* bank */
-            1200  /* hotel */
+            1000, /* restaurant */
+            8000, /* bank */
+            20000  /* hotel */
     };
     public static final int maxLevel = 4;
     public static final int[][] upgradeCost = {
-            {50, 200, 500, 1000}, /* house */
-            {200, 700, 1500, 3500}, /* shop */
-            {300, 1200, 2500, 5000}, /* restaurant */
-            {600, 2000, 5000, 9000}, /* bank */
-            {800, 2500, 7000, 12000} /* hotel */
+            {100, 900, 5000, 30000}, /* house */
+            {700, 3000, 15000, 75000}, /* shop */
+            {2000, 6000, 50000, 120000}, /* restaurant */
+            {10000, 25000, 70000, 250000}, /* bank */
+            {25000, 150000, 400000, 950000} /* hotel */
     };
 }

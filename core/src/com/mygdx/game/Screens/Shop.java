@@ -1,7 +1,6 @@
 package com.mygdx.game.Screens;
 
 import static com.mygdx.game.Main.*;
-import static com.mygdx.game.Screens.City.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -25,15 +24,16 @@ public class Shop implements Screen {
     Button[] coinsPurchase;
     PictureBox sapphire;
     TextBox[] coinsPrices;
+    TextBox[] coinsQuantities;
 
     //houses:
     Button[] housesShop;
 
     //menu:
     TextBox shopText;
-    TextBox housesText;
-    TextBox territoryText;
-    TextBox coinsText;
+    TextBox housesTextShop;
+    TextBox territoryTextShop;
+    TextBox coinsTextShop;
 
     Button housesButton;
     Button territoryButton;
@@ -50,32 +50,37 @@ public class Shop implements Screen {
         //coins:
         coinsPurchase = new Button[ShopInfo.quantityCoins];
         coinsPrices = new TextBox[ShopInfo.quantityCoins];
+        coinsQuantities = new TextBox[ShopInfo.quantityCoins];
         for (int i = 0; i < ShopInfo.quantityCoins; i++) {
-            coinsPurchase[i] = new Button((15 + (i%3) * 25) * pppX, (30 - 25 * (i / 3)) * pppX, 20 * pppX, 20 * pppX,
-                    new Texture("city/shop/orangeWindow.png"));////////
-            coinsPrices[i] = new TextBox(0, 0, Integer.toString(ShopInfo.sapphires[i]), 0xffffffff, (int)(3 * pppY));
-            coinsPrices[i].positionToRight((30 + (i%3) * 25) * pppX);
-            coinsPrices[i].positionToMiddleY((32.5f - 25 * (i / 3)) * pppX);
+            float cornerX = (18 + (i%3) * 22);
+            float cornerY = (24 - 22 * (i / 3));
+            coinsPurchase[i] = new Button(cornerX * pppX, cornerY * pppX, 20 * pppX, 20 * pppX,
+                    new Texture(path + "coins-"+i+".png"));
+            coinsPrices[i] = new TextBox(0, 0, divisionDigits(ShopInfo.sapphiresInShop[i]), 0xffffffff, (int)(3 * pppY));
+            coinsPrices[i].positionToRight((cornerX + 15) * pppX);
+            coinsPrices[i].positionToMiddleY((cornerY + 2.5f) * pppX);
+            coinsQuantities[i] = new TextBox((cornerX + 10) * pppX, 0, divisionDigits(ShopInfo.coinsInShop[i]), 0xffff00ff, (int)(5 * pppY));
+            coinsQuantities[i].positionToDown((cornerY + 5) * pppX);
         }
         sapphire = new PictureBox(0, 0, pppX * 3, pppX * 3, "general/sapphire.png");
 
         //houses:
         housesShop = new Button[ShopInfo.quantityHouses];
         for (int i = 0; i < ShopInfo.quantityHouses; i++) {
-            housesShop[i] = new Button((15 + (i%3) * 25) * pppX, (30 - 25 * (i / 3)) * pppX, 20 * pppX, 20 * pppX,
-                    houses[i][0]);////////
+            housesShop[i] = new Button((20 + (i%3) * 24) * pppX, (23 - 20 * (i / 3)) * pppX, 12 * pppX, 5 * pppX,
+                    new Texture(path + "buyHouseButton.png"), divisionDigits(ShopInfo.cost[i]), 0xffff00ff, (int)(4 * pppY));
         }
 
         //text:
         parameter.borderWidth = pppY/2;
         shopText = new TextBox(scrX/2, 85 * pppY, Languages.shop[selectedLanguage], 0xf192f7ff, (int)(15 * pppY));
         parameter.borderWidth = 3;
-        housesText = new TextBox(pppX * 25, 0, Languages.houses[selectedLanguage], 0xffffffff, (int)(3 * pppY));
-        housesText.positionToDown(pppY * 28);
-        territoryText = new TextBox(pppX * 50, 0, Languages.territory[selectedLanguage], 0xffffffff, (int)(3 * pppY));
-        territoryText.positionToDown(pppY * 28);
-        coinsText = new TextBox(pppX * 75, 0, Languages.coins[selectedLanguage], 0xffffffff, (int)(3 * pppY));
-        coinsText.positionToDown(pppY * 28);
+        housesTextShop = new TextBox(pppX * 25, 0, Languages.houses[selectedLanguage], 0xffffffff, (int)(3 * pppY));
+        housesTextShop.positionToDown(pppY * 28);
+        territoryTextShop = new TextBox(pppX * 50, 0, Languages.territory[selectedLanguage], 0xffffffff, (int)(3 * pppY));
+        territoryTextShop.positionToDown(pppY * 28);
+        coinsTextShop = new TextBox(pppX * 75, 0, Languages.coins[selectedLanguage], 0xffffffff, (int)(3 * pppY));
+        coinsTextShop.positionToDown(pppY * 28);
 
         //buttons:
         housesButton = new Button(pppX * 15, pppY * 25, pppX * 20, pppX * 20, new Texture(path + "housesButton.png"));
@@ -113,20 +118,23 @@ public class Shop implements Screen {
     void showMenu(){
         shopText.draw();
         housesButton.draw();
-        housesText.draw();
+        housesTextShop.draw();
         territoryButton.draw();
-        territoryText.draw();
+        territoryTextShop.draw();
         coinsButton.draw();
-        coinsText.draw();
+        coinsTextShop.draw();
 
         if (Gdx.input.justTouched()) {
             if (game.startMenu.buttonExit.isTouched()) {
                 game.setScreen(game.city);
             } else if (housesButton.isTouched()){
+                updateShop();
                 state = ShopState.HOUSES;
             } else if (territoryButton.isTouched()){
+                updateShop();
                 state = ShopState.TERRITORY;
             } else if (coinsButton.isTouched()){
+                updateShop();
                 state = ShopState.COINS;
             }
         }
@@ -134,6 +142,7 @@ public class Shop implements Screen {
 
     void showHouses(){
         for (int i = 0; i < ShopInfo.quantityHouses; i++) {
+            batch.draw(City.houses[i][0], (20 + (i%3) * 24) * pppX, (28 - 20 * (i / 3)) * pppX, 12 * pppX, 12 * pppX);
             housesShop[i].draw();
         }
         if (Gdx.input.justTouched()) {
@@ -141,8 +150,10 @@ public class Shop implements Screen {
                 state = ShopState.MENU;
             }else{
                 for (int i = 0; i < ShopInfo.quantityHouses; i++) {
-                    if(housesShop[i].isTouched()){
+                    if(housesShop[i].isTouched(false)){
+                        sellSound.play(soundVolume * soundOn);
 
+                        break;
                     }
                 }
             }
@@ -160,14 +171,38 @@ public class Shop implements Screen {
     void showCoins(){
         for(int i = 0; i < ShopInfo.quantityCoins; ++i){
             coinsPurchase[i].draw();
-            sapphire.draw((31 + (i%3) * 25) * pppX, (31 - 25 * (i / 3)) * pppX);
+            sapphire.draw((34 + (i%3) * 22) * pppX, (25 - 22 * (i / 3)) * pppX);
             coinsPrices[i].draw();
+            coinsQuantities[i].draw();
         }
         if (Gdx.input.justTouched()) {
             if (game.startMenu.buttonExit.isTouched()) {
                 state = ShopState.MENU;
+            } else {
+                for (int i = 0; i < ShopInfo.quantityCoins; i++) {
+                    if(coinsPurchase[i].isTouched(false) && sapphires >= ShopInfo.sapphiresInShop[i]){
+                        sellSound.play(soundVolume * soundOn);
+                        money += ShopInfo.coinsInShop[i];
+                        sapphires -= ShopInfo.sapphiresInShop[i];
+                        savePrefs();
+                        updateShop();
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    void updateShop(){
+        for (int i = 0; i < ShopInfo.quantityHouses; i++) {
+            if(money < ShopInfo.cost[i]) housesShop[i].setColor(1, 0, 0);
+            else housesShop[i].setColor(1, 1, 0);
+        }
+        for(int i = 0; i < ShopInfo.quantityCoins; ++i){
+            if(sapphires < ShopInfo.sapphiresInShop[i]) coinsPrices[i].setColor(1, 0, 0);
+            else coinsPrices[i].setColor(1, 1, 1);
+        }
+        updateMoney();
     }
 
     @Override

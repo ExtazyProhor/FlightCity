@@ -49,6 +49,10 @@ public class Button extends Rectangle {
         this.textY = (int) Main.gl.height;
     }
 
+    public void setColor(float r, float g, float b){
+        this.font.setColor(r, g, b, 1);
+    }
+
     public void placeCenter() {
         this.x = (Main.scrX - this.sizeX) / 2;
     }

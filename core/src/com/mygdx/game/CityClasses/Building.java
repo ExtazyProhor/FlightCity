@@ -26,7 +26,7 @@ public class Building extends Rectangle {
         this.level = 0;
     }
 
-    public void delete() {
+    public void sell() {
         exist = false;
     }
 

@@ -296,9 +296,9 @@ public class Settings implements Screen {
                 game.city.nonUpgradeText.changeText(Languages.maxLevel[Main.selectedLanguage]);
 
                 game.shop.shopText.changeText(Languages.shop[Main.selectedLanguage]);
-                game.shop.housesText.changeText(Languages.houses[Main.selectedLanguage]);
-                game.shop.territoryText.changeText(Languages.territory[Main.selectedLanguage]);
-                game.shop.coinsText.changeText(Languages.coins[Main.selectedLanguage]);
+                game.shop.housesTextShop.changeText(Languages.houses[Main.selectedLanguage]);
+                game.shop.territoryTextShop.changeText(Languages.territory[Main.selectedLanguage]);
+                game.shop.coinsTextShop.changeText(Languages.coins[Main.selectedLanguage]);
 
             } else if (soundBar.isTouched()) {
                 localSoundOn = Math.abs(localSoundOn - 1);
