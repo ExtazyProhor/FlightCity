@@ -33,7 +33,7 @@ public abstract class ShopInfo {
             {700, 3000, 15000, 75000}, /* shop */
             {2000, 6000, 50000, 120000}, /* restaurant */
             {10000, 25000, 70000, 250000}, /* bank */
-            {25000, 150000, 400000, 950000} /* hotel */
+            {35000, 150000, 400000, 950000} /* hotel */
     };
     public static final int territoryLevels = 5;
     public static final int[][] freeHousesPlace = {
@@ -42,5 +42,11 @@ public abstract class ShopInfo {
             {4,3},
             {4,4},
             {5,4}
+    };
+    public static final int[] territoryLevelUpPrice = {
+            15000,
+            50000,
+            200000,
+            1500000
     };
 }

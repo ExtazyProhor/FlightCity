@@ -204,7 +204,6 @@ public class City implements Screen {
                 freePlace.draw(buildings[i].getX(), buildings[i].getY());
             }
         }
-        territoryLevel = 4;
         if(Gdx.input.isTouched() && isTouchHouse) batch.setColor(1, 1, 1, 0.7f);
         else movingArrows.draw(movingArrows.getX() + buildings[selectedPlaceIndex].getX(),
                 movingArrows.getY() + buildings[selectedPlaceIndex].getY());

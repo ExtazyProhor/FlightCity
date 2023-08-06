@@ -41,6 +41,12 @@ public class Shop implements Screen {
     Button territoryButton;
     Button coinsButton;
 
+    //territory:
+    Button levelUp;
+    PictureBox arrow;
+    PictureBox[] territoryLevels;
+    TextBox maxLevel;
+
     public Shop(Main game){
         this.game = game;
         path = "city/shop/";
@@ -73,6 +79,18 @@ public class Shop implements Screen {
                     new Texture(path + "buyHouseButton.png"), divisionDigits(ShopInfo.cost[i]), 0xffff00ff, (int)(4 * pppY));
         }
 
+        //territory:
+        levelUp = new Button(35 * pppX, 5 * pppX, 30 * pppX, 12 * pppX, new Texture("buttons/blue button.png"),
+                divisionDigits(ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]), 0xffff00ff, (int)(5 * pppY));
+        arrow = new PictureBox(40 * pppX, 20 * pppX, 20 * pppX, 13.6f * pppX, "general/arrow.png");
+        territoryLevels = new PictureBox[ShopInfo.territoryLevels];
+        for (int i = 0; i < ShopInfo.territoryLevels; i++) {
+            territoryLevels[i] = new PictureBox(0, 0, 20 * pppX,
+                    textureAspectRatio(new Texture(path + "level-" + i + ".png"), false) * 20 * pppX,
+                    path + "level-" + i + ".png");
+        }
+        maxLevel = new TextBox(scrX/2, pppY * 60, Languages.maxLevel[selectedLanguage], 0x5872bfff, (int)(15 * pppY));
+
         //text:
         parameter.borderWidth = pppY/2;
         shopText = new TextBox(scrX/2, 85 * pppY, Languages.shop[selectedLanguage], 0xf192f7ff, (int)(15 * pppY));
@@ -86,7 +104,7 @@ public class Shop implements Screen {
 
         //buttons:
         housesButton = new Button(pppX * 15, pppY * 25, pppX * 20, pppX * 20, new Texture(path + "housesButton.png"));
-        territoryButton = new Button(pppX * 40, pppY * 25, pppX * 20, pppX * 20, new Texture(path + "orangeWindow.png"));
+        territoryButton = new Button(pppX * 40, pppY * 25, pppX * 20, pppX * 20, new Texture(path + "territoryButton.png"));
         coinsButton = new Button(pppX * 65, pppY * 25, pppX * 20, pppX * 20, new Texture(path + "coinsButton.png"));
     }
 
@@ -185,12 +203,30 @@ public class Shop implements Screen {
                 state = ShopState.MENU;
             }
         }
+        if(game.city.territoryLevel < ShopInfo.territoryLevels - 1){
+            territoryLevels[game.city.territoryLevel].draw(10 * pppX, 27 * pppX - territoryLevels[game.city.territoryLevel].getSizeY()/2);
+            territoryLevels[game.city.territoryLevel + 1].draw(70 * pppX, 27 * pppX - territoryLevels[game.city.territoryLevel + 1].getSizeY()/2);
+            arrow.draw();
+            levelUp.draw();
+            if(Gdx.input.justTouched()){
+                if(levelUp.isTouched(false)){
+                    if(money >= ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]){
+                        upgradeSound.play(soundVolume * soundOn);
+                        money -= ShopInfo.territoryLevelUpPrice[game.city.territoryLevel];
+                        game.city.territoryLevel++;
+                        updateShop();
+                    }else errorSound.play(soundVolume * soundOn);
+                }
+            }
+        }else{
+            maxLevel.draw();
+        }
     }
 
     void showCoins(){
         for(int i = 0; i < ShopInfo.quantityCoins; ++i){
             coinsPurchase[i].draw();
-            sapphire.draw((34 + (i%3) * 22) * pppX, (25 - 22 * (i / 3)) * pppX);
+            sapphire.draw((34 + (i%3) * 22) * pppX, (25 - 22 * (float)(i / 3)) * pppX);
             coinsPrices[i].draw();
             coinsQuantities[i].draw();
         }
@@ -222,6 +258,11 @@ public class Shop implements Screen {
         for(int i = 0; i < ShopInfo.quantityCoins; ++i){
             if(sapphires < ShopInfo.sapphiresInShop[i]) coinsPrices[i].setColor(1, 0, 0);
             else coinsPrices[i].setColor(1, 1, 1);
+        }
+        if(game.city.territoryLevel < ShopInfo.territoryLevels - 1){
+            levelUp.changeText(divisionDigits(ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]));
+            if (money < ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]) levelUp.setColor(1, 0, 0);
+            else levelUp.setColor(1, 1, 0);
         }
         updateMoney();
     }
