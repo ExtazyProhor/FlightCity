@@ -5,6 +5,8 @@ import static com.mygdx.game.Main.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.CityClasses.Building;
+import com.mygdx.game.CityClasses.CityState;
 import com.mygdx.game.CityClasses.ShopInfo;
 import com.mygdx.game.CityClasses.ShopState;
 import com.mygdx.game.Languages;
@@ -53,7 +55,7 @@ public class Shop implements Screen {
         coinsQuantities = new TextBox[ShopInfo.quantityCoins];
         for (int i = 0; i < ShopInfo.quantityCoins; i++) {
             float cornerX = (18 + (i%3) * 22);
-            float cornerY = (24 - 22 * (i / 3));
+            float cornerY = (24 - 22 * (float)(i / 3));
             coinsPurchase[i] = new Button(cornerX * pppX, cornerY * pppX, 20 * pppX, 20 * pppX,
                     new Texture(path + "coins-"+i+".png"));
             coinsPrices[i] = new TextBox(0, 0, divisionDigits(ShopInfo.sapphiresInShop[i]), 0xffffffff, (int)(3 * pppY));
@@ -67,7 +69,7 @@ public class Shop implements Screen {
         //houses:
         housesShop = new Button[ShopInfo.quantityHouses];
         for (int i = 0; i < ShopInfo.quantityHouses; i++) {
-            housesShop[i] = new Button((20 + (i%3) * 24) * pppX, (23 - 20 * (i / 3)) * pppX, 12 * pppX, 5 * pppX,
+            housesShop[i] = new Button((20 + (i%3) * 24) * pppX, (23 - 20 * (float)(i / 3)) * pppX, 12 * pppX, 5 * pppX,
                     new Texture(path + "buyHouseButton.png"), divisionDigits(ShopInfo.cost[i]), 0xffff00ff, (int)(4 * pppY));
         }
 
@@ -142,7 +144,7 @@ public class Shop implements Screen {
 
     void showHouses(){
         for (int i = 0; i < ShopInfo.quantityHouses; i++) {
-            batch.draw(City.houses[i][0], (20 + (i%3) * 24) * pppX, (28 - 20 * (i / 3)) * pppX, 12 * pppX, 12 * pppX);
+            batch.draw(City.houses[i][0], (20 + (i%3) * 24) * pppX, (28 - 20 * (float)(i / 3)) * pppX, 12 * pppX, 12 * pppX);
             housesShop[i].draw();
         }
         if (Gdx.input.justTouched()) {
@@ -151,8 +153,25 @@ public class Shop implements Screen {
             }else{
                 for (int i = 0; i < ShopInfo.quantityHouses; i++) {
                     if(housesShop[i].isTouched(false)){
-                        sellSound.play(soundVolume * soundOn);
-
+                        if(money >= ShopInfo.cost[i] &&
+                                Building.housesQuantity < ShopInfo.freeHousesPlace[game.city.territoryLevel][0] *
+                                        ShopInfo.freeHousesPlace[game.city.territoryLevel][1]){
+                            sellSound.play(soundVolume * soundOn);
+                            money -= ShopInfo.cost[i];
+                            game.shop.updateShop();
+                            game.city.state = CityState.INSTALLATION;
+                            state = ShopState.MENU;
+                            game.city.purchasedHouse = i;
+                            for(int j = 0; j < game.city.buildings.length; ++j){
+                                if((j % 5) < ShopInfo.freeHousesPlace[game.city.territoryLevel][0] &&
+                                        (j / 5) < ShopInfo.freeHousesPlace[game.city.territoryLevel][1] &&
+                                        !game.city.buildings[j].isExist()){
+                                    game.city.selectedPlaceIndex = j;
+                                    game.setScreen(game.city);
+                                    break;
+                                }
+                            }
+                        }else errorSound.play(soundVolume * soundOn);
                         break;
                     }
                 }
@@ -180,12 +199,14 @@ public class Shop implements Screen {
                 state = ShopState.MENU;
             } else {
                 for (int i = 0; i < ShopInfo.quantityCoins; i++) {
-                    if(coinsPurchase[i].isTouched(false) && sapphires >= ShopInfo.sapphiresInShop[i]){
-                        sellSound.play(soundVolume * soundOn);
-                        money += ShopInfo.coinsInShop[i];
-                        sapphires -= ShopInfo.sapphiresInShop[i];
-                        savePrefs();
-                        updateShop();
+                    if(coinsPurchase[i].isTouched(false)){
+                        if(sapphires >= ShopInfo.sapphiresInShop[i]){
+                            sellSound.play(soundVolume * soundOn);
+                            money += ShopInfo.coinsInShop[i];
+                            sapphires -= ShopInfo.sapphiresInShop[i];
+                            savePrefs();
+                            updateShop();
+                        }else errorSound.play(soundVolume * soundOn);
                         break;
                     }
                 }

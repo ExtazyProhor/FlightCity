@@ -3,6 +3,7 @@ package com.mygdx.game.CityClasses;
 import static com.mygdx.game.CityClasses.ShopInfo.*;
 import static com.mygdx.game.Main.*;
 
+import com.badlogic.gdx.Gdx;
 import com.mygdx.game.RealClasses.Rectangle;
 import com.mygdx.game.Screens.City;
 
@@ -10,6 +11,7 @@ public class Building extends Rectangle {
     private boolean exist;
     private int id;
     private int level;
+    public static int housesQuantity = 0;
 
     public Building(float x, float y) {
         super(x, y, scrY / 9, scrY / 9);
@@ -21,12 +23,14 @@ public class Building extends Rectangle {
     }
 
     public void spawn(int id) {
+        housesQuantity++;
         exist = true;
         this.id = id;
         this.level = 0;
     }
 
     public void sell() {
+        housesQuantity--;
         exist = false;
     }
 
@@ -54,8 +58,8 @@ public class Building extends Rectangle {
         return (level == maxLevel);
     }
 
-    public boolean isTouched(float x, float y){
-        return super.isInside(x, y);
+    public boolean isTouched(){
+        return super.isInside(Gdx.input.getX(), scrY - Gdx.input.getY());
     }
 
     public void showWindow(){

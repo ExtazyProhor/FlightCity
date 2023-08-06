@@ -35,4 +35,12 @@ public abstract class ShopInfo {
             {10000, 25000, 70000, 250000}, /* bank */
             {25000, 150000, 400000, 950000} /* hotel */
     };
+    public static final int territoryLevels = 5;
+    public static final int[][] freeHousesPlace = {
+            {3,2},
+            {3,3},
+            {4,3},
+            {4,4},
+            {5,4}
+    };
 }

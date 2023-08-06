@@ -124,30 +124,6 @@ public class Settings implements Screen {
         buttonsCheck();
     }
 
-    @Override
-    public void show() {
-    }
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void dispose() {
-    }
-
     void showLanguages() {
         languageLabel.draw(languageLabel.getX(), languageLabel.getY() + positionY);
         flagEngland.draw();
@@ -306,5 +282,54 @@ public class Settings implements Screen {
                 localMusicOn = Math.abs(localMusicOn - 1);
             }
         }
+    }
+
+    @Override
+    public void dispose() {
+        game.dispose();
+
+        languageLabel.dispose();
+        soundsLabel.dispose();
+        musicLabel.dispose();
+        englishLabel.dispose();
+        russianLabel.dispose();
+        belorussianLabel.dispose();
+
+        settingsBackGround.dispose();
+        frame.dispose();
+        tick.dispose();
+        emptyString.dispose();
+        fullString.dispose();
+
+        saveButton.dispose();
+
+        flagEngland.dispose();
+        flagRussian.dispose();
+        flagBelorussian.dispose();
+
+        musicPoint.dispose();
+        soundPoint.dispose();
+        musicBar.dispose();
+        soundBar.dispose();
+    }
+
+    @Override
+    public void show() {
+    }
+
+    @Override
+    public void resize(int width, int height) {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
     }
 }

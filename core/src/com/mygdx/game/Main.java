@@ -22,6 +22,7 @@ public class Main extends Game {
 	public static Sound clickSound;
 	public static Sound sellSound;
 	public static Sound upgradeSound;
+	public static Sound errorSound;
 
 	public static Preferences prefs;
 
@@ -72,9 +73,11 @@ public class Main extends Game {
 
 		initializationFont();
 		batch = new SpriteBatch();
+		batch.enableBlending();
 		clickSound = Gdx.audio.newSound(Gdx.files.internal("general/click.mp3"));
-		sellSound = Gdx.audio.newSound(Gdx.files.internal("city/sellSound.mp3"));
-		upgradeSound = Gdx.audio.newSound(Gdx.files.internal("city/upgradeSound.mp3"));
+		sellSound = Gdx.audio.newSound(Gdx.files.internal("city/sounds/sellSound.mp3"));
+		upgradeSound = Gdx.audio.newSound(Gdx.files.internal("city/sounds/upgradeSound.mp3"));
+		errorSound = Gdx.audio.newSound(Gdx.files.internal("city/sounds/errorSound.mp3"));
 
 		coinPicture = new PictureBox(scrX - 8 * pppY, 92 * pppY, 5 * pppY, 5 * pppY, "general/coin.png");
 		sapphirePicture = new PictureBox(scrX - 8 * pppY, 84 * pppY, 5 * pppY, 5 * pppY, "general/sapphire.png");
@@ -178,7 +181,10 @@ public class Main extends Game {
 	}
 
 	public static String divisionDigits(long value){
-		String number = Long.toString(value);
+		String number;
+		if(value >= 1000000000000L) number = Long.toString(value/1000000000);
+		else if(value >= 1000000000) number = Long.toString(value/1000000);
+		else number = Long.toString(value);
 		String newNumber = "";
 		if(number.length() % 3 != 0){
 			newNumber += number.substring(0, number.length() % 3);
@@ -190,6 +196,8 @@ public class Main extends Game {
 			number = number.substring(3);
 			if(number.length() > 0) newNumber += '.';
 		}
+		if(value >= 1000000000000L) newNumber += " B";
+		else if(value >= 1000000000) newNumber += " M";
 		return newNumber;
 	}
 }
