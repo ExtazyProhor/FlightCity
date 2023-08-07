@@ -47,6 +47,7 @@ public abstract class ShopInfo {
             15000,
             50000,
             200000,
-            1500000
+            1500000,
+            0
     };
 }

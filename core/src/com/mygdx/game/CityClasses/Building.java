@@ -32,6 +32,8 @@ public class Building extends Rectangle {
     public void sell() {
         housesQuantity--;
         exist = false;
+        id = 0;
+        level = 0;
     }
 
     public void upgrade() {
@@ -40,6 +42,14 @@ public class Building extends Rectangle {
 
     public boolean isExist() {
         return exist;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public int saleIncome() {

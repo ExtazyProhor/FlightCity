@@ -75,7 +75,7 @@ public class Shop implements Screen {
         //houses:
         housesShop = new Button[ShopInfo.quantityHouses];
         for (int i = 0; i < ShopInfo.quantityHouses; i++) {
-            housesShop[i] = new Button((20 + (i%3) * 24) * pppX, (23 - 20 * (float)(i / 3)) * pppX, 12 * pppX, 5 * pppX,
+            housesShop[i] = new Button((18 + (i%3) * 24) * pppX, (23 - 20 * (float)(i / 3)) * pppX, 16 * pppX, 5 * pppX,
                     new Texture(path + "buyHouseButton.png"), divisionDigits(ShopInfo.cost[i]), 0xffff00ff, (int)(4 * pppY));
         }
 
@@ -216,6 +216,8 @@ public class Shop implements Screen {
                         upgradeSound.play(soundVolume * soundOn);
                         money -= ShopInfo.territoryLevelUpPrice[game.city.territoryLevel];
                         game.city.territoryLevel++;
+                        cityPrefs.putInteger("territoryLevel", game.city.territoryLevel);
+                        cityPrefs.flush();
                         updateShop();
                     }else errorSound.play(soundVolume * soundOn);
                 }
@@ -300,10 +302,22 @@ public class Shop implements Screen {
         for (int i = 0; i < ShopInfo.quantityCoins; i++) {
             coinsPurchase[i].dispose();
             coinsPrices[i].dispose();
+            coinsQuantities[i].dispose();
         }
         sapphire.dispose();
         for (int i = 0; i < ShopInfo.quantityHouses; i++) {
             housesShop[i].dispose();
         }
+
+        housesTextShop.dispose();
+        territoryTextShop.dispose();
+        coinsTextShop.dispose();
+
+        levelUp.dispose();
+        arrow.dispose();
+        for(int i = 0; i < ShopInfo.territoryLevels; ++i){
+            territoryLevels[i].dispose();
+        }
+        maxLevel.dispose();
     }
 }

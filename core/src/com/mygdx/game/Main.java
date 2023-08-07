@@ -25,6 +25,7 @@ public class Main extends Game {
 	public static Sound errorSound;
 
 	public static Preferences prefs;
+	public static Preferences cityPrefs;
 
 	public static FreeTypeFontGenerator generator;
 	public static FreeTypeFontGenerator.FreeTypeFontParameter parameter;
@@ -68,7 +69,8 @@ public class Main extends Game {
 		pppX = scrX/100;
 		pppY = scrY/100;
 
-		prefs = Gdx.app.getPreferences("FlightCityInventory");
+		prefs = Gdx.app.getPreferences("FlightCityMainSaves");
+		cityPrefs = Gdx.app.getPreferences("CitySaves");
 		loadPrefs();
 
 		initializationFont();
@@ -150,17 +152,20 @@ public class Main extends Game {
 		sapphires = prefs.getLong("sapphires", 0);
 	}
 
+	public void saveCityPrefs(int houseIndex){
+		if (houseIndex < 0 || houseIndex >= city.buildings.length) return;
+		cityPrefs.putBoolean("building-" + houseIndex + "-isExist", city.buildings[houseIndex].isExist());
+		cityPrefs.putInteger("building-" + houseIndex + "-id", city.buildings[houseIndex].getId());
+		cityPrefs.putInteger("building-" + houseIndex + "-level", city.buildings[houseIndex].getLevel());
+
+		cityPrefs.flush();
+	}
+
 	void RESETPREFS(){
-		prefs.putInteger("selectedLanguage", 0);
-		prefs.putFloat("soundVolume", 1f);
-		prefs.putFloat("musicVolume", 1f);
-		prefs.putInteger("soundOn", 1);
-		prefs.putInteger("musicOn", 1);
-
-		prefs.putLong("money", 0);
-		prefs.putLong("sapphires", 0);
-
+		prefs.clear();
 		prefs.flush();
+		cityPrefs.clear();
+		cityPrefs.flush();
 	}
 
 	public static float textureAspectRatio(Texture texture, boolean toHeight){
