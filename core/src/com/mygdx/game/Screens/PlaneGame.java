@@ -9,38 +9,29 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Main;
+import com.mygdx.game.RealClasses.PictureBox;
 
 import java.util.Random;
 
 public class PlaneGame implements Screen {
     Main game;
 
-    Texture planeTexture;
-    float angle = 0;
-
-
     public PlaneGame(Main game) {
         this.game = game;
-        planeTexture = new Texture("settings/flagBelorussian.png");
     }
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(1, 1, 1, 1);
+        ScreenUtils.clear(0, 0, 0, 1);
         Main.batch.begin();
-
-        Main.batch.draw(planeTexture, 200, 200, 300, 150, 600, 300, 1, 1, angle, 0, 0,
-                planeTexture.getWidth(), planeTexture.getHeight(), false, false);
-
-        angle++;
 
         Main.batch.end();
     }
 
+    @Override
+    public void dispose() {
 
-
-
-
+    }
     @Override
     public void show() {
     }
@@ -59,10 +50,5 @@ public class PlaneGame implements Screen {
 
     @Override
     public void hide() {
-    }
-
-    @Override
-    public void dispose() {
-
     }
 }

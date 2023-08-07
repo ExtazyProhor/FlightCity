@@ -22,10 +22,11 @@ public class City implements Screen {
 
     PictureBox backGround;
     Button shopButton;
+    Button planeButton;
 
-    Building[] buildings;
+    public Building[] buildings;
     public static Texture[][] houses;
-    int territoryLevel = 0;
+    int territoryLevel;
 
     // window
     PictureBox blackout;
@@ -59,6 +60,7 @@ public class City implements Screen {
         this.game = game;
         screenDelta = scrX - scrY;
         state = CityState.DEFAULT;
+        territoryLevel = cityPrefs.getInteger("territoryLevel", 0);
 
         deltaTouchX = 29 * pppY;
         deltaTouchY = 5 * pppY;
@@ -78,6 +80,8 @@ public class City implements Screen {
                 new Texture("buttons/xButton.png"));
         shopButton = new Button(3 * pppY, 64 * pppY, 15 * pppY, 15 * pppY,
                 new Texture("buttons/shop.png"));
+        planeButton = new Button(3 * pppY, 46 * pppY, 15 * pppY, 15 * pppY,
+                new Texture(path + "planeButton.png"));
         sellButton = new Button(screenDelta / 2 + 6 * pppY, 28 * pppY, 40 * pppY, 16 * pppY,
                 new Texture("buttons/red button.png"), Languages.sell[selectedLanguage] + "\n\n", 0xffffffff, (int) (4 * pppY));
         upgradeButton = new Button(screenDelta / 2 + 54 * pppY, 28 * pppY, 40 * pppY, 16 * pppY,
@@ -96,6 +100,12 @@ public class City implements Screen {
         for (int i = 0; i < buildings.length; ++i) {
             buildings[i] = new Building(screenDelta / 2 + scrY / 36 + (i % 5) * 5 * scrY / 24,
                     29 * scrY / 36 - (float) (i / 5) * scrY / 4);
+            if(cityPrefs.getBoolean("building-" + i + "-isExist", false)){
+                buildings[i].spawn(cityPrefs.getInteger("building-" + i + "-id", 0));
+                for(int j = 0; j < cityPrefs.getInteger("building-" + i + "-level", 0); j++){
+                    buildings[i].upgrade();
+                }
+            }
         }
 
         houses = new Texture[ShopInfo.quantityHouses][ShopInfo.maxLevel+1];
@@ -136,11 +146,14 @@ public class City implements Screen {
     public void modeDefault(){
         game.startMenu.buttonExit.draw();
         shopButton.draw();
+        planeButton.draw();
         if (Gdx.input.justTouched()) {
             if (game.startMenu.buttonExit.isTouched()) {
                 game.setScreen(game.startMenu);
             } else if (shopButton.isTouched()) {
                 game.setScreen(game.shop);
+            } else if (planeButton.isTouched()){
+                game.setScreen(game.planeGame);
             } else {
                 for (int i = 0; i < buildings.length; ++i) {
                     if (!buildings[i].isExist()) continue;
@@ -180,6 +193,7 @@ public class City implements Screen {
             else if(sellButton.isTouched(false)){
                 sellSound.play(soundVolume * soundOn);
                 buildings[touchedBuilding].sell();
+                game.saveCityPrefs(touchedBuilding);
                 money += buildings[touchedBuilding].saleIncome();
                 savePrefs();
                 updateMoney();
@@ -189,6 +203,7 @@ public class City implements Screen {
                 upgradeSound.play(soundVolume * soundOn);
                 money -= buildings[touchedBuilding].getUpgradeCost();
                 buildings[touchedBuilding].upgrade();
+                game.saveCityPrefs(touchedBuilding);
                 savePrefs();
                 updateMoney();
                 sellText.changeText(divisionDigits(buildings[touchedBuilding].saleIncome()));
@@ -228,6 +243,7 @@ public class City implements Screen {
                     scrY - Gdx.input.getY() < buildings[selectedPlaceIndex].getY() + 13 * pppY) isTouchHouse = true;
             else if(confirmButton.isTouched()){
                 buildings[selectedPlaceIndex].spawn(purchasedHouse);
+                game.saveCityPrefs(selectedPlaceIndex);
                 savePrefs();
                 game.shop.updateShop();
                 state = CityState.DEFAULT;
@@ -267,21 +283,27 @@ public class City implements Screen {
 
     @Override
     public void dispose() {
-        game.dispose();
-
         windowBackGround.dispose();
         cancelButton.dispose();
+
         sellButton.dispose();
         upgradeButton.dispose();
         sellText.dispose();
         upgradeText.dispose();
         nonUpgradeButton.dispose();
         nonUpgradeText.dispose();
+
         moneyBackGround.dispose();
         blackout.dispose();
 
         backGround.dispose();
         shopButton.dispose();
+        planeButton.dispose();
+
+        movingArrow.dispose();
+        freePlace.dispose();
+        confirmButton.dispose();
+        noBuyButton.dispose();
 
         for (int i = 0; i < ShopInfo.quantityHouses; i++) {
             for (int j = 0; j < ShopInfo.maxLevel+1; j++) {
