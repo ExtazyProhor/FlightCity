@@ -204,8 +204,10 @@ public class Shop implements Screen {
             }
         }
         if(game.city.territoryLevel < ShopInfo.territoryLevels - 1){
-            territoryLevels[game.city.territoryLevel].draw(10 * pppX, 27 * pppX - territoryLevels[game.city.territoryLevel].getSizeY()/2);
-            territoryLevels[game.city.territoryLevel + 1].draw(70 * pppX, 27 * pppX - territoryLevels[game.city.territoryLevel + 1].getSizeY()/2);
+            territoryLevels[game.city.territoryLevel].draw(10 * pppX,
+                    27 * pppX - territoryLevels[game.city.territoryLevel].getSizeY()/2);
+            territoryLevels[game.city.territoryLevel + 1].draw(70 * pppX,
+                    27 * pppX - territoryLevels[game.city.territoryLevel + 1].getSizeY()/2);
             arrow.draw();
             levelUp.draw();
             if(Gdx.input.justTouched()){

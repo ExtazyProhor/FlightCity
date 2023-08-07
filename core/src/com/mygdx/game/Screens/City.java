@@ -4,8 +4,6 @@ import static com.mygdx.game.Main.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.CityClasses.Building;
 import com.mygdx.game.CityClasses.CityState;
@@ -15,8 +13,6 @@ import com.mygdx.game.Main;
 import com.mygdx.game.RealClasses.Button;
 import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.RealClasses.TextBox;
-
-import java.util.Random;
 
 public class City implements Screen {
     Main game;
@@ -49,7 +45,7 @@ public class City implements Screen {
     int selectedPlaceIndex;
     int purchasedHouse;
     boolean isTouchHouse = false;
-    PictureBox movingArrows;
+    PictureBox movingArrow;
     PictureBox freePlace;
     Button confirmButton;
     Button noBuyButton;
@@ -65,7 +61,7 @@ public class City implements Screen {
         moneyBackGround = new Texture(path + "moneyBG.png");
         blackout = new PictureBox(0, 0, scrX, scrY, path + "blackout.png");
 
-        movingArrows = new PictureBox(-2 * scrY / 45, -6.5f * pppY, 20 * pppY, 10 * pppY, path + "movingArrows.png");
+        movingArrow = new PictureBox(5 * pppY, -3 * pppY, 32 * pppY, 16 * pppY, path + "movingArrow.png");
         freePlace = new PictureBox(0, 0, scrY / 9, scrY / 9, path + "freePlace.png");
 
         // buttons
@@ -204,18 +200,22 @@ public class City implements Screen {
                 freePlace.draw(buildings[i].getX(), buildings[i].getY());
             }
         }
+        if(!(Gdx.input.isTouched() && isTouchHouse)){
+            movingArrow.draw(movingArrow.getX() + buildings[selectedPlaceIndex].getX(),
+                    movingArrow.getY() + buildings[selectedPlaceIndex].getY());
+        }
         if(Gdx.input.isTouched() && isTouchHouse) batch.setColor(1, 1, 1, 0.7f);
-        else movingArrows.draw(movingArrows.getX() + buildings[selectedPlaceIndex].getX(),
-                movingArrows.getY() + buildings[selectedPlaceIndex].getY());
         batch.draw(houses[purchasedHouse][0],
                 buildings[selectedPlaceIndex].getX(), buildings[selectedPlaceIndex].getY(),
                 buildings[selectedPlaceIndex].getSizeX(), buildings[selectedPlaceIndex].getSizeY());
         batch.setColor(1, 1, 1, 1);
 
         if(Gdx.input.justTouched()){
-            if(buildings[selectedPlaceIndex].isTouched()){
-                isTouchHouse = true;
-            }else if(confirmButton.isTouched()){
+            if(buildings[selectedPlaceIndex].getX() + 21 * pppY < Gdx.input.getX() &&
+                    Gdx.input.getX() < buildings[selectedPlaceIndex].getX() + 37 * pppY &&
+                    buildings[selectedPlaceIndex].getY() - 3 * pppY < scrY - Gdx.input.getY() &&
+                    scrY - Gdx.input.getY() < buildings[selectedPlaceIndex].getY() + 13 * pppY) isTouchHouse = true;
+            else if(confirmButton.isTouched()){
                 buildings[selectedPlaceIndex].spawn(purchasedHouse);
                 savePrefs();
                 game.shop.updateShop();
@@ -228,6 +228,8 @@ public class City implements Screen {
             }
         }
         if(Gdx.input.isTouched() && isTouchHouse){
+            movingArrow.draw(movingArrow.getX() - scrY/18 + Gdx.input.getX(),
+                    movingArrow.getY() - scrY/18 + scrY - Gdx.input.getY());
             int x = (int)((Gdx.input.getX() - (screenDelta/2 - 3 * scrY/144)) / (5 * scrY / 24));
             int y = (int)(Gdx.input.getY() / (scrY/4));
             if(x < 0) x = 0;
