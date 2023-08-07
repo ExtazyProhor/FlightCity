@@ -75,7 +75,7 @@ public class Shop implements Screen {
         //houses:
         housesShop = new Button[ShopInfo.quantityHouses];
         for (int i = 0; i < ShopInfo.quantityHouses; i++) {
-            housesShop[i] = new Button((20 + (i%3) * 24) * pppX, (23 - 20 * (float)(i / 3)) * pppX, 12 * pppX, 5 * pppX,
+            housesShop[i] = new Button((18 + (i%3) * 24) * pppX, (23 - 20 * (float)(i / 3)) * pppX, 16 * pppX, 5 * pppX,
                     new Texture(path + "buyHouseButton.png"), divisionDigits(ShopInfo.cost[i]), 0xffff00ff, (int)(4 * pppY));
         }
 

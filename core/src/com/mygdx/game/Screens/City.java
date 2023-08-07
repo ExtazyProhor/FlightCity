@@ -49,11 +49,20 @@ public class City implements Screen {
     PictureBox freePlace;
     Button confirmButton;
     Button noBuyButton;
+    float deltaTouchX;
+    float deltaTouchY;
+    float touchX;
+    float touchY;
+    float buttonsSize;
 
     public City(Main game) {
         this.game = game;
         screenDelta = scrX - scrY;
         state = CityState.DEFAULT;
+
+        deltaTouchX = 29 * pppY;
+        deltaTouchY = 5 * pppY;
+        buttonsSize = 12 * pppY;
 
         // pictures
         backGround = new PictureBox((scrX - 2 * scrY) / 2, 0, 2 * scrY, scrY, path + "backGround.png");
@@ -74,8 +83,8 @@ public class City implements Screen {
         upgradeButton = new Button(screenDelta / 2 + 54 * pppY, 28 * pppY, 40 * pppY, 16 * pppY,
                 new Texture("buttons/blue button.png"), Languages.upgrade[selectedLanguage] + "\n\n", 0xffffffff, (int) (4 * pppY));
         nonUpgradeButton = new PictureBox(screenDelta / 2 + 54 * pppY, 28 * pppY, 40 * pppY, 16 * pppY, "buttons/grey button.png");
-        confirmButton = new Button(0, 0, 7 * pppY, 7 * pppY, new Texture("buttons/tickButton.png"));
-        noBuyButton = new Button(0, 0, 7 * pppY, 7 * pppY, new Texture("buttons/xButton.png"));
+        confirmButton = new Button(0, 0, buttonsSize, buttonsSize, new Texture("buttons/tickButton.png"));
+        noBuyButton = new Button(0, 0, buttonsSize, buttonsSize, new Texture("buttons/xButton.png"));
 
         // text
         sellText = new TextBox(screenDelta / 2 + 26 * pppY, 36 * pppY, "", 0xffff00ff, (int) (4 * pppY));
@@ -193,6 +202,9 @@ public class City implements Screen {
     }
 
     public void modeInstallation(){
+        touchX = Gdx.input.getX() - deltaTouchX;
+        touchY = scrY - Gdx.input.getY() - deltaTouchY;
+
         for(int i = 0; i < buildings.length; ++i){
             if((i % 5) < ShopInfo.freeHousesPlace[territoryLevel][0] &&
                     (i / 5) < ShopInfo.freeHousesPlace[territoryLevel][1] &&
@@ -200,10 +212,9 @@ public class City implements Screen {
                 freePlace.draw(buildings[i].getX(), buildings[i].getY());
             }
         }
-        if(!(Gdx.input.isTouched() && isTouchHouse)){
-            movingArrow.draw(movingArrow.getX() + buildings[selectedPlaceIndex].getX(),
+        if(!(Gdx.input.isTouched() && isTouchHouse)) movingArrow.draw(movingArrow.getX() + buildings[selectedPlaceIndex].getX(),
                     movingArrow.getY() + buildings[selectedPlaceIndex].getY());
-        }
+
         if(Gdx.input.isTouched() && isTouchHouse) batch.setColor(1, 1, 1, 0.7f);
         batch.draw(houses[purchasedHouse][0],
                 buildings[selectedPlaceIndex].getX(), buildings[selectedPlaceIndex].getY(),
@@ -227,24 +238,29 @@ public class City implements Screen {
                 state = CityState.DEFAULT;
             }
         }
+
         if(Gdx.input.isTouched() && isTouchHouse){
-            movingArrow.draw(movingArrow.getX() - scrY/18 + Gdx.input.getX(),
-                    movingArrow.getY() - scrY/18 + scrY - Gdx.input.getY());
-            int x = (int)((Gdx.input.getX() - (screenDelta/2 - 3 * scrY/144)) / (5 * scrY / 24));
-            int y = (int)(Gdx.input.getY() / (scrY/4));
+            movingArrow.draw(movingArrow.getX() + touchX, movingArrow.getY() + touchY);
+            int x = (int)((Gdx.input.getX() - (screenDelta/2 - 3 * scrY/144) /**/ - deltaTouchX + scrY/18) / (5 * scrY / 24));
+            int y = (int)((Gdx.input.getY() /**/ - deltaTouchY + scrY/18) / (scrY/4));
             if(x < 0) x = 0;
             else if(x > ShopInfo.freeHousesPlace[territoryLevel][0] - 1) x = ShopInfo.freeHousesPlace[territoryLevel][0] - 1;
             if(y < 0) y = 0;
             else if(y > ShopInfo.freeHousesPlace[territoryLevel][1] - 1) y = ShopInfo.freeHousesPlace[territoryLevel][1] - 1;
             if(!buildings[5 * y + x].isExist()) selectedPlaceIndex = 5 * y + x;
-            batch.draw(houses[purchasedHouse][0], Gdx.input.getX() - scrY/18, scrY - Gdx.input.getY() - scrY/18, scrY/9, scrY/9);
+            batch.draw(houses[purchasedHouse][0], touchX, touchY, scrY/9, scrY/9);
         }else {
             isTouchHouse = false;
-            confirmButton.setCoordinates(buildings[selectedPlaceIndex].getX() + pppY * 12,
-                    buildings[selectedPlaceIndex].getY() + pppY * 4);
+            float thisY;
+            if (selectedPlaceIndex < buildings.length/2) thisY = buildings[selectedPlaceIndex].getY() - buttonsSize;
+            else thisY = buildings[selectedPlaceIndex].getY() + scrY/9;
+
+            confirmButton.setX(buildings[selectedPlaceIndex].getX() + scrY/9);
+            confirmButton.setY(thisY);
             confirmButton.draw();
-            noBuyButton.setCoordinates(buildings[selectedPlaceIndex].getX() - pppY * 8,
-                    buildings[selectedPlaceIndex].getY() + pppY * 4);
+
+            noBuyButton.setX(buildings[selectedPlaceIndex].getX() - buttonsSize);
+            noBuyButton.setY(thisY);
             noBuyButton.draw();
         }
     }
