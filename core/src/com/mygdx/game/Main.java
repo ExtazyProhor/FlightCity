@@ -99,7 +99,7 @@ public class Main extends Game {
 		shop = new Shop(this);
 		subwayGame = new SubwayGame(this);
 
-		setScreen(startMenu);
+		setScreen(subwayGame);
 	}
 
 	void initializationFont(){
