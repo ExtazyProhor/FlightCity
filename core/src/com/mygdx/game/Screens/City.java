@@ -1,9 +1,13 @@
 package com.mygdx.game.Screens;
 
+import static com.mygdx.game.Main.*;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.CityClasses.Building;
+import com.mygdx.game.CityClasses.CityState;
+import com.mygdx.game.CityClasses.ShopInfo;
 import com.mygdx.game.Languages;
 import com.mygdx.game.Main;
 import com.mygdx.game.RealClasses.Button;
@@ -14,170 +18,312 @@ public class City implements Screen {
     Main game;
     String path = "city/";
     float screenDelta;
+    CityState state;
+
+    PictureBox backGround;
+    Button shopButton;
+    Button planeButton;
+
+    public Building[] buildings;
+    public static Texture[][] houses;
+    int territoryLevel;
 
     // window
+    PictureBox blackout;
     PictureBox windowBackGround;
-    boolean windowIsOpened = false;
     int touchedBuilding;
     Button cancelButton;
     Texture moneyBackGround;
 
     Button sellButton;
     TextBox sellText;
-
     Button upgradeButton;
     TextBox upgradeText;
     PictureBox nonUpgradeButton;
     TextBox nonUpgradeText;
 
-    PictureBox backGround;
-    Button shopButton;
-    Building[] buildings;
+    // installation
+    int selectedPlaceIndex;
+    int purchasedHouse;
+    boolean isTouchHouse = false;
+    PictureBox movingArrow;
+    PictureBox freePlace;
+    Button confirmButton;
+    Button noBuyButton;
+    float deltaTouchX;
+    float deltaTouchY;
+    float touchX;
+    float touchY;
+    float buttonsSize;
 
     public City(Main game) {
         this.game = game;
-        screenDelta = Main.scrX - Main.scrY;
+        screenDelta = scrX - scrY;
+        state = CityState.DEFAULT;
+        territoryLevel = cityPrefs.getInteger("territoryLevel", 0);
+
+        deltaTouchX = 29 * pppY;
+        deltaTouchY = 5 * pppY;
+        buttonsSize = 12 * pppY;
 
         // pictures
-        backGround = new PictureBox((Main.scrX - 2 * Main.scrY) / 2, 0, 2 * Main.scrY, Main.scrY, path + "backGround.png");
-        windowBackGround = new PictureBox(screenDelta / 2, Main.scrY / 4, Main.scrY, Main.scrY / 2, path + "window.png");
+        backGround = new PictureBox((scrX - 2 * scrY) / 2, 0, 2 * scrY, scrY, path + "backGround.png");
+        windowBackGround = new PictureBox(screenDelta / 2, scrY / 4, scrY, scrY / 2, path + "window.png");
         moneyBackGround = new Texture(path + "moneyBG.png");
+        blackout = new PictureBox(0, 0, scrX, scrY, path + "blackout.png");
+
+        movingArrow = new PictureBox(5 * pppY, -3 * pppY, 32 * pppY, 16 * pppY, path + "movingArrow.png");
+        freePlace = new PictureBox(0, 0, scrY / 9, scrY / 9, path + "freePlace.png");
 
         // buttons
-        cancelButton = new Button(screenDelta / 2 + Main.pppY * 82, Main.pppY * 57, 15 * Main.pppY, 15 * Main.pppY,
+        cancelButton = new Button(screenDelta / 2 + pppY * 82, pppY * 57, 15 * pppY, 15 * pppY,
                 new Texture("buttons/xButton.png"));
-        shopButton = new Button(3 * Main.pppY, 64 * Main.pppY, 15 * Main.pppY, 15 * Main.pppY,
+        shopButton = new Button(3 * pppY, 64 * pppY, 15 * pppY, 15 * pppY,
                 new Texture("buttons/shop.png"));
-        sellButton = new Button(screenDelta / 2 + 6 * Main.pppY, 28 * Main.pppY, 40 * Main.pppY, 16 * Main.pppY,
-                new Texture("buttons/red button.png"), Languages.sell[Main.selectedLanguage] + "\n\n", 0xffffffff, (int) (4 * Main.pppY));
-        upgradeButton = new Button(screenDelta / 2 + 54 * Main.pppY, 28 * Main.pppY, 40 * Main.pppY, 16 * Main.pppY,
-                new Texture("buttons/blue button.png"), Languages.upgrade[Main.selectedLanguage] + "\n\n", 0xffffffff, (int) (4 * Main.pppY));
-        nonUpgradeButton = new PictureBox(screenDelta / 2 + 54 * Main.pppY, 28 * Main.pppY, 40 * Main.pppY, 16 * Main.pppY, "buttons/grey button.png");
+        planeButton = new Button(3 * pppY, 46 * pppY, 15 * pppY, 15 * pppY,
+                new Texture(path + "planeButton.png"));
+        sellButton = new Button(screenDelta / 2 + 6 * pppY, 28 * pppY, 40 * pppY, 16 * pppY,
+                new Texture("buttons/red button.png"), Languages.sell[selectedLanguage] + "\n\n", 0xffffffff, (int) (4 * pppY));
+        upgradeButton = new Button(screenDelta / 2 + 54 * pppY, 28 * pppY, 40 * pppY, 16 * pppY,
+                new Texture("buttons/blue button.png"), Languages.upgrade[selectedLanguage] + "\n\n", 0xffffffff, (int) (4 * pppY));
+        nonUpgradeButton = new PictureBox(screenDelta / 2 + 54 * pppY, 28 * pppY, 40 * pppY, 16 * pppY, "buttons/grey button.png");
+        confirmButton = new Button(0, 0, buttonsSize, buttonsSize, new Texture("buttons/tickButton.png"));
+        noBuyButton = new Button(0, 0, buttonsSize, buttonsSize, new Texture("buttons/xButton.png"));
 
         // text
-        sellText = new TextBox(screenDelta / 2 + 26 * Main.pppY, 36 * Main.pppY, "", 0xffff00ff, (int) (4 * Main.pppY));
-        upgradeText = new TextBox(screenDelta / 2 + 74 * Main.pppY, 36 * Main.pppY, "", 0xffff00ff, (int) (4 * Main.pppY));
-        nonUpgradeText = new TextBox(screenDelta / 2 + 74 * Main.pppY, 40 * Main.pppY, "", 0xffffffff, (int) (3 * Main.pppY));
+        sellText = new TextBox(screenDelta / 2 + 26 * pppY, 36 * pppY, "", 0xffff00ff, (int) (4 * pppY));
+        upgradeText = new TextBox(screenDelta / 2 + 74 * pppY, 36 * pppY, "", 0xffff00ff, (int) (4 * pppY));
+        nonUpgradeText = new TextBox(screenDelta / 2 + 74 * pppY, 40 * pppY, "", 0xffffffff, (int) (3 * pppY));
 
         // buildings
         buildings = new Building[20];
         for (int i = 0; i < buildings.length; ++i) {
-            buildings[i] = new Building(screenDelta / 2 + Main.scrY / 36 + (i % 5) * 5 * Main.scrY / 24,
-                    29 * Main.scrY / 36 - (float) (i / 5) * Main.scrY / 4);
-            buildings[i].spawn(0);///////////////////
+            buildings[i] = new Building(screenDelta / 2 + scrY / 36 + (i % 5) * 5 * scrY / 24,
+                    29 * scrY / 36 - (float) (i / 5) * scrY / 4);
+            if(cityPrefs.getBoolean("building-" + i + "-isExist", false)){
+                buildings[i].spawn(cityPrefs.getInteger("building-" + i + "-id", 0));
+                for(int j = 0; j < cityPrefs.getInteger("building-" + i + "-level", 0); j++){
+                    buildings[i].upgrade();
+                }
+            }
         }
-        buildings[0].upgrade();//////////////////////////////
-        buildings[0].upgrade();//////////////////////////////
-        buildings[0].upgrade();//////////////////////////////
-        buildings[0].upgrade();//////////////////////////////
-    }
 
+        houses = new Texture[ShopInfo.quantityHouses][ShopInfo.maxLevel+1];
+        for (int i = 0; i < ShopInfo.quantityHouses; i++) {
+            for (int j = 0; j < ShopInfo.maxLevel+1; j++) {
+                houses[i][j] = new Texture("city/houses/house-id-" + i + ".png");////////////////////////
+                //houses[i][j] = new Texture("city/houses/house-id-" + i + "-level-" + j + ".png");
+            }
+        }
+    }
 
     @Override
     public void render(float delta) {
-        Main.batch.begin();
+        batch.begin();
         backGround.draw();
-        float moneyBGX = Math.min(Main.coinText.getX(), Main.sapphireText.getX()) - 3 * Main.pppY;
-        Main.batch.draw(moneyBackGround, moneyBGX, 81 * Main.pppY, 57 * Main.pppY, 19 * Main.pppY);
+        float moneyBGX = Math.min(coinText.getX(), sapphireText.getX()) - 3 * pppY;
+        batch.draw(moneyBackGround, moneyBGX, 81 * pppY, 57 * pppY, 19 * pppY);
         for (Building building : buildings) {
             if (building.isExist()) building.draw();
         }
-        Main.showMoney();
+        showMoney();
 
-        if (windowIsOpened) {
-            windowBackGround.draw();
-            buildings[touchedBuilding].showWindow();
-            cancelButton.draw();
-            sellButton.draw();
-            sellText.draw();
-            if(!buildings[touchedBuilding].isMaxLevel()){
-                upgradeButton.draw();
-                upgradeText.draw();
-            }else{
-                nonUpgradeButton.draw();
-                nonUpgradeText.draw();
-            }
-            if (Gdx.input.justTouched()) {
-                if (cancelButton.isTouched()) {
-                    windowIsOpened = false;
-                }
-                else if(sellButton.isTouched()){
+        switch (state){
+            case DEFAULT:
+                modeDefault();
+                break;
+            case WINDOW:
+                modeWindow();
+                break;
+            case INSTALLATION:
+                modeInstallation();
+                break;
+        }
 
-                }
-                else if(!buildings[touchedBuilding].isMaxLevel() && upgradeButton.isTouched() && Main.money >= buildings[touchedBuilding].getUpgradeCost()){
+        batch.end();
+    }
 
-                }
-            }
-        } else {
-            game.startMenu.buttonExit.draw();
-            shopButton.draw();
-            if (Gdx.input.justTouched()) {
-                if (game.startMenu.buttonExit.isTouched()) {
-                    game.setScreen(game.startMenu);
-                } else if (shopButton.isTouched()) {
-                    game.shop.shopText.changeText(Languages.shop[Main.selectedLanguage]);
-                    game.shop.housesText.changeText(Languages.houses[Main.selectedLanguage]);
-                    game.shop.territoryText.changeText(Languages.territory[Main.selectedLanguage]);
-                    game.shop.coinsText.changeText(Languages.coins[Main.selectedLanguage]);
-                    game.setScreen(game.shop);
-                } else {
-                    for (int i = 0; i < buildings.length; ++i) {
-                        if (!buildings[i].isExist()) {
-                            continue;
+    public void modeDefault(){
+        game.startMenu.buttonExit.draw();
+        shopButton.draw();
+        planeButton.draw();
+        if (Gdx.input.justTouched()) {
+            if (game.startMenu.buttonExit.isTouched()) {
+                game.setScreen(game.startMenu);
+            } else if (shopButton.isTouched()) {
+                game.setScreen(game.shop);
+            } else if (planeButton.isTouched()){
+                game.setScreen(game.planeGame);
+            } else {
+                for (int i = 0; i < buildings.length; ++i) {
+                    if (!buildings[i].isExist()) continue;
+                    if (buildings[i].isTouched()) {
+                        state = CityState.WINDOW;
+                        touchedBuilding = i;
+                        sellText.changeText(divisionDigits(buildings[touchedBuilding].saleIncome()));
+                        nonUpgradeText.changeText(Languages.maxLevel[selectedLanguage]);
+                        if(!buildings[touchedBuilding].isMaxLevel()) {
+                            upgradeText.changeText(divisionDigits(buildings[touchedBuilding].getUpgradeCost()));
+                            if(money < buildings[touchedBuilding].getUpgradeCost()) upgradeText.setColor(1, 0, 0);
+                            else upgradeText.setColor(1, 1, 0);
                         }
-                        if (buildings[i].isTouched(Gdx.input.getX(), Main.scrY - Gdx.input.getY())) {
-                            windowIsOpened = true;
-                            touchedBuilding = i;
-                            sellText.changeText(Integer.toString(buildings[touchedBuilding].saleIncome()));
-                            nonUpgradeText.changeText(Languages.maxLevel[Main.selectedLanguage]);
-                            if(!buildings[touchedBuilding].isMaxLevel()) {
-                                upgradeText.changeText(Integer.toString(buildings[touchedBuilding].getUpgradeCost()));
-                                if(Main.money < buildings[touchedBuilding].getUpgradeCost()) upgradeText.setColor(1, 0, 0);
-                                else upgradeText.setColor(1, 1, 0);
-                            }
-                            break;
-                        }
+                        break;
                     }
                 }
             }
         }
-
-        Main.batch.end();
     }
 
-    @Override
-    public void show() {
+    public void modeWindow(){
+        blackout.draw();
+        windowBackGround.draw();
+        buildings[touchedBuilding].showWindow();
+        cancelButton.draw();
+        sellButton.draw();
+        sellText.draw();
+        if(buildings[touchedBuilding].isMaxLevel()){
+            nonUpgradeButton.draw();
+            nonUpgradeText.draw();
+        }else{
+            upgradeButton.draw();
+            upgradeText.draw();
+        }
+        if (Gdx.input.justTouched()) {
+            if (cancelButton.isTouched()) state = CityState.DEFAULT;
+            else if(sellButton.isTouched(false)){
+                sellSound.play(soundVolume * soundOn);
+                buildings[touchedBuilding].sell();
+                game.saveCityPrefs(touchedBuilding);
+                money += buildings[touchedBuilding].saleIncome();
+                savePrefs();
+                updateMoney();
+                state = CityState.DEFAULT;
+            }
+            else if(!buildings[touchedBuilding].isMaxLevel() && upgradeButton.isTouched(false) && money >= buildings[touchedBuilding].getUpgradeCost()){
+                upgradeSound.play(soundVolume * soundOn);
+                money -= buildings[touchedBuilding].getUpgradeCost();
+                buildings[touchedBuilding].upgrade();
+                game.saveCityPrefs(touchedBuilding);
+                savePrefs();
+                updateMoney();
+                sellText.changeText(divisionDigits(buildings[touchedBuilding].saleIncome()));
+                if(!buildings[touchedBuilding].isMaxLevel()) {
+                    upgradeText.changeText(divisionDigits(buildings[touchedBuilding].getUpgradeCost()));
+                    if(money < buildings[touchedBuilding].getUpgradeCost()) upgradeText.setColor(1, 0, 0);
+                    else upgradeText.setColor(1, 1, 0);
+                }
+            }
+        }
     }
 
-    @Override
-    public void resize(int width, int height) {
-    }
+    public void modeInstallation(){
+        touchX = Gdx.input.getX() - deltaTouchX;
+        touchY = scrY - Gdx.input.getY() - deltaTouchY;
 
-    @Override
-    public void pause() {
-    }
+        for(int i = 0; i < buildings.length; ++i){
+            if((i % 5) < ShopInfo.freeHousesPlace[territoryLevel][0] &&
+                    (i / 5) < ShopInfo.freeHousesPlace[territoryLevel][1] &&
+                    !buildings[i].isExist() && i != selectedPlaceIndex){
+                freePlace.draw(buildings[i].getX(), buildings[i].getY());
+            }
+        }
+        if(!(Gdx.input.isTouched() && isTouchHouse)) movingArrow.draw(movingArrow.getX() + buildings[selectedPlaceIndex].getX(),
+                    movingArrow.getY() + buildings[selectedPlaceIndex].getY());
 
-    @Override
-    public void resume() {
-    }
+        if(Gdx.input.isTouched() && isTouchHouse) batch.setColor(1, 1, 1, 0.7f);
+        batch.draw(houses[purchasedHouse][0],
+                buildings[selectedPlaceIndex].getX(), buildings[selectedPlaceIndex].getY(),
+                buildings[selectedPlaceIndex].getSizeX(), buildings[selectedPlaceIndex].getSizeY());
+        batch.setColor(1, 1, 1, 1);
 
-    @Override
-    public void hide() {
+        if(Gdx.input.justTouched()){
+            if(buildings[selectedPlaceIndex].getX() + 21 * pppY < Gdx.input.getX() &&
+                    Gdx.input.getX() < buildings[selectedPlaceIndex].getX() + 37 * pppY &&
+                    buildings[selectedPlaceIndex].getY() - 3 * pppY < scrY - Gdx.input.getY() &&
+                    scrY - Gdx.input.getY() < buildings[selectedPlaceIndex].getY() + 13 * pppY) isTouchHouse = true;
+            else if(confirmButton.isTouched()){
+                buildings[selectedPlaceIndex].spawn(purchasedHouse);
+                game.saveCityPrefs(selectedPlaceIndex);
+                savePrefs();
+                game.shop.updateShop();
+                state = CityState.DEFAULT;
+            }else if(noBuyButton.isTouched()){
+                money += ShopInfo.cost[purchasedHouse];
+                savePrefs();
+                game.shop.updateShop();
+                state = CityState.DEFAULT;
+            }
+        }
+
+        if(Gdx.input.isTouched() && isTouchHouse){
+            movingArrow.draw(movingArrow.getX() + touchX, movingArrow.getY() + touchY);
+            int x = (int)((Gdx.input.getX() - (screenDelta/2 - 3 * scrY/144) /**/ - deltaTouchX + scrY/18) / (5 * scrY / 24));
+            int y = (int)((Gdx.input.getY() /**/ - deltaTouchY + scrY/18) / (scrY/4));
+            if(x < 0) x = 0;
+            else if(x > ShopInfo.freeHousesPlace[territoryLevel][0] - 1) x = ShopInfo.freeHousesPlace[territoryLevel][0] - 1;
+            if(y < 0) y = 0;
+            else if(y > ShopInfo.freeHousesPlace[territoryLevel][1] - 1) y = ShopInfo.freeHousesPlace[territoryLevel][1] - 1;
+            if(!buildings[5 * y + x].isExist()) selectedPlaceIndex = 5 * y + x;
+            batch.draw(houses[purchasedHouse][0], touchX, touchY, scrY/9, scrY/9);
+        }else {
+            isTouchHouse = false;
+            float thisY;
+            if (selectedPlaceIndex < buildings.length/2) thisY = buildings[selectedPlaceIndex].getY() - buttonsSize;
+            else thisY = buildings[selectedPlaceIndex].getY() + scrY/9;
+
+            confirmButton.setX(buildings[selectedPlaceIndex].getX() + scrY/9);
+            confirmButton.setY(thisY);
+            confirmButton.draw();
+
+            noBuyButton.setX(buildings[selectedPlaceIndex].getX() - buttonsSize);
+            noBuyButton.setY(thisY);
+            noBuyButton.draw();
+        }
     }
 
     @Override
     public void dispose() {
         windowBackGround.dispose();
         cancelButton.dispose();
+
         sellButton.dispose();
         upgradeButton.dispose();
         sellText.dispose();
         upgradeText.dispose();
         nonUpgradeButton.dispose();
         nonUpgradeText.dispose();
+
         moneyBackGround.dispose();
+        blackout.dispose();
 
         backGround.dispose();
         shopButton.dispose();
+        planeButton.dispose();
+
+        movingArrow.dispose();
+        freePlace.dispose();
+        confirmButton.dispose();
+        noBuyButton.dispose();
+
+        for (int i = 0; i < ShopInfo.quantityHouses; i++) {
+            for (int j = 0; j < ShopInfo.maxLevel+1; j++) {
+                houses[i][j].dispose();
+            }
+        }
+    }
+    @Override
+    public void show() {
+    }
+    @Override
+    public void resize(int width, int height) {
+    }
+    @Override
+    public void pause() {
+    }
+    @Override
+    public void resume() {
+    }
+    @Override
+    public void hide() {
     }
 }

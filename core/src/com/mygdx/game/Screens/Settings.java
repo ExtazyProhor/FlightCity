@@ -1,5 +1,7 @@
 package com.mygdx.game.Screens;
 
+import static com.mygdx.game.Main.*;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
@@ -55,60 +57,60 @@ public class Settings implements Screen {
         this.game = game;
 
         // labels
-        languageLabel = new TextBox(Main.scrX / 2, Main.pppY * 97, Languages.language[Main.selectedLanguage],
-                0xffffffff, (int) (5 * Main.pppY));
-        englishLabel = new TextBox(29 * Main.pppX, 87 * Main.pppY - 9 * Main.pppX, "english",
-                0xffffffff, (int) (3 * Main.pppY));
-        russianLabel = new TextBox(50 * Main.pppX, 87 * Main.pppY - 9 * Main.pppX, "русский",
-                0xffffffff, (int) (3 * Main.pppY));
-        belorussianLabel = new TextBox(71 * Main.pppX, 87 * Main.pppY - 9 * Main.pppX, "беларуская",
-                0xffffffff, (int) (3 * Main.pppY));
-        soundsLabel = new TextBox(Main.scrX/2, 80 * Main.pppY - 9 * Main.pppX, Languages.sound[Main.selectedLanguage],
-                0xffffffff, (int) (5 * Main.pppY));
-        musicLabel = new TextBox(Main.scrX/2, 60 * Main.pppY - 9 * Main.pppX, Languages.music[Main.selectedLanguage],
-                0xffffffff, (int) (5 * Main.pppY));
+        languageLabel = new TextBox(scrX / 2, pppY * 97, Languages.language[selectedLanguage],
+                0xffffffff, (int) (5 * pppY));
+        englishLabel = new TextBox(29 * pppX, 87 * pppY - 9 * pppX, "english",
+                0xffffffff, (int) (3 * pppY));
+        russianLabel = new TextBox(50 * pppX, 87 * pppY - 9 * pppX, "русский",
+                0xffffffff, (int) (3 * pppY));
+        belorussianLabel = new TextBox(71 * pppX, 87 * pppY - 9 * pppX, "беларуская",
+                0xffffffff, (int) (3 * pppY));
+        soundsLabel = new TextBox(scrX/2, 80 * pppY - 9 * pppX, Languages.sound[selectedLanguage],
+                0xffffffff, (int) (5 * pppY));
+        musicLabel = new TextBox(scrX/2, 60 * pppY - 9 * pppX, Languages.music[selectedLanguage],
+                0xffffffff, (int) (5 * pppY));
 
         // pictures
-        settingsBackGround = new PictureBox(19 * Main.pppX, 0, 62 * Main.pppX, Main.scrY,
+        settingsBackGround = new PictureBox(19 * pppX, 0, 62 * pppX, scrY,
                 path + "settingsBackGround.png");
-        frame = new PictureBox(0, 0, 18 * Main.pppX, 9 * Main.pppX,
+        frame = new PictureBox(0, 0, 18 * pppX, 9 * pppX,
                 path + "frame.png");
-        tick = new PictureBox(23 * Main.pppX, 45 * Main.pppY - 9 * Main.pppX, 5 * Main.pppX, 5 * Main.pppX,
+        tick = new PictureBox(23 * pppX, 45 * pppY - 9 * pppX, 5 * pppX, 5 * pppX,
                 path + "tick.png");
-        emptyString = new PictureBox(31 * Main.pppX, 45 * Main.pppY - 7 * Main.pppX, 46 * Main.pppX, Main.pppX,
+        emptyString = new PictureBox(31 * pppX, 45 * pppY - 7 * pppX, 46 * pppX, pppX,
                 path + "emptyString.png");
-        fullString = new PictureBox(31 * Main.pppX, 45 * Main.pppY - 7 * Main.pppX, 46 * Main.pppX, Main.pppX,
+        fullString = new PictureBox(31 * pppX, 45 * pppY - 7 * pppX, 46 * pppX, pppX,
                 path + "fullString.png");
 
         // buttons
-        saveButton = new Button(81.5f * Main.pppX, 97 * Main.pppY - 10 * Main.pppX, 18 * Main.pppX, 10 * Main.pppX,
-                new Texture("buttons/button 3-2.png"), Languages.save[Main.selectedLanguage],
-                0xffffffff, (int) (3 * Main.pppY));
-        flagEngland = new Button(20 * Main.pppX, 90 * Main.pppY - 9 * Main.pppX, 18 * Main.pppX, 9 * Main.pppX,
+        saveButton = new Button(81.5f * pppX, 97 * pppY - 10 * pppX, 18 * pppX, 10 * pppX,
+                new Texture("buttons/button 3-2.png"), Languages.save[selectedLanguage],
+                0xffffffff, (int) (3 * pppY));
+        flagEngland = new Button(20 * pppX, 90 * pppY - 9 * pppX, 18 * pppX, 9 * pppX,
                 new Texture(path + "flagEngland.png"));
-        flagRussian = new Button(41 * Main.pppX, 90 * Main.pppY - 9 * Main.pppX, 18 * Main.pppX, 9 * Main.pppX,
+        flagRussian = new Button(41 * pppX, 90 * pppY - 9 * pppX, 18 * pppX, 9 * pppX,
                 new Texture(path + "flagRussian.png"));
-        flagBelorussian = new Button(62 * Main.pppX, 90 * Main.pppY - 9 * Main.pppX, 18 * Main.pppX, 9 * Main.pppX,
+        flagBelorussian = new Button(62 * pppX, 90 * pppY - 9 * pppX, 18 * pppX, 9 * pppX,
                 new Texture(path + "flagBelorussian.png"));
 
-        soundBar = new Button(23 * Main.pppX, 65 * Main.pppY - 9 * Main.pppX, 5 * Main.pppX, 5 * Main.pppX,
+        soundBar = new Button(23 * pppX, 65 * pppY - 9 * pppX, 5 * pppX, 5 * pppX,
                 new Texture(path + "bar.png"));
-        musicBar = new Button(23 * Main.pppX, 45 * Main.pppY - 9 * Main.pppX, 5 * Main.pppX, 5 * Main.pppX,
+        musicBar = new Button(23 * pppX, 45 * pppY - 9 * pppX, 5 * pppX, 5 * pppX,
                 new Texture(path + "bar.png"));
 
-        soundPoint = new Button(30 * Main.pppX, 45 * Main.pppY - 8 * Main.pppX, 3* Main.pppX, 3 * Main.pppX,
+        soundPoint = new Button(30 * pppX, 45 * pppY - 8 * pppX, 3* pppX, 3 * pppX,
                 new Texture(path + "point.png"));
-        musicPoint = new Button(30 * Main.pppX, 65 * Main.pppY - 8 * Main.pppX, 3* Main.pppX, 3 * Main.pppX,
+        musicPoint = new Button(30 * pppX, 65 * pppY - 8 * pppX, 3* pppX, 3 * pppX,
                 new Texture(path + "point.png"));
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
-        Main.batch.begin();
+        batch.begin();
 
-        Main.batch.draw(game.startMenu.menuBackGround, game.startMenu.backGroundCoordinateX, 0,
-                game.startMenu.backGroundWidth, Main.scrY);
+        batch.draw(game.startMenu.menuBackGround, game.startMenu.backGroundCoordinateX, 0,
+                game.startMenu.backGroundWidth, scrY);
         settingsBackGround.draw();
         game.startMenu.buttonExit.draw();
         saveButton.draw();
@@ -116,36 +118,12 @@ public class Settings implements Screen {
         showLanguages();
         showSoundsAndMusic();
 
-        Main.batch.end();
+        batch.end();
 
         swipeRender();
         soundRender();
         musicRender();
         buttonsCheck();
-    }
-
-    @Override
-    public void show() {
-    }
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void dispose() {
     }
 
     void showLanguages() {
@@ -179,10 +157,10 @@ public class Settings implements Screen {
     }
 
     void showSoundsAndMusic(){
-        soundPoint.setX(30 * Main.pppX + 46 * Main.pppX * localSoundVolume);
-        soundPoint.setY(65 * Main.pppY - 8 * Main.pppX + positionY);
-        musicPoint.setX(30 * Main.pppX + 46 * Main.pppX * localMusicVolume);
-        musicPoint.setY(45 * Main.pppY - 8 * Main.pppX + positionY);
+        soundPoint.setX(30 * pppX + 46 * pppX * localSoundVolume);
+        soundPoint.setY(65 * pppY - 8 * pppX + positionY);
+        musicPoint.setX(30 * pppX + 46 * pppX * localMusicVolume);
+        musicPoint.setY(45 * pppY - 8 * pppX + positionY);
 
         soundsLabel.draw(soundsLabel.getX(), soundsLabel.getY() + positionY);
         musicLabel.draw(musicLabel.getX(), musicLabel.getY() + positionY);
@@ -190,17 +168,17 @@ public class Settings implements Screen {
         soundBar.draw();
         musicBar.draw();
         if (localSoundOn == 1) {
-            tick.draw(tick.getX(), tick.getY() + 20 * Main.pppY + positionY);
+            tick.draw(tick.getX(), tick.getY() + 20 * pppY + positionY);
         }
         if (localMusicOn == 1) {
             tick.draw(tick.getX(), tick.getY() + positionY);
         }
 
         emptyString.draw(emptyString.getX(), emptyString.getY() + positionY);
-        emptyString.draw(emptyString.getX(), emptyString.getY() + 20*Main.pppY + positionY);
+        emptyString.draw(emptyString.getX(), emptyString.getY() + 20* pppY + positionY);
         fullString.draw(fullString.getX(), fullString.getY() + positionY, fullString.getSizeX() * localMusicVolume,
                 fullString.getSizeY(), 0, 0, (int)(localMusicVolume * 300), 6, false, false);
-        fullString.draw(fullString.getX(), fullString.getY() + 20*Main.pppY+ positionY, fullString.getSizeX() * localSoundVolume,
+        fullString.draw(fullString.getX(), fullString.getY() + 20* pppY+ positionY, fullString.getSizeX() * localSoundVolume,
                 fullString.getSizeY(), 0, 0, (int)(localSoundVolume * 300), 6, false, false);
 
         soundPoint.draw();
@@ -208,7 +186,7 @@ public class Settings implements Screen {
     }
 
     void swipeRender(){
-        if (Gdx.input.justTouched() && (Gdx.input.getX() < Main.pppX * 20 || Gdx.input.getX() > Main.pppX * 80)) {
+        if (Gdx.input.justTouched() && (Gdx.input.getX() < pppX * 20 || Gdx.input.getX() > pppX * 80)) {
             touchPlace = Gdx.input.getY();
             touchPosition = positionY;
             touchToSwipe = true;
@@ -217,24 +195,24 @@ public class Settings implements Screen {
             positionY = touchPosition - Gdx.input.getY() + touchPlace;
             if (positionY < 0) positionY = 0;
 
-            flagEngland.setY(90 * Main.pppY - 9 * Main.pppX + positionY);
-            flagRussian.setY(90 * Main.pppY - 9 * Main.pppX + positionY);
-            flagBelorussian.setY(90 * Main.pppY - 9 * Main.pppX + positionY);
-            soundBar.setY(65 * Main.pppY - 9 * Main.pppX + positionY);
-            musicBar.setY(45 * Main.pppY - 9 * Main.pppX + positionY);
+            flagEngland.setY(90 * pppY - 9 * pppX + positionY);
+            flagRussian.setY(90 * pppY - 9 * pppX + positionY);
+            flagBelorussian.setY(90 * pppY - 9 * pppX + positionY);
+            soundBar.setY(65 * pppY - 9 * pppX + positionY);
+            musicBar.setY(45 * pppY - 9 * pppX + positionY);
         } else {
             touchToSwipe = false;
         }
     }
 
     void soundRender(){
-        if(Gdx.input.justTouched() && Gdx.input.getX() > 30 * Main.pppX && Gdx.input.getX() < 78 * Main.pppX
-                && Main.scrY - Gdx.input.getY() > 65 * Main.pppY - 9 * Main.pppX + positionY
-                && Main.scrY - Gdx.input.getY() < 65 * Main.pppY - 4 * Main.pppX + positionY){
+        if(Gdx.input.justTouched() && Gdx.input.getX() > 30 * pppX && Gdx.input.getX() < 78 * pppX
+                && scrY - Gdx.input.getY() > 65 * pppY - 9 * pppX + positionY
+                && scrY - Gdx.input.getY() < 65 * pppY - 4 * pppX + positionY){
             touchSound = true;
         }
         if(Gdx.input.isTouched() && touchSound){
-            localSoundVolume = ((Gdx.input.getX() - 1.5f * Main.pppX) * 100f / Main.scrX - 30f) / 46f;
+            localSoundVolume = ((Gdx.input.getX() - 1.5f * pppX) * 100f / scrX - 30f) / 46f;
             if(localSoundVolume < 0) localSoundVolume = 0;
             if(localSoundVolume > 1) localSoundVolume = 1;
         }else{
@@ -243,13 +221,13 @@ public class Settings implements Screen {
     }
 
     void musicRender(){
-        if(Gdx.input.justTouched() && Gdx.input.getX() > 30 * Main.pppX && Gdx.input.getX() < 78 * Main.pppX
-                && Main.scrY - Gdx.input.getY() > 45 * Main.pppY - 9 * Main.pppX + positionY
-                && Main.scrY - Gdx.input.getY() < 45 * Main.pppY - 4 * Main.pppX + positionY){
+        if(Gdx.input.justTouched() && Gdx.input.getX() > 30 * pppX && Gdx.input.getX() < 78 * pppX
+                && scrY - Gdx.input.getY() > 45 * pppY - 9 * pppX + positionY
+                && scrY - Gdx.input.getY() < 45 * pppY - 4 * pppX + positionY){
             touchMusic = true;
         }
         if(Gdx.input.isTouched() && touchMusic){
-            localMusicVolume = ((Gdx.input.getX() - 1.5f * Main.pppX) * 100f / Main.scrX - 30f) / 46f;
+            localMusicVolume = ((Gdx.input.getX() - 1.5f * pppX) * 100f / scrX - 30f) / 46f;
             if(localMusicVolume < 0) localMusicVolume = 0;
             if(localMusicVolume > 1) localMusicVolume = 1;
         }else{
@@ -262,13 +240,13 @@ public class Settings implements Screen {
             if (game.startMenu.buttonExit.isTouched()) {
                 positionY = 0;
                 touchToSwipe = false;
-                flagEngland.setY(90 * Main.pppY - 9 * Main.pppX);
-                flagRussian.setY(90 * Main.pppY - 9 * Main.pppX);
-                flagBelorussian.setY(90 * Main.pppY - 9 * Main.pppX);
-                soundBar.setY(65 * Main.pppY - 9 * Main.pppX);
-                musicBar.setY(45 * Main.pppY - 9 * Main.pppX);
-                game.startMenu.buttonPlay.changeText(Languages.play[Main.selectedLanguage]);
-                game.startMenu.buttonSettings.changeText(Languages.settings[Main.selectedLanguage]);
+                flagEngland.setY(90 * pppY - 9 * pppX);
+                flagRussian.setY(90 * pppY - 9 * pppX);
+                flagBelorussian.setY(90 * pppY - 9 * pppX);
+                soundBar.setY(65 * pppY - 9 * pppX);
+                musicBar.setY(45 * pppY - 9 * pppX);
+                game.startMenu.buttonPlay.changeText(Languages.play[selectedLanguage]);
+                game.startMenu.buttonSettings.changeText(Languages.settings[selectedLanguage]);
                 game.setScreen(game.startMenu);
             } else if (flagEngland.isTouched()) {
                 localSelectedLanguage = 0;
@@ -277,23 +255,29 @@ public class Settings implements Screen {
             } else if (flagBelorussian.isTouched()) {
                 localSelectedLanguage = 2;
             } else if (saveButton.isTouched(false)) {
-                Main.clickSound.play(localSoundVolume * localSoundOn);
-                Main.selectedLanguage = localSelectedLanguage;
-                Main.soundVolume = localSoundVolume;
-                Main.musicVolume = localMusicVolume;
-                Main.soundOn = localSoundOn;
-                Main.musicOn = localMusicOn;
+                clickSound.play(localSoundVolume * localSoundOn);
+                selectedLanguage = localSelectedLanguage;
+                soundVolume = localSoundVolume;
+                musicVolume = localMusicVolume;
+                soundOn = localSoundOn;
+                musicOn = localMusicOn;
 
-                game.savePrefs();
+                savePrefs();
 
-                languageLabel.changeText(Languages.language[Main.selectedLanguage]);
-                soundsLabel.changeText(Languages.sound[Main.selectedLanguage]);
-                musicLabel.changeText(Languages.music[Main.selectedLanguage]);
-                saveButton.changeText(Languages.save[Main.selectedLanguage]);
+                languageLabel.changeText(Languages.language[selectedLanguage]);
+                soundsLabel.changeText(Languages.sound[selectedLanguage]);
+                musicLabel.changeText(Languages.music[selectedLanguage]);
+                saveButton.changeText(Languages.save[selectedLanguage]);
 
-                game.city.sellButton.changeText(Languages.sell[Main.selectedLanguage] + "\n\n");
-                game.city.upgradeButton.changeText(Languages.upgrade[Main.selectedLanguage] + "\n\n");
-                game.city.nonUpgradeText.changeText(Languages.maxLevel[Main.selectedLanguage]);
+                game.city.sellButton.changeText(Languages.sell[selectedLanguage] + "\n\n");
+                game.city.upgradeButton.changeText(Languages.upgrade[selectedLanguage] + "\n\n");
+                game.city.nonUpgradeText.changeText(Languages.maxLevel[selectedLanguage]);
+
+                game.shop.shopText.changeText(Languages.shop[selectedLanguage]);
+                game.shop.housesTextShop.changeText(Languages.houses[selectedLanguage]);
+                game.shop.territoryTextShop.changeText(Languages.territory[selectedLanguage]);
+                game.shop.coinsTextShop.changeText(Languages.coins[selectedLanguage]);
+                game.shop.maxLevel.changeText(Languages.maxLevel[selectedLanguage]);
 
             } else if (soundBar.isTouched()) {
                 localSoundOn = Math.abs(localSoundOn - 1);
@@ -301,5 +285,54 @@ public class Settings implements Screen {
                 localMusicOn = Math.abs(localMusicOn - 1);
             }
         }
+    }
+
+    @Override
+    public void dispose() {
+        game.dispose();
+
+        languageLabel.dispose();
+        soundsLabel.dispose();
+        musicLabel.dispose();
+        englishLabel.dispose();
+        russianLabel.dispose();
+        belorussianLabel.dispose();
+
+        settingsBackGround.dispose();
+        frame.dispose();
+        tick.dispose();
+        emptyString.dispose();
+        fullString.dispose();
+
+        saveButton.dispose();
+
+        flagEngland.dispose();
+        flagRussian.dispose();
+        flagBelorussian.dispose();
+
+        musicPoint.dispose();
+        soundPoint.dispose();
+        musicBar.dispose();
+        soundBar.dispose();
+    }
+
+    @Override
+    public void show() {
+    }
+
+    @Override
+    public void resize(int width, int height) {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
     }
 }

@@ -19,12 +19,14 @@ import com.mygdx.game.Screens.StartMenu;
 import com.mygdx.game.Screens.SubwayGame;
 
 public class Main extends Game {
-	public static Texture house;///////////////////
-
 	public static SpriteBatch batch;
 	public static Sound clickSound;
+	public static Sound sellSound;
+	public static Sound upgradeSound;
+	public static Sound errorSound;
 
 	public static Preferences prefs;
+	public static Preferences cityPrefs;
 
 	public static FreeTypeFontGenerator generator;
 	public static FreeTypeFontGenerator.FreeTypeFontParameter parameter;
@@ -61,22 +63,25 @@ public class Main extends Game {
 	public PlaneGame planeGame;
 	public Shop shop;
 	public SubwayGame subwayGame;
-	
+
 	@Override
 	public void create () {
-		house = new Texture("city/Cafe.png");
 		scrX = Gdx.graphics.getWidth();
 		scrY = Gdx.graphics.getHeight();
 		pppX = scrX/100;
 		pppY = scrY/100;
 
-		prefs = Gdx.app.getPreferences("FlightCityInventory");
+		prefs = Gdx.app.getPreferences("FlightCityMainSaves");
+		cityPrefs = Gdx.app.getPreferences("CitySaves");
 		loadPrefs();
 
 		initializationFont();
 		batch = new SpriteBatch();
-		batch.begin();
+		batch.enableBlending();
 		clickSound = Gdx.audio.newSound(Gdx.files.internal("general/click.mp3"));
+		sellSound = Gdx.audio.newSound(Gdx.files.internal("city/sounds/sellSound.mp3"));
+		upgradeSound = Gdx.audio.newSound(Gdx.files.internal("city/sounds/upgradeSound.mp3"));
+		errorSound = Gdx.audio.newSound(Gdx.files.internal("city/sounds/errorSound.mp3"));
 
 		coinPicture = new PictureBox(scrX - 8 * pppY, 92 * pppY, 5 * pppY, 5 * pppY, "general/coin.png");
 		sapphirePicture = new PictureBox(scrX - 8 * pppY, 84 * pppY, 5 * pppY, 5 * pppY, "general/sapphire.png");
@@ -94,7 +99,7 @@ public class Main extends Game {
 		shop = new Shop(this);
 		subwayGame = new SubwayGame(this);
 
-		setScreen(subwayGame);
+		setScreen(startMenu);
 	}
 
 	void initializationFont(){
@@ -119,7 +124,6 @@ public class Main extends Game {
 		settings.dispose();
 		shop.dispose();
 		startMenu.dispose();
-		subwayGame.dispose();
 
 		coinPicture.dispose();
 		coinText.dispose();
@@ -127,7 +131,7 @@ public class Main extends Game {
 		sapphireText.dispose();
 	}
 
-	public void savePrefs(){
+	public static void savePrefs(){
 		prefs.putInteger("selectedLanguage", selectedLanguage);
 		prefs.putFloat("soundVolume", soundVolume);
 		prefs.putFloat("musicVolume", musicVolume);
@@ -151,17 +155,20 @@ public class Main extends Game {
 		sapphires = prefs.getLong("sapphires", 0);
 	}
 
+	public void saveCityPrefs(int houseIndex){
+		if (houseIndex < 0 || houseIndex >= city.buildings.length) return;
+		cityPrefs.putBoolean("building-" + houseIndex + "-isExist", city.buildings[houseIndex].isExist());
+		cityPrefs.putInteger("building-" + houseIndex + "-id", city.buildings[houseIndex].getId());
+		cityPrefs.putInteger("building-" + houseIndex + "-level", city.buildings[houseIndex].getLevel());
+
+		cityPrefs.flush();
+	}
+
 	void RESETPREFS(){
-		prefs.putInteger("selectedLanguage", 0);
-		prefs.putFloat("soundVolume", 1f);
-		prefs.putFloat("musicVolume", 1f);
-		prefs.putInteger("soundOn", 1);
-		prefs.putInteger("musicOn", 1);
-
-		prefs.putLong("money", 0);
-		prefs.putLong("sapphires", 0);
-
+		prefs.clear();
 		prefs.flush();
+		cityPrefs.clear();
+		cityPrefs.flush();
 	}
 
 	public static float textureAspectRatio(Texture texture, boolean toHeight){
@@ -176,8 +183,16 @@ public class Main extends Game {
 		sapphireText.draw();
 	}
 
+	public static void updateMoney(){
+		coinText.changeText(divisionDigits(money));
+		sapphireText.changeText(divisionDigits(sapphires));
+	}
+
 	public static String divisionDigits(long value){
-		String number = Long.toString(value);
+		String number;
+		if(value >= 1000000000000L) number = Long.toString(value/1000000000);
+		else if(value >= 1000000000) number = Long.toString(value/1000000);
+		else number = Long.toString(value);
 		String newNumber = "";
 		if(number.length() % 3 != 0){
 			newNumber += number.substring(0, number.length() % 3);
@@ -189,6 +204,8 @@ public class Main extends Game {
 			number = number.substring(3);
 			if(number.length() > 0) newNumber += '.';
 		}
+		if(value >= 1000000000000L) newNumber += " B";
+		else if(value >= 1000000000) newNumber += " M";
 		return newNumber;
 	}
 }
