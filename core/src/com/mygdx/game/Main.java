@@ -13,6 +13,7 @@ import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.RealClasses.TextBox;
 import com.mygdx.game.Screens.City;
 import com.mygdx.game.Screens.PlaneGame;
+import com.mygdx.game.Screens.Roulette;
 import com.mygdx.game.Screens.Settings;
 import com.mygdx.game.Screens.Shop;
 import com.mygdx.game.Screens.StartMenu;
@@ -61,6 +62,7 @@ public class Main extends Game {
 	public City city;
 	public PlaneGame planeGame;
 	public Shop shop;
+	public Roulette roulette;
 	
 	@Override
 	public void create () {
@@ -95,6 +97,7 @@ public class Main extends Game {
 		city = new City(this);
 		planeGame = new PlaneGame(this);
 		shop = new Shop(this);
+		roulette = new Roulette(this);
 
 		setScreen(startMenu);
 	}
@@ -158,13 +161,6 @@ public class Main extends Game {
 		cityPrefs.putInteger("building-" + houseIndex + "-id", city.buildings[houseIndex].getId());
 		cityPrefs.putInteger("building-" + houseIndex + "-level", city.buildings[houseIndex].getLevel());
 
-		cityPrefs.flush();
-	}
-
-	void RESETPREFS(){
-		prefs.clear();
-		prefs.flush();
-		cityPrefs.clear();
 		cityPrefs.flush();
 	}
 

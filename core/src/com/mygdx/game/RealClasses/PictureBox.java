@@ -16,13 +16,12 @@ public class PictureBox extends Rectangle {
     public void draw(float x, float y){
         batch.draw(picture, x, y, sizeX, sizeY);
     }
-    public void draw(float x, float y, float sizeX, float sizeY, int rX, int rY, int rSizeX, int rSizeY,
-                     boolean flipX, boolean flipY){
+    public void draw(float x, float y, float sizeX, float sizeY, int rX, int rY, int rSizeX, int rSizeY, boolean flipX, boolean flipY){
         batch.draw(picture, x, y, sizeX, sizeY, rX, rY, rSizeX, rSizeY, flipX, flipY);
     }
-    public void draw(float angle, boolean flipX, boolean flipY){
+    public void draw(float angle){
         batch.draw(picture, x, y, sizeX/2, sizeY/2, sizeX, sizeY, 1, 1, angle, 0, 0,
-                picture.getWidth(), picture.getHeight(), flipX, flipY);
+                picture.getWidth(), picture.getHeight(), false, false);
     }
     public void dispose(){
         this.picture.dispose();

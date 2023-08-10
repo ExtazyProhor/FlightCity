@@ -76,12 +76,12 @@ public class Shop implements Screen {
         housesShop = new Button[ShopInfo.quantityHouses];
         for (int i = 0; i < ShopInfo.quantityHouses; i++) {
             housesShop[i] = new Button((18 + (i%3) * 24) * pppX, (23 - 20 * (float)(i / 3)) * pppX, 16 * pppX, 5 * pppX,
-                    new Texture(path + "buyHouseButton.png"), divisionDigits(ShopInfo.cost[i]), 0xffff00ff, (int)(4 * pppY));
+                    new Texture(path + "buyHouseButton.png"), divisionDigits(ShopInfo.cost[i]) + "  ", 0xffff00ff, (int)(3 * pppY));
         }
 
         //territory:
         levelUp = new Button(35 * pppX, 5 * pppX, 30 * pppX, 12 * pppX, new Texture("buttons/blue button.png"),
-                divisionDigits(ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]), 0xffff00ff, (int)(5 * pppY));
+                divisionDigits(ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]) + "  ", 0xffff00ff, (int)(5 * pppY));
         arrow = new PictureBox(40 * pppX, 20 * pppX, 20 * pppX, 13.6f * pppX, "general/arrow.png");
         territoryLevels = new PictureBox[ShopInfo.territoryLevels];
         for (int i = 0; i < ShopInfo.territoryLevels; i++) {
@@ -164,6 +164,7 @@ public class Shop implements Screen {
         for (int i = 0; i < ShopInfo.quantityHouses; i++) {
             batch.draw(City.houses[i][0], (20 + (i%3) * 24) * pppX, (28 - 20 * (float)(i / 3)) * pppX, 12 * pppX, 12 * pppX);
             housesShop[i].draw();
+            coinPicture.draw((30 + (i%3) * 24) * pppX, (24.5f - 20 * (float)(i / 3)) * pppX);
         }
         if (Gdx.input.justTouched()) {
             if (game.startMenu.buttonExit.isTouched()) {
@@ -210,11 +211,14 @@ public class Shop implements Screen {
                     27 * pppX - territoryLevels[game.city.territoryLevel + 1].getSizeY()/2);
             arrow.draw();
             levelUp.draw();
+            coinPicture.draw(60 * pppX, 11 * pppX - 2.5f * pppY);
+            //35 * pppX, 5 * pppX, 30 * pppX, 12 * pppX
             if(Gdx.input.justTouched()){
                 if(levelUp.isTouched(false)){
                     if(money >= ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]){
                         upgradeSound.play(soundVolume * soundOn);
                         money -= ShopInfo.territoryLevelUpPrice[game.city.territoryLevel];
+                        savePrefs();
                         game.city.territoryLevel++;
                         cityPrefs.putInteger("territoryLevel", game.city.territoryLevel);
                         cityPrefs.flush();
@@ -264,7 +268,7 @@ public class Shop implements Screen {
             else coinsPrices[i].setColor(1, 1, 1);
         }
         if(game.city.territoryLevel < ShopInfo.territoryLevels - 1){
-            levelUp.changeText(divisionDigits(ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]));
+            levelUp.changeText(divisionDigits(ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]) + "  ");
             if (money < ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]) levelUp.setColor(1, 0, 0);
             else levelUp.setColor(1, 1, 0);
         }

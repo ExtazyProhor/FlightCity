@@ -279,6 +279,8 @@ public class Settings implements Screen {
                 game.shop.coinsTextShop.changeText(Languages.coins[selectedLanguage]);
                 game.shop.maxLevel.changeText(Languages.maxLevel[selectedLanguage]);
 
+                game.roulette.spinButton.changeText(Languages.spin[selectedLanguage] + "\n\n");
+
             } else if (soundBar.isTouched()) {
                 localSoundOn = Math.abs(localSoundOn - 1);
             } else if (musicBar.isTouched()) {

@@ -79,4 +79,21 @@ public abstract class Languages {
             "монеты",
             "манеты"
     };
+    public static final String[][] buildingTypes = {
+            {"house", "дом", "дом"},
+            {"cafe", "кафе", "кафэ"},
+            {"shop", "магазин", "крама"},
+            {"hotel", "отель", "гатэль"},
+            {"bank", "банк", "банк"}
+    };
+    public static final String[] level = {
+            "level",
+            "уровень",
+            "ўзровень"
+    };
+    public static final String[] spin = {
+            "spin",
+            "крутить",
+            "круціць"
+    };
 }
