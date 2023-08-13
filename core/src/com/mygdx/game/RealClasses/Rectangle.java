@@ -37,7 +37,7 @@ public abstract class Rectangle {
         this.sizeY += y;
     }
 
-    protected boolean isInside(float x, float y) {
+    public boolean isInside(float x, float y) {
         if (x < this.x) return false;
         if (this.x + this.sizeX < x) return false;
         if (y < this.y) return false;

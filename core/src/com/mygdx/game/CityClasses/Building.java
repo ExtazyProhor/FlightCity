@@ -11,6 +11,7 @@ public class Building extends Rectangle {
     private boolean exist;
     private int id;
     private int level;
+    private long time;
     public static int housesQuantity = 0;
 
     public Building(float x, float y) {
@@ -22,11 +23,12 @@ public class Building extends Rectangle {
         batch.draw(City.houses[this.id][this.level], this.x, this.y, this.sizeX, this.sizeY);
     }
 
-    public void spawn(int id) {
+    public void spawn(int id, int level, long time) {
         housesQuantity++;
         exist = true;
         this.id = id;
-        this.level = 0;
+        this.level = level;
+        this.time = time;
     }
 
     public void sell() {
@@ -34,6 +36,7 @@ public class Building extends Rectangle {
         exist = false;
         id = 0;
         level = 0;
+        time = 0;
     }
 
     public void upgrade() {
@@ -72,7 +75,30 @@ public class Building extends Rectangle {
         return super.isInside(Gdx.input.getX(), scrY - Gdx.input.getY());
     }
 
-    public void showWindow(){
-        batch.draw(City.houses[this.id][this.level], (scrX - scrY) / 2 + pppY * 3, pppY*52, pppY*20, pppY*20);
+    public void setTime(int cityIndex) {
+        this.time = System.currentTimeMillis();
+        cityPrefs.putLong("building-" + cityIndex + "-time", this.time);
+        cityPrefs.flush();
+    }
+
+    public String getTime() {
+        if(this.isReady()) return "0:00";
+        long secondsLong = (this.time + (long)houseTimer[this.level] * 1000 - System.currentTimeMillis())/1000;
+        String minutes = Long.toString(secondsLong / 60);
+        String seconds = Long.toString(secondsLong % 60);
+        if(seconds.length() == 1) seconds = '0' + seconds;
+        return minutes + ':' + seconds;
+    }
+
+    public void getMoney(int cityIndex){
+        sellSound.play(soundVolume * soundOn);
+        this.setTime(cityIndex);
+        money += incomeFromHouses[this.id][this.level];
+        savePrefs();
+        updateMoney();
+    }
+
+    public boolean isReady() {
+        return System.currentTimeMillis() >= this.time + (long)houseTimer[this.level] * 1000;
     }
 }

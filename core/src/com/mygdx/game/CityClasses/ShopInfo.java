@@ -24,16 +24,30 @@ public abstract class ShopInfo {
             100, /* house */
             500, /* shop */
             1000, /* restaurant */
-            8000, /* bank */
-            20000  /* hotel */
+            8000, /* hotel */
+            20000  /* bank */
     };
     public static final int maxLevel = 4;
     public static final int[][] upgradeCost = {
             {100, 900, 5000, 30000}, /* house */
             {700, 3000, 15000, 75000}, /* shop */
             {2000, 6000, 50000, 120000}, /* restaurant */
-            {10000, 25000, 70000, 250000}, /* bank */
-            {35000, 150000, 400000, 950000} /* hotel */
+            {10000, 25000, 70000, 250000}, /* hotel */
+            {35000, 150000, 400000, 950000} /* bank */
+    };
+    public static final int[][] incomeFromHouses = {
+            {5, 10, 40, 200, 1000},
+            {15, 30, 100, 500, 2500},
+            {40, 80, 300, 1500, 7500},
+            {150, 300, 1200, 6000, 30000},
+            {350, 600, 2400, 12000, 60000}
+    };
+    public static final int[] houseTimer = {
+            300,
+            240,
+            180,
+            150,
+            120
     };
     public static final int territoryLevels = 5;
     public static final int[][] freeHousesPlace = {
