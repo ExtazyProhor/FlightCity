@@ -281,6 +281,10 @@ public class Settings implements Screen {
 
                 game.roulette.spinButton.changeText(Languages.spin[selectedLanguage] + "\n\n");
 
+                game.planeGame.resumeButton.changeText(Languages.resume[selectedLanguage]);
+                game.planeGame.restartButton.changeText(Languages.restart[selectedLanguage]);
+                game.planeGame.exitButton.changeText(Languages.exit[selectedLanguage]);
+
             } else if (soundBar.isTouched()) {
                 localSoundOn = Math.abs(localSoundOn - 1);
             } else if (musicBar.isTouched()) {

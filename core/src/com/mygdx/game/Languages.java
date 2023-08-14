@@ -96,4 +96,24 @@ public abstract class Languages {
             "крутить",
             "круціць"
     };
+    public static final String[] resume = {
+            "resume",
+            "продолжить",
+            "аднавiць"
+    };
+    public static final String[] restart = {
+            "restart",
+            "перезапуск",
+            "перазапуск"
+    };
+    public static final String[] exit = {
+            "exit",
+            "выйти",
+            "выйсцi"
+    };
+    public static final String[] minute = {
+            "min.",
+            "мин.",
+            "мин."
+    };
 }

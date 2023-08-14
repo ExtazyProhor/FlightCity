@@ -85,11 +85,11 @@ public class StartMenu implements Screen {
         backGroundWidth = Main.scrY * Main.textureAspectRatio(menuBackGround, true);
         backGroundCoordinateX = (Main.scrX - backGroundWidth)/2;
 
-        buttonPlay = new Button(0, 63 * Main.pppY, Main.textureAspectRatio(new Texture("buttons/button 5-2.png"), true) * 20 * Main.pppY,
+        buttonPlay = new Button(0, 63 * Main.pppY, 50 * Main.pppY,
                 20 * Main.pppY, new Texture("buttons/button 5-2.png"), Languages.play[Main.selectedLanguage],
                 0xffffffff, (int) (5 * Main.pppY));
         buttonPlay.placeCenter();
-        buttonSettings = new Button(0, 38 * Main.pppY, Main.textureAspectRatio(new Texture("buttons/button 5-2.png"), true) * 20 * Main.pppY,
+        buttonSettings = new Button(0, 38 * Main.pppY, 50 * Main.pppY,
                 20 * Main.pppY, new Texture("buttons/button 5-2.png"), Languages.settings[Main.selectedLanguage],
                 0xffffffff, (int) (5 * Main.pppY));
         buttonSettings.placeCenter();

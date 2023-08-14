@@ -129,6 +129,11 @@ public class Main extends Game {
 		coinText.dispose();
 		sapphirePicture.dispose();
 		sapphireText.dispose();
+
+		clickSound.dispose();
+		errorSound.dispose();
+		sellSound.dispose();
+		upgradeSound.dispose();
 	}
 
 	public static void savePrefs(){
@@ -183,8 +188,9 @@ public class Main extends Game {
 
 	public static String divisionDigits(long value){
 		String number;
-		if(value >= 1000000000000L) number = Long.toString(value/1000000000);
-		else if(value >= 1000000000) number = Long.toString(value/1000000);
+		if(value >= 100000000000L) number = Long.toString(value/1000000000);
+		else if(value >= 100000000) number = Long.toString(value/1000000);
+		else if(value >= 100000) number = Long.toString(value/1000);
 		else number = Long.toString(value);
 		String newNumber = "";
 		if(number.length() % 3 != 0){
@@ -197,8 +203,9 @@ public class Main extends Game {
 			number = number.substring(3);
 			if(number.length() > 0) newNumber += '.';
 		}
-		if(value >= 1000000000000L) newNumber += " B";
-		else if(value >= 1000000000) newNumber += " M";
+		if(value >= 100000000000L) newNumber += " B";
+		else if(value >= 100000000) newNumber += " M";
+		else if(value >= 100000) newNumber += " K";
 		return newNumber;
 	}
 }

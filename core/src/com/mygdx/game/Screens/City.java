@@ -41,6 +41,7 @@ public class City implements Screen {
     TextBox houseType;
     TextBox houseLevel;
     TextBox timeLeft;
+    TextBox incomePerMinute;
 
     Button sellButton;
     TextBox sellText;
@@ -113,6 +114,7 @@ public class City implements Screen {
         houseLevel.positionToDown(62 * pppY);
         timeLeft = new TextBox(screenDelta / 2 + 13 * pppY, 0, "", 0xffffffff, (int) (4 * pppY));
         timeLeft.positionToMiddleY(48 * pppY);
+        incomePerMinute = new TextBox(scrX/2, scrY/2, "", 0xffffffff, (int) (4 * pppY));
 
         // buildings
         buildings = new Building[20];
@@ -188,6 +190,11 @@ public class City implements Screen {
             } else if (shopButton.isTouched()) {
                 game.setScreen(game.shop);
             } else if (planeButton.isTouched()){
+                if(game.planeGame.backGround != null) game.planeGame.backGround.dispose();
+                game.planeGame.backGround = new Texture("planeGame/backGrounds/BG" + game.planeGame.selectedBackGround + ".png");
+                if(game.planeGame.plane != null) game.planeGame.plane.dispose();
+                game.planeGame.plane = new PictureBox(20 * pppY, 44 * pppY, 12 * pppY * game.planeGame.planeAspectRatio, 12 * pppY,
+                        "planeGame/planes/plane-" + game.planeGame.selectedPlane + ".png");
                 game.setScreen(game.planeGame);
             } else if (inventoryButton.isTouched()){
                 //game.setScreen(game.planeGame);
@@ -207,6 +214,12 @@ public class City implements Screen {
                             nonUpgradeText.changeText(Languages.maxLevel[selectedLanguage]);
                             houseType.changeText(Languages.buildingTypes[buildings[touchedBuilding].getId()][selectedLanguage]);
                             houseLevel.changeText(Languages.level[selectedLanguage] + " " + buildings[touchedBuilding].getLevel());
+                            int moneyPerMinute = (int)
+                                    (ShopInfo.incomeFromHouses[buildings[touchedBuilding].getId()][buildings[touchedBuilding].getLevel()]
+                                            * 60 / ShopInfo.houseTimer[buildings[touchedBuilding].getLevel()]);
+                            incomePerMinute.changeText(divisionDigits(moneyPerMinute) + '/' +
+                                    Languages.minute[selectedLanguage]);
+
                             if(!buildings[touchedBuilding].isMaxLevel()) {
                                 upgradeText.changeText(divisionDigits(buildings[touchedBuilding].getUpgradeCost()));
                                 if(money < buildings[touchedBuilding].getUpgradeCost()) upgradeText.setColor(1, 0, 0);
@@ -232,6 +245,7 @@ public class City implements Screen {
         houseLevel.draw();
         timeLeft.changeText(buildings[touchedBuilding].getTime());
         timeLeft.draw();
+        incomePerMinute.draw();
 
         if(buildings[touchedBuilding].isMaxLevel()){
             nonUpgradeButton.draw();
@@ -261,6 +275,11 @@ public class City implements Screen {
                     savePrefs();
                     updateMoney();
                     sellText.changeText(divisionDigits(buildings[touchedBuilding].saleIncome()));
+                    int moneyPerMinute = (int)
+                            (ShopInfo.incomeFromHouses[buildings[touchedBuilding].getId()][buildings[touchedBuilding].getLevel()]
+                                    * 60 / ShopInfo.houseTimer[buildings[touchedBuilding].getLevel()]);
+                    incomePerMinute.changeText(divisionDigits(moneyPerMinute) + '/' +
+                            Languages.minute[selectedLanguage]);
                     if(!buildings[touchedBuilding].isMaxLevel()) {
                         upgradeText.changeText(divisionDigits(buildings[touchedBuilding].getUpgradeCost()));
                         if(money < buildings[touchedBuilding].getUpgradeCost()) upgradeText.setColor(1, 0, 0);
