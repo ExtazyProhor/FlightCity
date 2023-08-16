@@ -17,6 +17,8 @@ import com.mygdx.game.RealClasses.Button;
 import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.RealClasses.Rectangle;
 
+import java.util.Random;
+
 public class PlaneGame implements Screen {
     //general:
     Main game;
@@ -35,7 +37,8 @@ public class PlaneGame implements Screen {
     Texture[] explosionFX;
     final float timeForExplosion = 0.8f;
     float time = 0;
-    Sound explosionSound;
+    Sound[] explosionSound;
+    Random rand;
 
     Texture[][] barriersTextures;
     Barrier[] barriers;
@@ -91,14 +94,19 @@ public class PlaneGame implements Screen {
         for(int i = 0; i < explosionFX.length; ++i){
             explosionFX[i] = new Texture(path + "explosion/a" + i + ".png");
         }
-        explosionSound = Gdx.audio.newSound(Gdx.files.internal(path + "explosion/boom1.mp3"));
+        explosionSound = new Sound[3];
+        for(int i = 0; i < explosionSound.length; ++i){
+            explosionSound[i] = Gdx.audio.newSound(Gdx.files.internal(path + "explosion/boom-" + i + ".mp3"));
+        }
+        rand = new Random();
     }
 
     @Override
     public void render(float delta) {
         batch.begin();
-        batch.draw(backGround, (scrX - backGround.getWidth()) / 2, 0,
-                backGround.getWidth() * scrY / backGround.getHeight(), scrY);
+        float backGroundSizeX = textureAspectRatio(backGround, true) * scrY;
+        batch.draw(backGround, (scrX - backGroundSizeX) / 2, 0,
+                backGroundSizeX, scrY);
         batch.draw(blackBuildings, blackBuildingsX, 0, scrX,
                 scrX * blackBuildings.getHeight() / blackBuildings.getWidth());
         batch.draw(blackBuildings, blackBuildingsX + scrX, 0, scrX,
@@ -206,7 +214,7 @@ public class PlaneGame implements Screen {
     }
 
     public void death(){
-        explosionSound.play(soundVolume * soundOn);
+        explosionSound[rand.nextInt(explosionSound.length)].play(soundVolume * soundOn);
         state = PlaneState.EXPLOSION;
     }
 
@@ -233,7 +241,9 @@ public class PlaneGame implements Screen {
         for(int i = 0; i < explosionFX.length; ++i){
             explosionFX[i].dispose();
         }
-        explosionSound.dispose();
+        for(int i = 0; i < explosionSound.length; ++i){
+            explosionSound[i].dispose();
+        }
 
         for(int i = 0; i < Barrier.id; i++){
             for (int j = 0; j < Barrier.levels; j++) {
