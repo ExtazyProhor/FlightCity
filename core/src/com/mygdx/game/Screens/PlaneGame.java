@@ -1,12 +1,13 @@
 package com.mygdx.game.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.Languages;
 import com.mygdx.game.Main;
 import static com.mygdx.game.Main.*;
+import static com.mygdx.game.PlaneClasses.Collision.*;
 
 import com.mygdx.game.PlaneClasses.Barrier;
 import com.mygdx.game.PlaneClasses.Line;
@@ -15,8 +16,6 @@ import com.mygdx.game.PlaneClasses.Point;
 import com.mygdx.game.RealClasses.Button;
 import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.RealClasses.Rectangle;
-
-import java.util.Random;
 
 public class PlaneGame implements Screen {
     //general:
@@ -36,6 +35,7 @@ public class PlaneGame implements Screen {
     Texture[] explosionFX;
     final float timeForExplosion = 0.8f;
     float time = 0;
+    Sound explosionSound;
 
     Texture[][] barriersTextures;
     Barrier[] barriers;
@@ -84,13 +84,14 @@ public class PlaneGame implements Screen {
         barriers = new Barrier[4];
         barriers[0] = new Barrier();
         for(int i = 1; i < 4; ++i){
-            barriers[i] = new Barrier(barriers[i - 1].getColliderLevel());
+            barriers[i] = new Barrier(barriers[i - 1].getBarrierId());
         }
 
         explosionFX = new Texture[17];
         for(int i = 0; i < explosionFX.length; ++i){
             explosionFX[i] = new Texture(path + "explosion/a" + i + ".png");
         }
+        explosionSound = Gdx.audio.newSound(Gdx.files.internal(path + "explosion/boom1.mp3"));
     }
 
     @Override
@@ -159,86 +160,22 @@ public class PlaneGame implements Screen {
 
         Rectangle planeCollider = new Rectangle(plane.getX(), plane.getY() + plane.getSizeY() / 3,
                 plane.getSizeX(), plane.getSizeY() / 3);
-        if(rectanglesCollision(planeCollider,
-                new Rectangle(barriersX, 0, scrY / 3, scrY * 5 / 6 - 10 * pppY * (barriers[0].getColliderLevel() + 1)),
-                angle)) state = PlaneState.EXPLOSION;
-        else if(rectanglesCollision(planeCollider,
-                new Rectangle(barriersX + scrY, 0, scrY / 3, scrY * 5 / 6 - 10 * pppY * (barriers[1].getColliderLevel() + 1)),
-                angle)) state = PlaneState.EXPLOSION;
-        else if(rectanglesCollision(planeCollider,
-                new Rectangle(barriersX + 2 * scrY, 0, scrY / 3, scrY * 5 / 6 - 10 * pppY * (barriers[2].getColliderLevel() + 1)),
-                angle)) state = PlaneState.EXPLOSION;
-    }
 
-    public boolean rectanglesCollision(Rectangle a, Rectangle b, float angleA){
-        angleA = (float)Math.toRadians(angleA);
-        Point centerA = new Point(a);
-        float diagonalA = (float) Math.sqrt(Math.pow(a.getSizeX(), 2) + Math.pow(a.getSizeY(), 2))  / 2;
-        float originAngleA = (float)Math.atan(a.getSizeY() / a.getSizeX());
+        float barrier0Y = 10 * pppY * (barriers[0].getColliderLevel() + 1);
+        float barrier1Y = 10 * pppY * (barriers[1].getColliderLevel() + 1);
 
-        Point a1 = new Point(centerA.x + (float)Math.cos(angleA + originAngleA) * diagonalA,
-                centerA.y + (float)Math.sin(angleA + originAngleA) * diagonalA);
-        Point a2 = new Point(centerA.x + (float)Math.cos(angleA - originAngleA) * diagonalA,
-                centerA.y + (float)Math.sin(angleA - originAngleA) * diagonalA);
-        Point a3 = new Point(centerA.x - (float)Math.cos(angleA + originAngleA) * diagonalA,
-                centerA.y - (float)Math.sin(angleA + originAngleA) * diagonalA);
-        Point a4 = new Point(centerA.x - (float)Math.cos(angleA - originAngleA) * diagonalA,
-                centerA.y - (float)Math.sin(angleA - originAngleA) * diagonalA);
-
-        Point b1 = new Point(b.getX() + b.getSizeX(), b.getY() + b.getSizeY());
-        Point b2 = new Point(b.getX() + b.getSizeX(), b.getY());
-        Point b3 = new Point(b.getX(), b.getY());
-        Point b4 = new Point(b.getX(), b.getY() + b.getSizeY());
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            System.out.println("new Point(" + (int)a1.x + ", " + (int)a1.y + "),");
-            System.out.println("new Point(" + (int)a2.x + ", " + (int)a2.y + "),");
-            System.out.println("new Point(" + (int)a3.x + ", " + (int)a3.y + "),");
-            System.out.println("new Point(" + (int)a4.x + ", " + (int)a4.y + ")");
-
-            System.out.println("new Point(" + (int)b1.x + ", " + (int)b1.y + "),");
-            System.out.println("new Point(" + (int)b2.x + ", " + (int)b2.y + "),");
-            System.out.println("new Point(" + (int)b3.x + ", " + (int)b3.y + "),");
-            System.out.println("new Point(" + (int)b4.x + ", " + (int)b4.y + ")");
-
-            System.out.println();
-        }
-
-        Line[] linesA = {
-                new Line(a1, a2),
-                new Line(a2, a3),
-                new Line(a3, a4),
-                new Line(a4, a1)
-        };
-        Line[] linesB = {
-                new Line(b1, b2),
-                new Line(b2, b3),
-                new Line(b3, b4),
-                new Line(b4, b1)
-        };
-
-        for(int i = 0; i < 4; i++){
-            for(int j  = 0; j < 4; j++){
-                if (Line.linesCollision(linesA[i], linesB[j])) {
-                    System.out.println("plane side " + i);
-                    System.out.println("house side " + j);
-
-                    System.out.println("new Point(" + (int)a1.x + ", " + (int)a1.y + "),");
-                    System.out.println("new Point(" + (int)a2.x + ", " + (int)a2.y + "),");
-                    System.out.println("new Point(" + (int)a3.x + ", " + (int)a3.y + "),");
-                    System.out.println("new Point(" + (int)a4.x + ", " + (int)a4.y + ")");
-
-                    System.out.println("new Point(" + (int)b1.x + ", " + (int)b1.y + "),");
-                    System.out.println("new Point(" + (int)b2.x + ", " + (int)b2.y + "),");
-                    System.out.println("new Point(" + (int)b3.x + ", " + (int)b3.y + "),");
-                    System.out.println("new Point(" + (int)b4.x + ", " + (int)b4.y + ")");
-
-                    System.out.println();
-                    return true;
-                }
-            }
-        }
-        return false;
+        if(isCollision(planeCollider,
+                new Rectangle(barriersX, 0, scrY / 3, scrY * 5 / 6 - barrier0Y), angle)) death();
+        else if(isCollision(planeCollider,
+                new Rectangle(barriersX + scrY, 0, scrY / 3, scrY * 5 / 6 - barrier1Y), angle)) death();
+        else if(isCollision(planeCollider,
+                new Rectangle(barriersX, scrY - barrier0Y,scrY / 3, barrier0Y), angle)) death();
+        else if(isCollision(planeCollider,
+                new Rectangle(barriersX + scrY, scrY - barrier1Y, scrY / 3, barrier1Y), angle)) death();
+        else if(isCollision(planeCollider,
+                new Line(new Point(0, 0), new Point(scrX, 0)), angle)) death();
+        else if(isCollision(planeCollider,
+                new Line(new Point(0, scrY), new Point(scrX, scrY)), angle)) death();
     }
 
     public void touchChecking(){
@@ -251,9 +188,9 @@ public class PlaneGame implements Screen {
                 if(resumeButton.isTouched()) state = PlaneState.FLYING;
             case AFTER_DEATH:
                 if(restartButton.isTouched()){
-                    state = PlaneState.FLYING;
+                    reset();
                 }else if(exitButton.isTouched()){
-                    state = PlaneState.FLYING;
+                    reset();
                     game.setScreen(game.city);
                 }
                 break;
@@ -268,9 +205,46 @@ public class PlaneGame implements Screen {
         prefs.flush();
     }
 
+    public void death(){
+        explosionSound.play(soundVolume * soundOn);
+        state = PlaneState.EXPLOSION;
+    }
+
+    public void reset(){
+        state = PlaneState.FLYING;
+        plane.setCoordinates(20 * pppY, 44 * pppY);
+        blackBuildingsX = 0;
+
+        barriers[0].setRandomValues();
+        for(int i = 1; i < 4; ++i){
+            barriers[i].setRandomValues(barriers[i - 1].getBarrierId());
+        }
+
+        barriersX = scrX;
+        angle = 0;
+    }
+
     @Override
     public void dispose() {
+        plane.dispose();
+        backGround.dispose();
 
+        blackBuildings.dispose();
+        for(int i = 0; i < explosionFX.length; ++i){
+            explosionFX[i].dispose();
+        }
+        explosionSound.dispose();
+
+        for(int i = 0; i < Barrier.id; i++){
+            for (int j = 0; j < Barrier.levels; j++) {
+                barriersTextures[i][j].dispose();
+            }
+        }
+
+        pauseButton.dispose();
+        resumeButton.dispose();
+        exitButton.dispose();
+        restartButton.dispose();
     }
     @Override
     public void show() {

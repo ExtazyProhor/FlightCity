@@ -217,7 +217,7 @@ public class City implements Screen {
                             int moneyPerMinute = (int)
                                     (ShopInfo.incomeFromHouses[buildings[touchedBuilding].getId()][buildings[touchedBuilding].getLevel()]
                                             * 60 / ShopInfo.houseTimer[buildings[touchedBuilding].getLevel()]);
-                            incomePerMinute.changeText(divisionDigits(moneyPerMinute) + '/' +
+                            incomePerMinute.changeText(divisionDigits(moneyPerMinute) + "$/" +
                                     Languages.minute[selectedLanguage]);
 
                             if(!buildings[touchedBuilding].isMaxLevel()) {
@@ -278,7 +278,7 @@ public class City implements Screen {
                     int moneyPerMinute = (int)
                             (ShopInfo.incomeFromHouses[buildings[touchedBuilding].getId()][buildings[touchedBuilding].getLevel()]
                                     * 60 / ShopInfo.houseTimer[buildings[touchedBuilding].getLevel()]);
-                    incomePerMinute.changeText(divisionDigits(moneyPerMinute) + '/' +
+                    incomePerMinute.changeText(divisionDigits(moneyPerMinute) + "$/" +
                             Languages.minute[selectedLanguage]);
                     if(!buildings[touchedBuilding].isMaxLevel()) {
                         upgradeText.changeText(divisionDigits(buildings[touchedBuilding].getUpgradeCost()));

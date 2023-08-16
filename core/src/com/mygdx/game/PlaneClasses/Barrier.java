@@ -11,17 +11,21 @@ public class Barrier {
     public static int id = 7;
 
     public Barrier(){
-        setRandomValues(2);
+        setRandomValues();
     }
 
-    public Barrier(int lastLevel){
-        setRandomValues(lastLevel);
+    public Barrier(int lastId){
+        setRandomValues(lastId);
     }
 
-    public void setRandomValues(int lastLevel){
-        if(lastLevel == 0) this.colliderLevel = random.nextInt(levels - 1);
-        else if (lastLevel == levels - 1) this.colliderLevel = random.nextInt(levels - 1) + 1;
-        else this.colliderLevel = random.nextInt(levels);
+    public void setRandomValues(int lastId){
+        this.colliderLevel = random.nextInt(levels);
+        this.barrierId = random.nextInt(id - 1);
+        if(this.barrierId >= lastId) this.barrierId++;
+    }
+
+    public void setRandomValues(){
+        this.colliderLevel = random.nextInt(levels);
         this.barrierId = random.nextInt(id);
     }
 

@@ -120,8 +120,8 @@ public class StartMenu implements Screen {
         buttonPlay.dispose();
         buttonExit.dispose();
         buttonSettings.dispose();
-        for (int i = 0; i < carsTexture.length; ++i) {
-            carsTexture[i].dispose();
+        for (Texture texture : carsTexture) {
+            texture.dispose();
         }
 
     }
