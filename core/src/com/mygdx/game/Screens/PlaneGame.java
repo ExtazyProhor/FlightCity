@@ -32,6 +32,8 @@ public class PlaneGame implements Screen {
     Texture backGround;
 
     //game:
+    int score = 0;
+
     Texture blackBuildings;
     float blackBuildingsX = 0;
     Texture[] explosionFX;
@@ -122,7 +124,10 @@ public class PlaneGame implements Screen {
                 blackBuildingsX -= 180 * Gdx.graphics.getDeltaTime();
                 if (blackBuildingsX < -scrX) blackBuildingsX += scrX;
 
+                float lastPosition = barriersX;
                 barriersX -= speed * 0.65f * pppY * Gdx.graphics.getDeltaTime();
+                if(barriersX < plane.getX() && lastPosition > plane.getX()) score++;
+                else if(barriersX + scrY < plane.getX() && lastPosition + scrY > plane.getX()) score++;
                 if(barriersX < - scrY / 2){
                     barriersX += scrY;
                     for(int i = 0; i < 3; i++){
