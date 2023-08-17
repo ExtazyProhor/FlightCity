@@ -81,7 +81,7 @@ public class Shop implements Screen {
 
         //territory:
         levelUp = new Button(35 * pppX, 5 * pppX, 30 * pppX, 12 * pppX, new Texture("buttons/blue button.png"),
-                divisionDigits(ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]) + "  ", 0xffff00ff, (int)(5 * pppY));
+                divisionDigits(ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]) + "  ", 0xffff00ff, (int)(4 * pppY));
         arrow = new PictureBox(40 * pppX, 20 * pppX, 20 * pppX, 13.6f * pppX, "general/arrow.png");
         territoryLevels = new PictureBox[ShopInfo.territoryLevels];
         for (int i = 0; i < ShopInfo.territoryLevels; i++) {
@@ -212,7 +212,6 @@ public class Shop implements Screen {
             arrow.draw();
             levelUp.draw();
             coinPicture.draw(60 * pppX, 11 * pppX - 2.5f * pppY);
-            //35 * pppX, 5 * pppX, 30 * pppX, 12 * pppX
             if(Gdx.input.justTouched()){
                 if(levelUp.isTouched(false)){
                     if(money >= ShopInfo.territoryLevelUpPrice[game.city.territoryLevel]){

@@ -22,32 +22,32 @@ public abstract class ShopInfo {
     public static final int quantityHouses = 5;
     public static final int[] cost = {
             100, /* house */
-            500, /* shop */
-            1000, /* restaurant */
-            8000, /* hotel */
-            20000  /* bank */
+            1000, /* shop */
+            10000, /* restaurant */
+            80000, /* hotel */
+            900000  /* bank */
     };
     public static final int maxLevel = 4;
     public static final int[][] upgradeCost = {
-            {100, 900, 5000, 30000}, /* house */
-            {700, 3000, 15000, 75000}, /* shop */
-            {2000, 6000, 50000, 120000}, /* restaurant */
-            {10000, 25000, 70000, 250000}, /* hotel */
-            {35000, 150000, 400000, 950000} /* bank */
+            {200, 300, 700, 1200}, /* house */
+            {1500, 2500, 5000, 11000}, /* shop */
+            {12000, 20000, 35000, 90000}, /* restaurant */
+            {100000, 220000, 400000, 1000000}, /* hotel */
+            {1100000, 2500000, 5000000, 9000000} /* bank */
     };
     public static final int[][] incomeFromHouses = {
-            {5, 10, 40, 200, 1000},
-            {15, 30, 100, 500, 2500},
-            {40, 80, 300, 1500, 7500},
-            {150, 300, 1200, 6000, 30000},
-            {350, 600, 2400, 12000, 60000}
+            {5, 15, 35, 70, 120},
+            {20, 60, 140, 300, 400},
+            {80, 240, 560, 1100, 1600},
+            {350, 1050, 2500, 5000, 7500},
+            {1500, 4500, 10000, 20000, 30000}
     };
     public static final int[] houseTimer = {
             300,
-            240,
-            180,
-            150,
-            120
+            450,
+            600,
+            750,
+            900
     };
     public static final int territoryLevels = 5;
     public static final int[][] freeHousesPlace = {

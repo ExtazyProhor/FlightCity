@@ -1,19 +1,19 @@
 package com.mygdx.game.RealClasses;
 
-public abstract class Rectangle {
+public class Rectangle {
     protected float x;
     protected float y;
     protected float sizeX;
     protected float sizeY;
 
-    protected Rectangle(float x, float y, float sizeX, float sizeY) {
+    public Rectangle(float x, float y, float sizeX, float sizeY) {
         this.x = x;
         this.y = y;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
     }
 
-    protected Rectangle(){
+    public Rectangle(){
 
     }
 

@@ -23,6 +23,9 @@ public class PictureBox extends Rectangle {
         batch.draw(picture, x, y, sizeX/2, sizeY/2, sizeX, sizeY, 1, 1, angle, 0, 0,
                 picture.getWidth(), picture.getHeight(), false, false);
     }
+    public void draw(float x, float y, float sizeX, float sizeY){
+        batch.draw(picture, x, y, sizeX, sizeY, 0, 0, picture.getWidth(), picture.getHeight(), false, false);
+    }
     public void dispose(){
         this.picture.dispose();
     }

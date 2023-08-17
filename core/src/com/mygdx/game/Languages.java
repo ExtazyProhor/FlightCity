@@ -1,11 +1,6 @@
 package com.mygdx.game;
 
 public abstract class Languages {
-
-//    english - 0
-//	  russian - 1
-//	  belorussian - 2
-
     /*
     public static final String[] g = {
             "",
@@ -13,7 +8,6 @@ public abstract class Languages {
             ""
     };
     */
-
     public static final String[] play = {
             "play",
             "играть",
@@ -95,5 +89,25 @@ public abstract class Languages {
             "spin",
             "крутить",
             "круціць"
+    };
+    public static final String[] resume = {
+            "resume",
+            "продолжить",
+            "аднавiць"
+    };
+    public static final String[] restart = {
+            "restart",
+            "перезапуск",
+            "перазапуск"
+    };
+    public static final String[] exit = {
+            "exit",
+            "выйти",
+            "выйсцi"
+    };
+    public static final String[] minute = {
+            "min",
+            "мин",
+            "хвiл"
     };
 }

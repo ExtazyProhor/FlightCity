@@ -12,6 +12,7 @@ import static com.mygdx.game.Main.*;
 import com.mygdx.game.RealClasses.Button;
 import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.RealClasses.TextBox;
+import com.mygdx.game.RouletteClasses.RouletteState;
 
 import java.util.Random;
 
@@ -19,21 +20,24 @@ public class Roulette implements Screen {
     Main game;
     String path = "roulette/";
     PictureBox backGround;
-    boolean isSpinning = false;
+    RouletteState state = RouletteState.NONE;
+
 
     PictureBox roulette;
     PictureBox pick;
     Button spinButton;
     TextBox spinCostText;
 
+    TextBox prizeText;
+
     float angle = 0;
+    int prizeIndex;
     Random random;
     Sound tickSound;
 
     final float startingSpeed = 350;
     final float staticSpeed = 30;
     final float deltaSpeed = 50;
-
     float speed;
 
     public Roulette(Main game) {
@@ -49,6 +53,8 @@ public class Roulette implements Screen {
                 Languages.spin[selectedLanguage] + "\n\n", 0xffffffff, (int)(5 * pppY));
         spinCostText = new TextBox(scrX / 2, 0, divisionDigits(spinCost), 0xffffffff, (int)(5 * pppY));
         spinCostText.positionToMiddleY(18 * pppY);
+
+        prizeText = new TextBox(scrX/2, scrY/2 + pppX * 11.5f, "", 0xffffffff, (int)(5 * pppY));
     }
 
     @Override
@@ -63,16 +69,34 @@ public class Roulette implements Screen {
         roulette.draw(angle);
         pick.draw();
 
-        if(isSpinning){
-            if((int)angle / 24 != (int)(angle + speed * Gdx.graphics.getDeltaTime()) / 24) tickSound.play(soundVolume * soundOn);
-            angle += speed * Gdx.graphics.getDeltaTime();
-            speed -= deltaSpeed * Gdx.graphics.getDeltaTime();
-            if (speed <= 0) isSpinning = false;
-        }else{
-            spinButton.draw();
-            spinCostText.draw();
-            coinPicture.draw(scrX/2 + 15 * pppY, 15 * pppY);
-            angle -= staticSpeed * Gdx.graphics.getDeltaTime();
+        switch (state){
+            case NONE:
+                spinButton.draw();
+                spinCostText.draw();
+                coinPicture.draw(scrX/2 + 15 * pppY, 15 * pppY);
+                angle -= staticSpeed * Gdx.graphics.getDeltaTime();
+
+                break;
+            case ROLLING:
+                if((int)angle / 24 != (int)(angle + speed * Gdx.graphics.getDeltaTime()) / 24) tickSound.play(soundVolume * soundOn);
+                angle += speed * Gdx.graphics.getDeltaTime();
+                speed -= deltaSpeed * Gdx.graphics.getDeltaTime();
+                prizeIndex = ((int)angle % 360) / 24;
+                if (speed <= 0) state = RouletteState.GET_PRIZE;
+
+                break;
+            case GET_PRIZE:
+                getPrize();
+                state = RouletteState.WINDOW;
+
+                break;
+            case WINDOW:
+                game.city.blackout.draw();
+                game.city.windowBackGround.draw();
+                game.city.cancelButton.draw();
+                prizeText.draw();
+                drawPrize();
+                break;
         }
 
         batch.end();
@@ -81,20 +105,117 @@ public class Roulette implements Screen {
 
     void touchChecking(){
         if(!Gdx.input.justTouched()) return;
-        if(!isSpinning && game.startMenu.buttonExit.isTouched()){
-            game.setScreen(game.city);
-        } else if(!isSpinning && spinButton.isTouched(false)){
-            if(money < spinCost) errorSound.play(soundVolume * soundOn);
-            else{
-                money -= spinCost;
-                updateMoney();
-                savePrefs();
-                if(money < Roulette.spinCost) game.roulette.spinCostText.setColor(1, 0, 0);
-                else game.roulette.spinCostText.setColor(1, 1, 1);
-                isSpinning = true;
-                speed = startingSpeed;
-                angle = random.nextInt(360);
-            }
+
+        switch (state){
+            case NONE:
+                if(game.startMenu.buttonExit.isTouched()){
+                    game.setScreen(game.city);
+                }else if(spinButton.isTouched(false)){
+                    if(money < spinCost) {
+                        errorSound.play(soundVolume * soundOn);
+                    } else{
+                        money -= spinCost;
+                        updateMoney();
+                        if(money < Roulette.spinCost) game.roulette.spinCostText.setColor(1, 0, 0);
+                        else game.roulette.spinCostText.setColor(1, 1, 1);
+                        state = RouletteState.ROLLING;
+                        speed = startingSpeed;
+                        angle = random.nextInt(360);
+                    }
+                }
+                break;
+            case WINDOW:
+                if(game.city.cancelButton.isTouched()) state = RouletteState.NONE;
+                break;
+            default:
+                break;
+        }
+    }
+
+    void getPrize(){
+        upgradeSound.play(soundVolume * soundOn);
+        switch (prizeIndex){
+            case 0:
+            case 10:
+                money += 5000;
+                prizeText.changeText("+ 5.000");
+                break;
+            case 1:
+                sapphires += 10;
+                prizeText.changeText("+ 10");
+                break;
+            case 2:
+            case 12:
+                money += 1000;
+                prizeText.changeText("+ 1.000");
+                break;
+            case 3:
+                prizeText.changeText("+ 50");
+                sapphires += 50;
+                break;
+            case 4:
+                prizeText.changeText("+ 500");
+                money += 500;
+                break;
+            case 5:
+                prizeText.changeText("+ 15");
+                sapphires += 15;
+                break;
+            case 6:
+                prizeText.changeText("+ 10.000");
+                money += 10000;
+                break;
+            case 7:
+
+                break;
+            case 8:
+                prizeText.changeText("+ 200");
+                money += 200;
+                break;
+            case 9:
+                prizeText.changeText("+ 100");
+                sapphires += 100;
+                break;
+            case 11:
+                prizeText.changeText("+ 5");
+                sapphires += 5;
+                break;
+            case 13:
+                prizeText.changeText("+ 25");
+                sapphires += 25;
+                break;
+            case 14:
+                prizeText.changeText("+ 100");
+                money += 100;
+                break;
+        }
+        updateMoney();
+        savePrefs();
+    }
+
+    void drawPrize(){
+        switch (prizeIndex){
+            case 0:
+            case 2:
+            case 4:
+            case 6:
+            case 8:
+            case 10:
+            case 12:
+            case 14:
+                coinPicture.draw(scrX / 2 - 15 * pppY, pppY * 30, 30 * pppY, 30 * pppY);
+                break;
+            case 1:
+            case 3:
+            case 5:
+            case 9:
+            case 11:
+            case 13:
+                sapphirePicture.draw(scrX / 2 - 15 * pppY, pppY * 30, 30 * pppY, 30 * pppY);
+                break;
+            case 7:
+
+                break;
         }
     }
 
@@ -122,5 +243,5 @@ public class Roulette implements Screen {
     public void hide() {
     }
 
-    public static final int spinCost = 1000;
+    public static final int spinCost = 2000;
 }
