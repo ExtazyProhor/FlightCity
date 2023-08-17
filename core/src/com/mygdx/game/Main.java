@@ -17,6 +17,7 @@ import com.mygdx.game.Screens.Roulette;
 import com.mygdx.game.Screens.Settings;
 import com.mygdx.game.Screens.Shop;
 import com.mygdx.game.Screens.StartMenu;
+import com.mygdx.game.Screens.SubwayGame;
 
 public class Main extends Game {
 	public static SpriteBatch batch;
