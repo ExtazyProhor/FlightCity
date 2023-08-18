@@ -8,8 +8,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Main;
+import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.SubwayClasses.Coin;
 import com.mygdx.game.SubwayClasses.Player;
+import com.mygdx.game.SubwayClasses.Road;
 import com.mygdx.game.SubwayClasses.Trash;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ public class SubwayGame implements Screen {
     Iterator<Trash> trashIterator;
     ArrayList<Coin> coins = new ArrayList<>();
     Iterator<Coin> coinIterator;
+    ArrayList<Road> roads = new ArrayList<>();
     Player player;
     Rectangle playerhitbox;
     int randforcoin;
@@ -33,10 +36,14 @@ public class SubwayGame implements Screen {
 
     public SubwayGame(Main game) {
         this.game = game;
-        player = new Player(pppX * 15, 0, pppX * 10, pppY * 10, "subwaygame/car1.png");
         framelimit = (int) (20 * Math.random()) + 70;
         framecount = 0;
         ms = 0.4f;
+        player = new Player(pppX * 15, 0, pppX * 10, pppY * 10, "subwaygame/car1.png");
+        for(int i = 0; i < 4; i++){
+            roads.add(new Road(0, i * pppY * 25 + 5 * pppY, scrX, pppY * 14, "subwaygame/road.png", ms * pppX));
+            roads.add(new Road(scrX, i * pppY * 25 + 5 * pppY, scrX, pppY * 14, "subwaygame/road.png", ms * pppX));
+        }
     }
 
     @Override
@@ -51,6 +58,9 @@ public class SubwayGame implements Screen {
             trashIterator = trashes.iterator();
             coinIterator = coins.iterator();
             Main.batch.begin();
+            for (Road road: roads) {
+                road.update(ms * pppX);
+            }
             while (trashIterator.hasNext()) {
                 Trash trash = trashIterator.next();
                 if (!trash.isExist()) {
@@ -87,7 +97,7 @@ public class SubwayGame implements Screen {
                         }
                     }
                 }
-                coins.add(new Coin(scrX, pppY * r.nextInt(4) * 20 + pppY * 10, pppY * 10, pppY * 10, "general/coin.png", pppX * ms));
+                coins.add(new Coin(scrX, pppY * r.nextInt(4) * 25 + pppY * 7, pppY * 10, pppY * 10, "general/coin.png", pppX * ms));
                 framecount = 0;
                 framelimit = (int) ((20 * Math.random()) + 101 - (ms - 0.4f) * 100);
                 if (ms < 1.4) {

@@ -16,7 +16,7 @@ public class Player extends PictureBox {
     int reload;
 
     public Player(float x, int pos, float sizeX, float sizeY, String path) {
-        super(x, pos * pppY * 20 + pppY * 10, sizeX, sizeY, path);
+        super(x, pos * pppY * 20 + pppY * 7, sizeX, sizeY, path);
         this.pos = pos;
         exist = true;
     }
@@ -29,11 +29,11 @@ public class Player extends PictureBox {
         }
         if(Gdx.input.getX() < scrX / 2 && pos >0 && Gdx.input.justTouched()){
             pos -= 1;
-            setCoordinates(getX(), pos * pppY * 20 + pppY * 10);
+            setCoordinates(getX(), pos * pppY * 25 + pppY * 7);
             reload = 0;
         } else if (Gdx.input.getX() > scrX / 2 && pos <3 && Gdx.input.justTouched()) {
             pos += 1;
-            setCoordinates(getX(), pos * pppY * 20 + pppY * 10);
+            setCoordinates(getX(), pos * pppY * 25 + pppY * 7);
             reload = 0;
         }
         draw();
