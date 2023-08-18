@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.RealClasses.TextBox;
 import com.mygdx.game.Screens.City;
+import com.mygdx.game.Screens.Inventory;
 import com.mygdx.game.Screens.PlaneGame;
 import com.mygdx.game.Screens.Roulette;
 import com.mygdx.game.Screens.Settings;
@@ -27,6 +28,7 @@ public class Main extends Game {
 
 	public static Preferences prefs;
 	public static Preferences cityPrefs;
+	public static Preferences inventoryPrefs;
 
 	public static FreeTypeFontGenerator generator;
 	public static FreeTypeFontGenerator.FreeTypeFontParameter parameter;
@@ -63,6 +65,7 @@ public class Main extends Game {
 	public PlaneGame planeGame;
 	public Shop shop;
 	public Roulette roulette;
+	public Inventory inventory;
 	
 	@Override
 	public void create () {
@@ -73,6 +76,7 @@ public class Main extends Game {
 
 		prefs = Gdx.app.getPreferences("FlightCityMainSaves");
 		cityPrefs = Gdx.app.getPreferences("CitySaves");
+		inventoryPrefs = Gdx.app.getPreferences("InventorySaves");
 		loadPrefs();
 
 		initializationFont();
@@ -98,6 +102,7 @@ public class Main extends Game {
 		planeGame = new PlaneGame(this);
 		shop = new Shop(this);
 		roulette = new Roulette(this);
+		inventory = new Inventory(this);
 
 		setScreen(startMenu);
 	}

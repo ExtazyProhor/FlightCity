@@ -31,6 +31,7 @@ public class Roulette implements Screen {
     TextBox spinCostText;
 
     TextBox prizeText;
+    float planeSizeX;
 
     float angle = 0;
     int prizeIndex;
@@ -165,6 +166,7 @@ public class Roulette implements Screen {
                     rouletteIndex = 0;
                     spinCostText.changeText(divisionDigits(spinCost[rouletteIndex]));
                 }else if(spinButton.isTouched(false)){
+                    game.roulette.spinCostText.setColor(1, 1, 1);
                     switch (currencyType[rouletteIndex]){
                         case "coin":
                             if(money < spinCost[rouletteIndex]) {
@@ -173,7 +175,6 @@ public class Roulette implements Screen {
                                 money -= spinCost[rouletteIndex];
                                 updateMoney();
                                 if(money < spinCost[rouletteIndex]) game.roulette.spinCostText.setColor(1, 0, 0);
-                                else game.roulette.spinCostText.setColor(1, 1, 1);
                                 state = RouletteState.ROLLING;
                                 speed = startingSpeed;
                                 angle = random.nextInt(360);
@@ -186,7 +187,6 @@ public class Roulette implements Screen {
                                 sapphires -= spinCost[rouletteIndex];
                                 updateMoney();
                                 if(sapphires < spinCost[rouletteIndex]) game.roulette.spinCostText.setColor(1, 0, 0);
-                                else game.roulette.spinCostText.setColor(1, 1, 1);
                                 state = RouletteState.ROLLING;
                                 speed = startingSpeed;
                                 angle = random.nextInt(360);
@@ -264,63 +264,18 @@ public class Roulette implements Screen {
                 }
                 break;
             case 1:
-                switch (prizeIndex){
-                    case 0:
-                    case 10:
-                        money += 5000;
-                        prizeText.changeText("+ 5.000");
-                        break;
-                    case 1:
-                        sapphires += 10;
-                        prizeText.changeText("+ 10");
-                        break;
-                    case 2:
-                    case 12:
-                        money += 1000;
-                        prizeText.changeText("+ 1.000");
-                        break;
-                    case 3:
-                        prizeText.changeText("+ 50");
-                        sapphires += 50;
-                        break;
-                    case 4:
-                        prizeText.changeText("+ 500");
-                        money += 500;
-                        break;
-                    case 5:
-                        prizeText.changeText("+ 15");
-                        sapphires += 15;
-                        break;
-                    case 6:
-                        prizeText.changeText("+ 10.000");
-                        money += 10000;
-                        break;
-                    case 7:
+                prizeText.changeText("");
 
-                        break;
-                    case 8:
-                        prizeText.changeText("+ 200");
-                        money += 200;
-                        break;
-                    case 9:
-                        prizeText.changeText("+ 100");
-                        sapphires += 100;
-                        break;
-                    case 11:
-                        prizeText.changeText("+ 5");
-                        sapphires += 5;
-                        break;
-                    case 13:
-                        prizeText.changeText("+ 25");
-                        sapphires += 25;
-                        break;
-                    case 14:
-                        prizeText.changeText("+ 100");
-                        money += 100;
-                        break;
+                if(prizeIndex < 9){
+                    game.inventory.backGrounds[prizeIndex + 1]++;
+                } else{
+                    game.inventory.planes[prizeIndex - 8]++;
+                    planeSizeX = game.planeGame.planeAspectRatio * 30 * pppY;
                 }
+
                 break;
         }
+        game.inventory.saveInventory();
         updateMoney();
         savePrefs();
         spinCostText.setColor(1, 1, 1);
@@ -335,27 +290,38 @@ public class Roulette implements Screen {
     }
 
     void drawPrize(){
-        switch (prizeIndex){
+        switch (rouletteIndex){
             case 0:
-            case 2:
-            case 4:
-            case 6:
-            case 8:
-            case 10:
-            case 12:
-            case 14:
-                coinPicture.draw(scrX / 2 - 15 * pppY, pppY * 30, 30 * pppY, 30 * pppY);
+                switch (prizeIndex){
+                    case 0:
+                    case 2:
+                    case 4:
+                    case 6:
+                    case 8:
+                    case 10:
+                    case 12:
+                    case 14:
+                        coinPicture.draw(scrX / 2 - 15 * pppY, pppY * 30, 30 * pppY, 30 * pppY);
+                        break;
+                    case 1:
+                    case 3:
+                    case 5:
+                    case 9:
+                    case 11:
+                    case 13:
+                        sapphirePicture.draw(scrX / 2 - 15 * pppY, pppY * 30, 30 * pppY, 30 * pppY);
+                        break;
+                    case 7:
+
+                        break;
+                }
                 break;
             case 1:
-            case 3:
-            case 5:
-            case 9:
-            case 11:
-            case 13:
-                sapphirePicture.draw(scrX / 2 - 15 * pppY, pppY * 30, 30 * pppY, 30 * pppY);
-                break;
-            case 7:
-
+                if(prizeIndex < 9){
+                    batch.draw(game.inventory.backGroundsTextures[prizeIndex + 1], scrX/2 - 30 * pppY, 35 * pppY, 60 * pppY, 30 * pppY);
+                } else{
+                    batch.draw(game.inventory.planesTextures[prizeIndex - 8], scrX/2 - planeSizeX/2, 35 * pppY, planeSizeX, 30 * pppY);
+                }
                 break;
         }
     }
