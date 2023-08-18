@@ -17,7 +17,7 @@ public class Road extends PictureBox{
         draw();
         if(x + sizeX < 0)
         {
-            x = scrX - speed;
+            x += scrX * 2;
         }
     }
 }

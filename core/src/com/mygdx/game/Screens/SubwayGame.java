@@ -82,7 +82,7 @@ public class SubwayGame implements Screen {
                     Main.money += 1;
                     Main.savePrefs();
                 } else{
-                    coin.update();
+                    coin.update(ms * pppX);
                 }
             }
             player.update(trashes);
