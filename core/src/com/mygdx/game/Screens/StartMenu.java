@@ -83,12 +83,6 @@ public class StartMenu implements Screen {
             carSpeed = rand.nextFloat(pppX * 5) + pppX * 15;
             if(isMovingRight) carCoordinateX = -20 * pppX;
             else carCoordinateX = 110 * pppX;
-
-            System.out.println();
-            System.out.println(carIndex);
-            System.out.println(carSizeY);
-            System.out.println(10 * pppX);
-            System.out.println(carSpeed);
         }
 
         if(isMovingRight) carCoordinateX += carSpeed * Gdx.graphics.getDeltaTime();

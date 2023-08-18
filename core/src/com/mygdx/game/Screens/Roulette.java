@@ -12,7 +12,6 @@ import static com.mygdx.game.Main.*;
 import com.mygdx.game.RealClasses.Button;
 import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.RealClasses.TextBox;
-import com.mygdx.game.RouletteClasses.RouletteState;
 
 import java.util.Random;
 
@@ -22,8 +21,11 @@ public class Roulette implements Screen {
     PictureBox backGround;
     RouletteState state = RouletteState.NONE;
 
-
-    PictureBox roulette;
+    int rouletteIndex = 0;
+    Button nextButton;
+    Button previousButton;
+    final int rouletteQuantity = 2;
+    PictureBox[] roulette;
     PictureBox pick;
     Button spinButton;
     TextBox spinCostText;
@@ -47,11 +49,17 @@ public class Roulette implements Screen {
         random = new Random();
         tickSound = Gdx.audio.newSound(Gdx.files.internal(path + "tick.mp3"));
 
-        roulette = new PictureBox(scrX / 2 - 25 * pppY, 35 * pppY, scrY / 2, scrY / 2, path + "roulette.png");
+        nextButton = new Button(scrX - 40 * pppY, 10 * pppY, 20 * pppY, 20 * pppY, new Texture(path + "arrow.png"));
+        previousButton = new Button(20 * pppY, 10 * pppY, 20 * pppY, 20 * pppY, new Texture(path + "arrow.png"));
+
+        roulette = new PictureBox[rouletteQuantity];
+        for(int i = 0; i < rouletteQuantity; ++i){
+            roulette[i] = new PictureBox(scrX / 2 - 25 * pppY, 35 * pppY, scrY / 2, scrY / 2, path + "roulette " + i + ".png");
+        }
         pick = new PictureBox(scrX / 2 + 22 * pppY, 58 * pppY, 8 * pppY, 4 * pppY, path + "pick.png");
         spinButton = new Button(scrX/2 - 25 * pppY, 10 * pppY, 50 * pppY, 20 * pppY, new Texture("buttons/button 5-2.png"),
                 Languages.spin[selectedLanguage] + "\n\n", 0xffffffff, (int)(5 * pppY));
-        spinCostText = new TextBox(scrX / 2, 0, divisionDigits(spinCost), 0xffffffff, (int)(5 * pppY));
+        spinCostText = new TextBox(scrX / 2, 0, divisionDigits(spinCost[rouletteIndex]), 0xffffffff, (int)(5 * pppY));
         spinCostText.positionToMiddleY(18 * pppY);
 
         prizeText = new TextBox(scrX/2, scrY/2 + pppX * 11.5f, "", 0xffffffff, (int)(5 * pppY));
@@ -66,14 +74,58 @@ public class Roulette implements Screen {
         showMoney();
         game.startMenu.buttonExit.draw();
 
-        roulette.draw(angle);
+        roulette[rouletteIndex].draw(angle);
         pick.draw();
+
+        if(rouletteIndex > 0){
+            previousButton.draw(0, true, false);
+            if(Gdx.input.justTouched()){
+                if(previousButton.isTouched()) {
+                    rouletteIndex--;
+                    spinCostText.changeText(divisionDigits(spinCost[rouletteIndex]));
+                    spinCostText.setColor(1, 1, 1);
+                    switch (currencyType[rouletteIndex]){
+                        case "coin":
+                            if(money < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
+                            break;
+                        case "sapphire":
+                            if(sapphires < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
+                            break;
+                    }
+                }
+            }
+        }
+        if(rouletteIndex < rouletteQuantity - 1){
+            nextButton.draw();
+            if(Gdx.input.justTouched()){
+                if(nextButton.isTouched()) {
+                    rouletteIndex++;
+                    spinCostText.changeText(divisionDigits(spinCost[rouletteIndex]));
+                }
+                spinCostText.setColor(1, 1, 1);
+                switch (currencyType[rouletteIndex]){
+                    case "coin":
+                        if(money < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
+                        break;
+                    case "sapphire":
+                        if(sapphires < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
+                        break;
+                }
+            }
+        }
 
         switch (state){
             case NONE:
                 spinButton.draw();
                 spinCostText.draw();
-                coinPicture.draw(scrX/2 + 15 * pppY, 15 * pppY);
+                switch (currencyType[rouletteIndex]){
+                    case "coin":
+                        coinPicture.draw(scrX/2 + 15 * pppY, 15 * pppY);
+                        break;
+                    case "sapphire":
+                        sapphirePicture.draw(scrX/2 + 15 * pppY, 15 * pppY);
+                        break;
+                }
                 angle -= staticSpeed * Gdx.graphics.getDeltaTime();
 
                 break;
@@ -110,17 +162,36 @@ public class Roulette implements Screen {
             case NONE:
                 if(game.startMenu.buttonExit.isTouched()){
                     game.setScreen(game.city);
+                    rouletteIndex = 0;
+                    spinCostText.changeText(divisionDigits(spinCost[rouletteIndex]));
                 }else if(spinButton.isTouched(false)){
-                    if(money < spinCost) {
-                        errorSound.play(soundVolume * soundOn);
-                    } else{
-                        money -= spinCost;
-                        updateMoney();
-                        if(money < Roulette.spinCost) game.roulette.spinCostText.setColor(1, 0, 0);
-                        else game.roulette.spinCostText.setColor(1, 1, 1);
-                        state = RouletteState.ROLLING;
-                        speed = startingSpeed;
-                        angle = random.nextInt(360);
+                    switch (currencyType[rouletteIndex]){
+                        case "coin":
+                            if(money < spinCost[rouletteIndex]) {
+                                errorSound.play(soundVolume * soundOn);
+                            } else{
+                                money -= spinCost[rouletteIndex];
+                                updateMoney();
+                                if(money < spinCost[rouletteIndex]) game.roulette.spinCostText.setColor(1, 0, 0);
+                                else game.roulette.spinCostText.setColor(1, 1, 1);
+                                state = RouletteState.ROLLING;
+                                speed = startingSpeed;
+                                angle = random.nextInt(360);
+                            }
+                            break;
+                        case "sapphire":
+                            if(sapphires < spinCost[rouletteIndex]) {
+                                errorSound.play(soundVolume * soundOn);
+                            } else{
+                                sapphires -= spinCost[rouletteIndex];
+                                updateMoney();
+                                if(sapphires < spinCost[rouletteIndex]) game.roulette.spinCostText.setColor(1, 0, 0);
+                                else game.roulette.spinCostText.setColor(1, 1, 1);
+                                state = RouletteState.ROLLING;
+                                speed = startingSpeed;
+                                angle = random.nextInt(360);
+                            }
+                            break;
                     }
                 }
                 break;
@@ -134,63 +205,133 @@ public class Roulette implements Screen {
 
     void getPrize(){
         upgradeSound.play(soundVolume * soundOn);
-        switch (prizeIndex){
+        switch (rouletteIndex){
             case 0:
-            case 10:
-                money += 5000;
-                prizeText.changeText("+ 5.000");
+                switch (prizeIndex){
+                    case 0:
+                    case 10:
+                        money += 5000;
+                        prizeText.changeText("+ 5.000");
+                        break;
+                    case 1:
+                        sapphires += 10;
+                        prizeText.changeText("+ 10");
+                        break;
+                    case 2:
+                    case 12:
+                        money += 1000;
+                        prizeText.changeText("+ 1.000");
+                        break;
+                    case 3:
+                        prizeText.changeText("+ 50");
+                        sapphires += 50;
+                        break;
+                    case 4:
+                        prizeText.changeText("+ 500");
+                        money += 500;
+                        break;
+                    case 5:
+                        prizeText.changeText("+ 15");
+                        sapphires += 15;
+                        break;
+                    case 6:
+                        prizeText.changeText("+ 10.000");
+                        money += 10000;
+                        break;
+                    case 7:
+
+                        break;
+                    case 8:
+                        prizeText.changeText("+ 200");
+                        money += 200;
+                        break;
+                    case 9:
+                        prizeText.changeText("+ 100");
+                        sapphires += 100;
+                        break;
+                    case 11:
+                        prizeText.changeText("+ 5");
+                        sapphires += 5;
+                        break;
+                    case 13:
+                        prizeText.changeText("+ 25");
+                        sapphires += 25;
+                        break;
+                    case 14:
+                        prizeText.changeText("+ 100");
+                        money += 100;
+                        break;
+                }
                 break;
             case 1:
-                sapphires += 10;
-                prizeText.changeText("+ 10");
-                break;
-            case 2:
-            case 12:
-                money += 1000;
-                prizeText.changeText("+ 1.000");
-                break;
-            case 3:
-                prizeText.changeText("+ 50");
-                sapphires += 50;
-                break;
-            case 4:
-                prizeText.changeText("+ 500");
-                money += 500;
-                break;
-            case 5:
-                prizeText.changeText("+ 15");
-                sapphires += 15;
-                break;
-            case 6:
-                prizeText.changeText("+ 10.000");
-                money += 10000;
-                break;
-            case 7:
+                switch (prizeIndex){
+                    case 0:
+                    case 10:
+                        money += 5000;
+                        prizeText.changeText("+ 5.000");
+                        break;
+                    case 1:
+                        sapphires += 10;
+                        prizeText.changeText("+ 10");
+                        break;
+                    case 2:
+                    case 12:
+                        money += 1000;
+                        prizeText.changeText("+ 1.000");
+                        break;
+                    case 3:
+                        prizeText.changeText("+ 50");
+                        sapphires += 50;
+                        break;
+                    case 4:
+                        prizeText.changeText("+ 500");
+                        money += 500;
+                        break;
+                    case 5:
+                        prizeText.changeText("+ 15");
+                        sapphires += 15;
+                        break;
+                    case 6:
+                        prizeText.changeText("+ 10.000");
+                        money += 10000;
+                        break;
+                    case 7:
 
-                break;
-            case 8:
-                prizeText.changeText("+ 200");
-                money += 200;
-                break;
-            case 9:
-                prizeText.changeText("+ 100");
-                sapphires += 100;
-                break;
-            case 11:
-                prizeText.changeText("+ 5");
-                sapphires += 5;
-                break;
-            case 13:
-                prizeText.changeText("+ 25");
-                sapphires += 25;
-                break;
-            case 14:
-                prizeText.changeText("+ 100");
-                money += 100;
+                        break;
+                    case 8:
+                        prizeText.changeText("+ 200");
+                        money += 200;
+                        break;
+                    case 9:
+                        prizeText.changeText("+ 100");
+                        sapphires += 100;
+                        break;
+                    case 11:
+                        prizeText.changeText("+ 5");
+                        sapphires += 5;
+                        break;
+                    case 13:
+                        prizeText.changeText("+ 25");
+                        sapphires += 25;
+                        break;
+                    case 14:
+                        prizeText.changeText("+ 100");
+                        money += 100;
+                        break;
+                }
                 break;
         }
         updateMoney();
         savePrefs();
+        spinCostText.setColor(1, 1, 1);
+        switch (currencyType[rouletteIndex]){
+            case "coin":
+                if(money < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
+                break;
+            case "sapphire":
+                if(sapphires < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
+                break;
+        }
     }
 
     void drawPrize(){
@@ -221,7 +362,20 @@ public class Roulette implements Screen {
 
     @Override
     public void dispose() {
+        backGround.dispose();
 
+        nextButton.dispose();
+        previousButton.dispose();
+        for(int i = 0; i < roulette.length; ++i){
+            roulette[i].dispose();
+        }
+        pick.dispose();
+        spinButton.dispose();
+        spinCostText.dispose();
+
+        prizeText.dispose();
+
+        tickSound.dispose();
     }
     @Override
     public void show() {
@@ -243,5 +397,19 @@ public class Roulette implements Screen {
     public void hide() {
     }
 
-    public static final int spinCost = 2000;
+    public static final int[] spinCost = {
+            2000,
+            1000
+    };
+    public static final String[] currencyType = {
+            "coin",
+            "sapphire"
+    };
+
+    enum RouletteState {
+        NONE,
+        ROLLING,
+        WINDOW,
+        GET_PRIZE
+    }
 }

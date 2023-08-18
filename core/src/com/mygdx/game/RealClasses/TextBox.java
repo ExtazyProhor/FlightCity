@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.mygdx.game.Main;
 
 public class TextBox extends Rectangle {
-    Position3 position;
+    Position position;
     BitmapFont font;
     String text;
 
     public TextBox(float centerX, float y, String text, int textColor, int textSize) {
-        position = Position3.MIDDLE;
+        position = Position.MIDDLE;
         font = new BitmapFont();
         Main.parameter.color = new Color(textColor);
         Main.parameter.size = textSize;
@@ -24,12 +24,12 @@ public class TextBox extends Rectangle {
     }
 
     public void positionToLeft(float leftX){
-        position = Position3.LEFT;
+        position = Position.LEFT;
         this.x = leftX;
     }
 
     public void positionToRight(float rightX){
-        position = Position3.RIGHT;
+        position = Position.RIGHT;
         this.x = rightX - this.sizeX;
     }
 
@@ -78,5 +78,11 @@ public class TextBox extends Rectangle {
 
     public void dispose(){
         this.font.dispose();
+    }
+
+    enum Position {
+        LEFT,
+        MIDDLE,
+        RIGHT
     }
 }

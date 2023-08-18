@@ -44,4 +44,10 @@ public class Inventory implements Screen {
     @Override
     public void hide() {
     }
+
+    enum InventoryState{
+        MENU,
+        PLANES,
+
+    }
 }

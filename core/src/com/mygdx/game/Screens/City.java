@@ -199,8 +199,15 @@ public class City implements Screen {
             } else if (inventoryButton.isTouched()){
                 //game.setScreen(game.planeGame);
             }else if (rouletteButton.isTouched()){
-                if(money < Roulette.spinCost) game.roulette.spinCostText.setColor(1, 0, 0);
-                else game.roulette.spinCostText.setColor(1, 1, 1);
+                game.roulette.spinCostText.setColor(1, 1, 1);
+                switch (Roulette.currencyType[game.roulette.rouletteIndex]){
+                    case "coin":
+                        if(money < Roulette.spinCost[game.roulette.rouletteIndex]) game.roulette.spinCostText.setColor(1, 0, 0);
+                        break;
+                    case "sapphire":
+                        if(sapphires < Roulette.spinCost[game.roulette.rouletteIndex]) game.roulette.spinCostText.setColor(1, 0, 0);
+                        break;
+                }
                 game.setScreen(game.roulette);
             }else {
                 for (int i = 0; i < buildings.length; ++i) {
