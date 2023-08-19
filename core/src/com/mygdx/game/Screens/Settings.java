@@ -286,6 +286,8 @@ public class Settings implements Screen {
                 game.planeGame.exitButton.changeText(Languages.exit[selectedLanguage]);
                 game.planeGame.newBestScore.changeText(Languages.newBestScore[selectedLanguage]);
 
+                game.inventory.chooseButton.changeText(Languages.choose[selectedLanguage]);
+
             } else if (soundBar.isTouched()) {
                 localSoundOn = Math.abs(localSoundOn - 1);
             } else if (musicBar.isTouched()) {

@@ -78,45 +78,46 @@ public class Roulette implements Screen {
         roulette[rouletteIndex].draw(angle);
         pick.draw();
 
-        if(rouletteIndex > 0){
-            previousButton.draw(0, true, false);
-            if(Gdx.input.justTouched()){
-                if(previousButton.isTouched()) {
-                    rouletteIndex--;
-                    spinCostText.changeText(divisionDigits(spinCost[rouletteIndex]));
-                    spinCostText.setColor(1, 1, 1);
-                    switch (currencyType[rouletteIndex]){
-                        case "coin":
-                            if(money < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
-                            break;
-                        case "sapphire":
-                            if(sapphires < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
-                            break;
-                    }
-                }
-            }
-        }
-        if(rouletteIndex < rouletteQuantity - 1){
-            nextButton.draw();
-            if(Gdx.input.justTouched()){
-                if(nextButton.isTouched()) {
-                    rouletteIndex++;
-                    spinCostText.changeText(divisionDigits(spinCost[rouletteIndex]));
-                }
-                spinCostText.setColor(1, 1, 1);
-                switch (currencyType[rouletteIndex]){
-                    case "coin":
-                        if(money < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
-                        break;
-                    case "sapphire":
-                        if(sapphires < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
-                        break;
-                }
-            }
-        }
-
         switch (state){
             case NONE:
+
+                if(rouletteIndex > 0){
+                    previousButton.draw(0, true, false);
+                    if(Gdx.input.justTouched()){
+                        if(previousButton.isTouched()) {
+                            rouletteIndex--;
+                            spinCostText.changeText(divisionDigits(spinCost[rouletteIndex]));
+                            spinCostText.setColor(1, 1, 1);
+                            switch (currencyType[rouletteIndex]){
+                                case "coin":
+                                    if(money < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
+                                    break;
+                                case "sapphire":
+                                    if(sapphires < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
+                                    break;
+                            }
+                        }
+                    }
+                }
+                if(rouletteIndex < rouletteQuantity - 1){
+                    nextButton.draw();
+                    if(Gdx.input.justTouched()){
+                        if(nextButton.isTouched()) {
+                            rouletteIndex++;
+                            spinCostText.changeText(divisionDigits(spinCost[rouletteIndex]));
+                        }
+                        spinCostText.setColor(1, 1, 1);
+                        switch (currencyType[rouletteIndex]){
+                            case "coin":
+                                if(money < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
+                                break;
+                            case "sapphire":
+                                if(sapphires < spinCost[rouletteIndex]) spinCostText.setColor(1, 0, 0);
+                                break;
+                        }
+                    }
+                }
+
                 spinButton.draw();
                 spinCostText.draw();
                 switch (currencyType[rouletteIndex]){
@@ -166,7 +167,6 @@ public class Roulette implements Screen {
                     rouletteIndex = 0;
                     spinCostText.changeText(divisionDigits(spinCost[rouletteIndex]));
                 }else if(spinButton.isTouched(false)){
-                    game.roulette.spinCostText.setColor(1, 1, 1);
                     switch (currencyType[rouletteIndex]){
                         case "coin":
                             if(money < spinCost[rouletteIndex]) {
@@ -175,6 +175,7 @@ public class Roulette implements Screen {
                                 money -= spinCost[rouletteIndex];
                                 updateMoney();
                                 if(money < spinCost[rouletteIndex]) game.roulette.spinCostText.setColor(1, 0, 0);
+                                else game.roulette.spinCostText.setColor(1, 1, 1);
                                 state = RouletteState.ROLLING;
                                 speed = startingSpeed;
                                 angle = random.nextInt(360);
@@ -187,6 +188,7 @@ public class Roulette implements Screen {
                                 sapphires -= spinCost[rouletteIndex];
                                 updateMoney();
                                 if(sapphires < spinCost[rouletteIndex]) game.roulette.spinCostText.setColor(1, 0, 0);
+                                else game.roulette.spinCostText.setColor(1, 1, 1);
                                 state = RouletteState.ROLLING;
                                 speed = startingSpeed;
                                 angle = random.nextInt(360);
@@ -239,7 +241,7 @@ public class Roulette implements Screen {
                         money += 10000;
                         break;
                     case 7:
-
+                        prizeText.changeText("");
                         break;
                     case 8:
                         prizeText.changeText("+ 200");

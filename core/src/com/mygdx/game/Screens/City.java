@@ -197,7 +197,7 @@ public class City implements Screen {
                         "planeGame/planes/plane-" + game.planeGame.selectedPlane + ".png");
                 game.setScreen(game.planeGame);
             } else if (inventoryButton.isTouched()){
-                //game.setScreen(game.planeGame);
+                game.setScreen(game.inventory);
             }else if (rouletteButton.isTouched()){
                 game.roulette.spinCostText.setColor(1, 1, 1);
                 switch (Roulette.currencyType[game.roulette.rouletteIndex]){

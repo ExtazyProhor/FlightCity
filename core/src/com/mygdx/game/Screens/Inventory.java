@@ -1,9 +1,14 @@
 package com.mygdx.game.Screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.mygdx.game.Languages;
 import com.mygdx.game.Main;
+import com.mygdx.game.RealClasses.Button;
+import com.mygdx.game.RealClasses.PictureBox;
+
 import static com.mygdx.game.Main.*;
 
 import java.util.Date;
@@ -11,6 +16,11 @@ import java.util.Date;
 public class Inventory implements Screen {
     Main game;
     InventoryState state = InventoryState.ITEMS;
+    String path = "inventory/";
+    PictureBox backGround;
+    PictureBox planks;
+
+    Button chooseButton;
 
     // inventory:
     int[] backGrounds = new int[10];
@@ -22,6 +32,12 @@ public class Inventory implements Screen {
 
     public Inventory(Main game) {
         this.game = game;
+
+        float backGroundSizeX = textureAspectRatio(new Texture(path + "backGround.png"), true) * scrY;
+        backGround = new PictureBox((scrX - backGroundSizeX) / 2, 0, backGroundSizeX, scrY, path + "backGround.png");
+        planks = new PictureBox(game.city.screenDelta / 2, 0, scrY, scrY, path + "planks.png");
+        chooseButton = new Button(game.city.screenDelta / 2 + 55 * pppY, 4 * pppY, 40 * pppY, 16 * pppY, new Texture("buttons/blue button.png"),
+                Languages.choose[selectedLanguage], 0xffffffff, (int)(5 * pppY));
 
         backGroundsTextures = new Texture[backGrounds.length];
         planesTextures = new Texture[planes.length];
@@ -44,6 +60,15 @@ public class Inventory implements Screen {
     @Override
     public void render(float delta) {
         batch.begin();
+        backGround.draw();
+        planks.draw();
+        game.startMenu.buttonExit.draw();
+
+        if(Gdx.input.justTouched()){
+            if(game.startMenu.buttonExit.isTouched()){
+                game.setScreen(game.city);
+            }
+        }
 
         batch.end();
     }
@@ -60,6 +85,9 @@ public class Inventory implements Screen {
 
     @Override
     public void dispose() {
+        backGround.dispose();
+        planks.dispose();
+
         for(int i = 0; i < backGrounds.length; ++i){
             backGroundsTextures[i].dispose();
         }

@@ -109,9 +109,9 @@ public abstract class Languages {
             "новый рекорд!",
             "новы рэкорд"
     };
-    public static final String[] duplicate = {
-            "duplicate",
-            "дубликат",
-            "дублікат"
+    public static final String[] choose = {
+            "choose",
+            "выбрать",
+            "выбраць"
     };
 }
