@@ -60,7 +60,7 @@ public class Building extends Rectangle {
         for (int i = 0; i < this.level; ++i) {
             income += upgradeCost[this.id][i];
         }
-        return income / 2;
+        return income * 3 / 4;
     }
 
     public int getUpgradeCost(){

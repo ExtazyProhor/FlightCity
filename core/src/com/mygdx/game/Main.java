@@ -79,6 +79,11 @@ public class Main extends Game {
 		inventoryPrefs = Gdx.app.getPreferences("InventorySaves");
 		loadPrefs();
 
+		if(!prefs.contains("money") && !prefs.contains("sapphires")){
+			sapphires = 100000;
+			savePrefs();
+		}
+
 		initializationFont();
 		batch = new SpriteBatch();
 		batch.enableBlending();
