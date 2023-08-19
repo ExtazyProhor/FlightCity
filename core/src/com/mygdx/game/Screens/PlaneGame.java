@@ -125,7 +125,7 @@ public class PlaneGame implements Screen {
         coins = new Coin[4];
         barriers[0] = new Barrier();
         for(int i = 0; i < barriers.length; ++i){
-            coins[i] = new Coin(barriersX + 61.66f * pppY + scrY * (i - 1), rand.nextFloat(30 * pppY) + 47 * pppY);
+            coins[i] = new Coin(barriersX + 61.66f * pppY + scrY * (i - 1), rand.nextInt((int)(30 * pppY)) + 47 * pppY);
             coins[i].count = getMoneyCount();
             if(i == 0) continue;
             coins[i].isCollect = rand.nextInt(3) == 0;
@@ -193,7 +193,7 @@ public class PlaneGame implements Screen {
                         coins[i].count = coins[i + 1].count;
                     }
                     barriers[3].setRandomValues(barriers[2].getBarrierId());
-                    coins[3].setCoordinates(barriersX + 361.66f * pppY, rand.nextFloat(30 * pppY) + 47 * pppY);
+                    coins[3].setCoordinates(barriersX + 361.66f * pppY, rand.nextInt((int)(30 * pppY)) + 47 * pppY);
                     coins[3].isCollect = rand.nextInt(3) == 0;
                     coins[3].count = getMoneyCount();
                 }
@@ -327,7 +327,7 @@ public class PlaneGame implements Screen {
             barriers[i].setRandomValues(barriers[i - 1].getBarrierId());
         }
         for(int i = 0; i < barriers.length; ++i){
-            coins[i].setCoordinates(barriersX + 61.66f * pppY + scrY * (i - 1), rand.nextFloat(30 * pppY) + 47 * pppY);
+            coins[i].setCoordinates(barriersX + 61.66f * pppY + scrY * (i - 1), rand.nextInt((int)(30 * pppY)) + 47 * pppY);
             if(i == 0) continue;
             coins[i].isCollect = rand.nextInt(3) == 0;
         }

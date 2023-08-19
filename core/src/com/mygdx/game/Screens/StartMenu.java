@@ -80,7 +80,7 @@ public class StartMenu implements Screen {
             isMovingRight  = rand.nextBoolean();
             carIndex = rand.nextInt(carsTexture.length);
             carSizeY = textureAspectRatio(carsTexture[carIndex], false) * 10 * pppX;
-            carSpeed = rand.nextFloat(pppX * 5) + pppX * 15;
+            carSpeed = rand.nextInt((int)(pppX * 5)) + pppX * 15;
             if(isMovingRight) carCoordinateX = -20 * pppX;
             else carCoordinateX = 110 * pppX;
         }
