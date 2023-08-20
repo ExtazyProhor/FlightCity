@@ -87,7 +87,8 @@ public class Main extends Game {
 		loadPrefs();
 
 		if(!prefs.contains("money") && !prefs.contains("sapphires")){
-			sapphires = 100000;
+			money = 150;
+			sapphires = 100;
 			savePrefs();
 		}
 
