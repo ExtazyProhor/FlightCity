@@ -150,6 +150,11 @@ public class PlaneGame implements Screen {
 
     @Override
     public void render(float delta) {
+        if(!planeMusic[musicIndex].isPlaying()){
+            musicIndex = (musicIndex + 1) % planeMusic.length;
+            planeMusic[musicIndex].play();
+        }
+
         batch.begin();
         float backGroundSizeX = textureAspectRatio(backGround, true) * scrY;
         batch.draw(backGround, (scrX - backGroundSizeX) / 2, 0,
@@ -167,7 +172,7 @@ public class PlaneGame implements Screen {
 
         switch (state){
             case FLYING:
-                blackBuildingsX -= 180 * Gdx.graphics.getDeltaTime();
+                blackBuildingsX -= speed * pppY * Gdx.graphics.getDeltaTime() / 4;
                 if (blackBuildingsX < -scrX) blackBuildingsX += scrX;
 
                 float lastPosition = barriersX;
@@ -294,6 +299,8 @@ public class PlaneGame implements Screen {
                     reset();
                 }else if(exitButton.isTouched()){
                     reset();
+                    planeMusic[musicIndex].stop();
+                    cityMusic.play();
                     game.setScreen(game.city);
                 }
                 break;

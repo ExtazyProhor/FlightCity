@@ -14,6 +14,8 @@ import com.mygdx.game.RealClasses.Button;
 import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.RealClasses.TextBox;
 
+import java.util.Random;
+
 public class City implements Screen {
     Main game;
     String path = "city/";
@@ -190,6 +192,11 @@ public class City implements Screen {
             } else if (shopButton.isTouched()) {
                 game.setScreen(game.shop);
             } else if (planeButton.isTouched()){
+                cityMusic.stop();
+                Random random = new Random();
+                musicIndex = random.nextInt(planeMusic.length);
+                planeMusic[musicIndex].play();
+
                 if(game.planeGame.backGround != null) game.planeGame.backGround.dispose();
                 game.planeGame.backGround = new Texture("planeGame/backGrounds/BG" + game.planeGame.selectedBackGround + ".png");
                 if(game.planeGame.plane != null) game.planeGame.plane.dispose();

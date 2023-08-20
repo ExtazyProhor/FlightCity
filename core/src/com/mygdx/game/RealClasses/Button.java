@@ -66,7 +66,7 @@ public class Button extends Rectangle {
 
     public boolean isTouched() {
         if(super.isInside(Gdx.input.getX(), scrY - Gdx.input.getY())){
-            clickSound.play(soundVolume * soundOn);
+            clickSound.play(soundVolume * soundOn / 3);
             return true;
         }
         return false;

@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,10 +22,16 @@ import com.mygdx.game.Screens.StartMenu;
 
 public class Main extends Game {
 	public static SpriteBatch batch;
+	public static String gameVersion = "Flight City 0.0.1";
+
 	public static Sound clickSound;
 	public static Sound sellSound;
 	public static Sound upgradeSound;
 	public static Sound errorSound;
+
+	public static Music cityMusic;
+	public static Music[] planeMusic;
+	public static int musicIndex = 0;
 
 	public static Preferences prefs;
 	public static Preferences cityPrefs;
@@ -92,6 +99,16 @@ public class Main extends Game {
 		upgradeSound = Gdx.audio.newSound(Gdx.files.internal("city/sounds/upgradeSound.mp3"));
 		errorSound = Gdx.audio.newSound(Gdx.files.internal("city/sounds/errorSound.mp3"));
 
+		cityMusic = Gdx.audio.newMusic(Gdx.files.internal("general/city music.mp3"));
+		cityMusic.setLooping(true);
+		cityMusic.setVolume(musicVolume * musicOn);
+
+		planeMusic = new Music[2];
+		for(int i = 0; i < planeMusic.length; ++i){
+			planeMusic[i] = Gdx.audio.newMusic(Gdx.files.internal("planeGame/music/plane music " + i +".mp3"));
+			planeMusic[i].setVolume(musicVolume * musicOn / 5);
+		}
+
 		coinPicture = new PictureBox(scrX - 8 * pppY, 92 * pppY, 5 * pppY, 5 * pppY, "general/coin.png");
 		sapphirePicture = new PictureBox(scrX - 8 * pppY, 84 * pppY, 5 * pppY, 5 * pppY, "general/sapphire.png");
 		coinText = new TextBox(0, 0, divisionDigits(money), 0xffffffff, (int) (3 * pppY));
@@ -119,7 +136,7 @@ public class Main extends Game {
 				"абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ" +
 				"абвгддждзеёжзійклмнопрстуўфхцчшыьэюяАБВГДДЖДЗЕЁЖЗІЙКЛМНОПРСТУЎФХЦЧШЫЬЭЮЯ" +
 				"0123456789][_!$%#@|\\/?-+=()*&.;:,{}\"´`'<>";
-		parameter.borderWidth = 3;
+		parameter.borderWidth = (int)(pppY / 4);
 		parameter.borderColor = Color.valueOf("000000ff");
 		gl = new GlyphLayout();
 	}
@@ -144,6 +161,8 @@ public class Main extends Game {
 		errorSound.dispose();
 		sellSound.dispose();
 		upgradeSound.dispose();
+
+		cityMusic.dispose();
 	}
 
 	public static void savePrefs(){
