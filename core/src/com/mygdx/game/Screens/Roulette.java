@@ -73,14 +73,13 @@ public class Roulette implements Screen {
         float moneyBGX = Math.min(coinText.getX(), sapphireText.getX()) - 3 * pppY;
         batch.draw(game.city.moneyBackGround, moneyBGX, 81 * pppY, 57 * pppY, 19 * pppY);
         showMoney();
-        game.startMenu.buttonExit.draw();
 
         roulette[rouletteIndex].draw(angle);
         pick.draw();
 
         switch (state){
             case NONE:
-
+                game.startMenu.buttonExit.draw();
                 if(rouletteIndex > 0){
                     previousButton.draw(0, true, false);
                     if(Gdx.input.justTouched()){

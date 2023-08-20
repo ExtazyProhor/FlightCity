@@ -22,7 +22,7 @@ import com.mygdx.game.Screens.StartMenu;
 
 public class Main extends Game {
 	public static SpriteBatch batch;
-	public static String gameVersion = "Flight City 0.0.1";
+	public static String gameVersion = "Flight City 1.0.1";
 
 	public static Sound clickSound;
 	public static Sound sellSound;
