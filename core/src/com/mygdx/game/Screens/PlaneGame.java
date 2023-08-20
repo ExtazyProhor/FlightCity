@@ -329,6 +329,13 @@ public class PlaneGame implements Screen {
         plane.setCoordinates(20 * pppY, 44 * pppY);
         blackBuildingsX = 0;
 
+        score = 0;
+        localMoney = 0;
+        scoreLabel.changeText("0");
+        localMoneyLabel.changeText("0");
+        bestScore = prefs.getInteger("bestScore", 0);
+        bestScoreLabel.changeText(divisionDigits(bestScore));
+
         barriers[0].setRandomValues();
         for(int i = 1; i < 4; ++i){
             barriers[i].setRandomValues(barriers[i - 1].getBarrierId());
@@ -337,18 +344,12 @@ public class PlaneGame implements Screen {
             coins[i].setCoordinates(barriersX + 61.66f * pppY + scrY * (i - 1), rand.nextInt((int)(30 * pppY)) + 47 * pppY);
             if(i == 0) continue;
             coins[i].isCollect = rand.nextInt(3) == 0;
+            coins[i].count = getMoneyCount();
         }
         coins[0].isCollect = true;
 
         barriersX = scrX;
         angle = 0;
-
-        score = 0;
-        localMoney = 0;
-        scoreLabel.changeText("0");
-        localMoneyLabel.changeText("0");
-        bestScore = prefs.getInteger("bestScore", 0);
-        bestScoreLabel.changeText(divisionDigits(bestScore));
     }
 
     @Override

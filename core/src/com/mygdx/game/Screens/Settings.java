@@ -120,7 +120,7 @@ public class Settings implements Screen {
 
         batch.end();
 
-        swipeRender();
+        //swipeRender();
         soundRender();
         musicRender();
         buttonsCheck();
