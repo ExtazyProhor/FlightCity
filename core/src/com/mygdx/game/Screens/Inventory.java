@@ -52,8 +52,13 @@ public class Inventory implements Screen {
         boxSize = 23 * pppY;
         space = pppY;
 
-        float backGroundSizeX = textureAspectRatio(new Texture(path + "backGround.png"), true) * scrY;
-        backGround = new PictureBox((scrX - backGroundSizeX) / 2, 0, backGroundSizeX, scrY, path + "backGround.png");
+        if(textureAspectRatio(new Texture(path + "backGround.png"), true) >= scrX / scrY) {
+            float backGroundSizeX = textureAspectRatio(new Texture(path + "backGround.png"), true) * scrY;
+            backGround = new PictureBox((scrX - backGroundSizeX) / 2, 0, backGroundSizeX, scrY, path + "backGround.png");
+        } else {
+            float backGroundSizeY = textureAspectRatio(new Texture(path + "backGround.png"), false) * scrX;
+            backGround = new PictureBox(0, (scrY - backGroundSizeY) / 2, scrX, backGroundSizeY, path + "backGround.png");
+        }
         planks = new PictureBox(startX, 0, scrY, scrY, path + "planks.png");
         itemBox = new Texture(path + "item box.png");
         selectionTick = new Texture(path + "selection tick.png");
@@ -72,7 +77,7 @@ public class Inventory implements Screen {
 
         backGrounds[0] = inventoryPrefs.getInteger("backGround-0", 1);
         for(int i = 0; i < backGrounds.length; ++i){
-            backGroundsTextures[i] = new Texture("planeGame/backGrounds/BG" + i + ".png");
+            backGroundsTextures[i] = new Texture("planeGame/backGrounds/2-1/BG" + i + ".png");
             if(i == 0) continue;
             backGrounds[i] = inventoryPrefs.getInteger("backGround-" + i, 0);
         }

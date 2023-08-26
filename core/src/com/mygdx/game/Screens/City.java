@@ -77,7 +77,8 @@ public class City implements Screen {
         buttonsSize = 12 * pppY;
 
         // pictures
-        backGround = new PictureBox((scrX - 2 * scrY) / 2, 0, 2 * scrY, scrY, path + "backGround.png");
+        float backGroundSizeX = scrY * 700 / 288;
+        backGround = new PictureBox((scrX - backGroundSizeX) / 2, 0, backGroundSizeX, scrY, path + "backGround.png");
         windowBackGround = new PictureBox(screenDelta / 2, scrY / 4, scrY, scrY / 2, path + "window.png");
         moneyBackGround = new Texture(path + "moneyBG.png");
         blackout = new PictureBox(0, 0, scrX, scrY, path + "blackout.png");
@@ -198,7 +199,7 @@ public class City implements Screen {
                 planeMusic[musicIndex].play();
 
                 if(game.planeGame.backGround != null) game.planeGame.backGround.dispose();
-                game.planeGame.backGround = new Texture("planeGame/backGrounds/BG" + game.planeGame.selectedBackGround + ".png");
+                game.planeGame.backGround = new Texture("planeGame/backGrounds/" + deviceAspectRatio + "/BG" + game.planeGame.selectedBackGround + ".png");
                 if(game.planeGame.plane != null) game.planeGame.plane.dispose();
                 game.planeGame.plane = new PictureBox(20 * pppY, 44 * pppY, 12 * pppY * game.planeGame.planeAspectRatio, 12 * pppY,
                         "planeGame/planes/plane-" + game.planeGame.selectedPlane + ".png");

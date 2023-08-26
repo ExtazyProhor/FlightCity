@@ -22,7 +22,8 @@ import com.mygdx.game.Screens.StartMenu;
 
 public class Main extends Game {
 	public static SpriteBatch batch;
-	public static String gameVersion = "Flight City 1.0.1";
+	public static String gameVersion = "Flight City 1.0.2";
+	public static String deviceAspectRatio;
 
 	public static Sound clickSound;
 	public static Sound sellSound;
@@ -80,6 +81,9 @@ public class Main extends Game {
 		scrY = Gdx.graphics.getHeight();
 		pppX = scrX/100;
 		pppY = scrY/100;
+
+		if(scrX / scrY > 2) deviceAspectRatio = "5-2";
+		else deviceAspectRatio = "2-1";
 
 		prefs = Gdx.app.getPreferences("FlightCityMainSaves");
 		cityPrefs = Gdx.app.getPreferences("CitySaves");

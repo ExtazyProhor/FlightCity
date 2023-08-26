@@ -63,7 +63,7 @@ public class Roulette implements Screen {
         spinCostText = new TextBox(scrX / 2, 0, divisionDigits(spinCost[rouletteIndex]), 0xffffffff, (int)(5 * pppY));
         spinCostText.positionToMiddleY(18 * pppY);
 
-        prizeText = new TextBox(scrX/2, scrY/2 + pppX * 11.5f, "", 0xffffffff, (int)(5 * pppY));
+        prizeText = new TextBox(scrX/2, pppY * 70, "", 0xffffffff, (int)(5 * pppY));
     }
 
     @Override
