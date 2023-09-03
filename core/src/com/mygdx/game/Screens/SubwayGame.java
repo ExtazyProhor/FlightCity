@@ -5,16 +5,17 @@ import static com.mygdx.game.Main.pppY;
 import static com.mygdx.game.Main.scrX;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Main;
-import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.SubwayClasses.Coin;
 import com.mygdx.game.SubwayClasses.Player;
 import com.mygdx.game.SubwayClasses.Road;
 import com.mygdx.game.SubwayClasses.Trash;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -23,13 +24,17 @@ public class SubwayGame implements Screen {
     Random r = new Random();
     Main game;
     ArrayList<Trash> trashes = new ArrayList<>();
+
+    ArrayList<Trash> trashesToAdd = new ArrayList<>();
     Iterator<Trash> trashIterator;
     ArrayList<Coin> coins = new ArrayList<>();
     Iterator<Coin> coinIterator;
     ArrayList<Road> roads = new ArrayList<>();
     Player player;
     Rectangle playerhitbox;
-    int randforcoin;
+    int rCoin;
+    boolean isTrashSpawn;
+    boolean incoin;
     boolean intrash;
     int framecount;
     int framelimit;
@@ -40,7 +45,7 @@ public class SubwayGame implements Screen {
         framecount = 0;
         ms = 0.4f;
         player = new Player(pppX * 15, 0, pppX * 10, pppY * 10, "subwaygame/car1.png");
-        for(int i = 0; i < 4; i++){
+        for (int i = 0; i < 4; i++) {
             roads.add(new Road(0, i * pppY * 25 + 5 * pppY, scrX, pppY * 14, "subwaygame/road.png", ms * pppX));
             roads.add(new Road(scrX, i * pppY * 25 + 5 * pppY, scrX, pppY * 14, "subwaygame/road.png", ms * pppX));
         }
@@ -53,21 +58,25 @@ public class SubwayGame implements Screen {
 
     @Override
     public void render(float delta) {
-        if(player.isExist()) {
-            ScreenUtils.clear(0, 0, 0, 1);
+        if (player.isExist()) {
+            ScreenUtils.clear(0.22f, 0.6f, 0.18f, 1);
+            isTrashSpawn = true;
             trashIterator = trashes.iterator();
             coinIterator = coins.iterator();
             Main.batch.begin();
-            for (Road road: roads) {
+            for (Road road : roads) {
                 road.update(ms * pppX);
             }
             while (trashIterator.hasNext()) {
                 Trash trash = trashIterator.next();
+                if (trash.getX() > scrX / 2) {
+                    isTrashSpawn = false;
+                }
                 if (!trash.isExist()) {
                     trash.dispose();
                     trashIterator.remove();
                 } else {
-                    trash.update();
+                    trash.update(ms * pppX);
                 }
             }
             playerhitbox = new Rectangle(player.getX(), player.getY(), player.getSizeX(), player.getSizeY());
@@ -76,28 +85,48 @@ public class SubwayGame implements Screen {
                 if (!coin.isExist()) {
                     coin.dispose();
                     coinIterator.remove();
-                } else if (new Rectangle(coin.getX(), coin.getY(), coin.getSizeX(), coin.getSizeY()).overlaps(playerhitbox)){
+                } else if (new Rectangle(coin.getX(), coin.getY(), coin.getSizeX(), coin.getSizeY()).overlaps(playerhitbox)) {
                     coin.dispose();
                     coinIterator.remove();
                     Main.money += 1;
                     Main.savePrefs();
-                } else{
+                } else {
                     coin.update(ms * pppX);
                 }
             }
             player.update(trashes);
+            if (isTrashSpawn) {
+                incoin = false;
+                if(trashesToAdd.size() < 1) {
+                    trashesToAdd = new ArrayList<Trash> (){{
+                        addAll(Arrays.asList( new Trash(scrX * 1.1f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms),new Trash(scrX * 1.45f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.35f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms) ));
+                    }};
+                }
+                for (Trash trash : trashesToAdd) {
+                    for (Coin coin : coins) {
+                        if (new Rectangle(trash.getX(), trash.getY(), trash.getSizeX(), trash.getSizeY()).overlaps(new Rectangle(coin.getX(), coin.getY(), coin.getSizeX(), coin.getSizeY()))) {
+                            incoin = true;
+                            break;
+                        }
+                    }
+                }
+                if (!incoin) {
+                    trashes.addAll(trashesToAdd);
+                    trashesToAdd.clear();
+                }
+            }
             if (framecount == framelimit) {
                 intrash = true;
                 while (intrash) {
                     intrash = false;
-                    r.nextInt(4);
+                    rCoin = r.nextInt(4);
                     for (Trash trash : trashes) {
-                        if (new Rectangle(trash.getX(), trash.getY(), trash.getSizeX(), trash.getSizeY()).overlaps(new Rectangle(scrX, pppY * r.nextInt(4) * 20 + pppY * 10, pppY * 10, pppY * 10))) {
+                        if (new Rectangle(trash.getX(), trash.getY(), trash.getSizeX(), trash.getSizeY()).overlaps(new Rectangle(scrX, pppY * rCoin * 20 + pppY * 10, pppY * 10, pppY * 10))) {
                             intrash = true;
                         }
                     }
                 }
-                coins.add(new Coin(scrX, pppY * r.nextInt(4) * 25 + pppY * 7, pppY * 10, pppY * 10, "general/coin.png", pppX * ms));
+                coins.add(new Coin(scrX, pppY * rCoin * 25 + pppY * 7, pppY * 10, pppY * 10, "general/coin.png", pppX * ms));
                 framecount = 0;
                 framelimit = (int) ((20 * Math.random()) + 101 - (ms - 0.4f) * 100);
                 if (ms < 1.4) {

@@ -12,7 +12,8 @@ public class Trash extends PictureBox{
         exist = true;
     }
 
-    public void update(){
+    public void update(float ms){
+        speed = ms;
         x -= speed;
         draw();
         if(x + sizeX < 0)

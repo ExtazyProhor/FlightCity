@@ -2,7 +2,7 @@ package com.mygdx.game.PlaneClasses;
 
 import com.mygdx.game.RealClasses.Rectangle;
 
-public class Collision {
+public abstract class Collision {
 
     public static boolean isCollision(Line line1, Line line2){
         if(line1.isVertical && line2.isVertical) {
@@ -101,5 +101,12 @@ public class Collision {
             }
         }
         return false;
+    }
+
+    public static boolean isCollision(Rectangle rectangle, Point point){
+        if (point.x < rectangle.getX()) return false;
+        if (rectangle.getX() + rectangle.getSizeX() < point.x) return false;
+        if (point.y < rectangle.getY()) return false;
+        return (rectangle.getY() + rectangle.getSizeY() >= point.y);
     }
 }

@@ -120,7 +120,7 @@ public class Settings implements Screen {
 
         batch.end();
 
-        swipeRender();
+        //swipeRender();
         soundRender();
         musicRender();
         buttonsCheck();
@@ -230,6 +230,7 @@ public class Settings implements Screen {
             localMusicVolume = ((Gdx.input.getX() - 1.5f * pppX) * 100f / scrX - 30f) / 46f;
             if(localMusicVolume < 0) localMusicVolume = 0;
             if(localMusicVolume > 1) localMusicVolume = 1;
+            cityMusic.setVolume(localMusicVolume * localMusicOn);
         }else{
             touchMusic = false;
         }
@@ -238,6 +239,7 @@ public class Settings implements Screen {
     void buttonsCheck(){
         if (Gdx.input.justTouched()) {
             if (game.startMenu.buttonExit.isTouched()) {
+                cityMusic.setVolume(musicVolume * musicOn);
                 positionY = 0;
                 touchToSwipe = false;
                 flagEngland.setY(90 * pppY - 9 * pppX);
@@ -284,11 +286,19 @@ public class Settings implements Screen {
                 game.planeGame.resumeButton.changeText(Languages.resume[selectedLanguage]);
                 game.planeGame.restartButton.changeText(Languages.restart[selectedLanguage]);
                 game.planeGame.exitButton.changeText(Languages.exit[selectedLanguage]);
+                game.planeGame.newBestScore.changeText(Languages.newBestScore[selectedLanguage]);
+
+                game.inventory.chooseButton.changeText(Languages.choose[selectedLanguage]);
+
+                for(int i = 0; i < planeMusic.length; ++i){
+                    planeMusic[i].setVolume(musicVolume * musicOn / 5);
+                }
 
             } else if (soundBar.isTouched()) {
                 localSoundOn = Math.abs(localSoundOn - 1);
             } else if (musicBar.isTouched()) {
                 localMusicOn = Math.abs(localMusicOn - 1);
+                cityMusic.setVolume(localMusicVolume * localMusicOn);
             }
         }
     }

@@ -1,13 +1,7 @@
 package com.mygdx.game;
 
 public abstract class Languages {
-    /*
-    public static final String[] g = {
-            "",
-            "",
-            ""
-    };
-    */
+
     public static final String[] play = {
             "play",
             "играть",
@@ -109,5 +103,15 @@ public abstract class Languages {
             "min",
             "мин",
             "хвiл"
+    };
+    public static final String[] newBestScore = {
+            "new best score!",
+            "новый рекорд!",
+            "новы рэкорд"
+    };
+    public static final String[] choose = {
+            "choose",
+            "выбрать",
+            "выбраць"
     };
 }

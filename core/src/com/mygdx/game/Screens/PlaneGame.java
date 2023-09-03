@@ -10,12 +10,13 @@ import static com.mygdx.game.Main.*;
 import static com.mygdx.game.PlaneClasses.Collision.*;
 
 import com.mygdx.game.PlaneClasses.Barrier;
+import com.mygdx.game.PlaneClasses.Coin;
 import com.mygdx.game.PlaneClasses.Line;
-import com.mygdx.game.PlaneClasses.PlaneState;
 import com.mygdx.game.PlaneClasses.Point;
 import com.mygdx.game.RealClasses.Button;
 import com.mygdx.game.RealClasses.PictureBox;
 import com.mygdx.game.RealClasses.Rectangle;
+import com.mygdx.game.RealClasses.TextBox;
 
 import java.util.Random;
 
@@ -33,6 +34,18 @@ public class PlaneGame implements Screen {
 
     //game:
     int score = 0;
+    int localMoney = 0;
+    int bestScore;
+
+    //UI:
+    TextBox scoreLabel;
+    TextBox localMoneyLabel;
+    TextBox bestScoreLabel;
+    PictureBox scoreTexture;
+    PictureBox localMoneyTexture;
+    PictureBox bestScoreTexture;
+
+    TextBox newBestScore;
 
     Texture blackBuildings;
     float blackBuildingsX = 0;
@@ -44,6 +57,9 @@ public class PlaneGame implements Screen {
 
     Texture[][] barriersTextures;
     Barrier[] barriers;
+    Coin[] coins;
+    public static Sound coinCollectSound;
+    public static Texture[] coinsTextures;
     float barriersX;
 
     //plane info:
@@ -65,6 +81,25 @@ public class PlaneGame implements Screen {
         barriersX = scrX;
         selectedPlane = prefs.getInteger("selectedPlane", 0);
         selectedBackGround = prefs.getInteger("selectedBackGround", 0);
+        bestScore = prefs.getInteger("bestScore", 0);
+
+        rand = new Random();
+
+        //UI:
+        float uiSizeY = 4.5f * pppX;
+        scoreLabel = new TextBox(scrX - 6.5f * uiSizeY, 0, "0", 0xffffffff, (int)(4 * pppY));
+        localMoneyLabel = new TextBox(scrX - 10.5f * uiSizeY, 0, "0", 0xffffffff, (int)(4 * pppY));
+        bestScoreLabel = new TextBox(scrX - 2.5f * uiSizeY, 0, divisionDigits(bestScore), 0xffffffff, (int)(4 * pppY));
+        scoreLabel.positionToMiddleY(scrY - uiSizeY / 2);
+        localMoneyLabel.positionToMiddleY(scrY - uiSizeY / 2);
+        bestScoreLabel.positionToMiddleY(scrY - uiSizeY / 2);
+        scoreTexture = new PictureBox(scrX - 8 * uiSizeY, scrY - uiSizeY, 4 * uiSizeY, uiSizeY, path + "score.png");
+        localMoneyTexture = new PictureBox(scrX - 12 * uiSizeY, scrY - uiSizeY, 4 * uiSizeY, uiSizeY, path + "local money.png");
+        bestScoreTexture = new PictureBox(scrX - 4 * uiSizeY, scrY - uiSizeY, 4 * uiSizeY, uiSizeY, path + "best score.png");
+
+        parameter.borderWidth = (int)(pppY * 0.7);
+        newBestScore = new TextBox(scrX / 2, 80 * pppY, Languages.newBestScore[selectedLanguage], 0xffffffff, (int)(10 * pppY));
+        parameter.borderWidth = 3;
 
         // buttons:
         pauseButton = new Button(3 * pppY, 82 * pppY, 15 * pppY, 15 * pppY, new Texture("buttons/pauseButton.png"));
@@ -87,9 +122,20 @@ public class PlaneGame implements Screen {
             }
         }
         barriers = new Barrier[4];
+        coins = new Coin[4];
         barriers[0] = new Barrier();
-        for(int i = 1; i < 4; ++i){
+        for(int i = 0; i < barriers.length; ++i){
+            coins[i] = new Coin(barriersX + 61.66f * pppY + scrY * (i - 1), rand.nextInt((int)(30 * pppY)) + 47 * pppY);
+            coins[i].count = getMoneyCount();
+            if(i == 0) continue;
+            coins[i].isCollect = rand.nextInt(3) == 0;
             barriers[i] = new Barrier(barriers[i - 1].getBarrierId());
+        }
+        coins[0].isCollect = true;
+        coinCollectSound = Gdx.audio.newSound(Gdx.files.internal(path + "coins/coin collect sound.mp3"));
+        coinsTextures = new Texture[10];
+        for (int i = 0; i < coinsTextures.length; i++) {
+            coinsTextures[i] = new Texture(path + "coins/coin " + (i + 1) + ".png");
         }
 
         explosionFX = new Texture[17];
@@ -100,11 +146,15 @@ public class PlaneGame implements Screen {
         for(int i = 0; i < explosionSound.length; ++i){
             explosionSound[i] = Gdx.audio.newSound(Gdx.files.internal(path + "explosion/boom-" + i + ".mp3"));
         }
-        rand = new Random();
     }
 
     @Override
     public void render(float delta) {
+        if(!planeMusic[musicIndex].isPlaying()){
+            musicIndex = (musicIndex + 1) % planeMusic.length;
+            planeMusic[musicIndex].play();
+        }
+
         batch.begin();
         float backGroundSizeX = textureAspectRatio(backGround, true) * scrY;
         batch.draw(backGround, (scrX - backGroundSizeX) / 2, 0,
@@ -114,37 +164,65 @@ public class PlaneGame implements Screen {
         batch.draw(blackBuildings, blackBuildingsX + scrX, 0, scrX,
                 scrX * blackBuildings.getHeight() / blackBuildings.getWidth());
 
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < barriers.length; i++){
             batch.draw(barriersTextures[barriers[i].getBarrierId()][barriers[i].getColliderLevel()],
                     barriersX + i * scrY, 0, scrY/3, scrY);
+            coins[i].draw();
         }
 
         switch (state){
             case FLYING:
-                blackBuildingsX -= 180 * Gdx.graphics.getDeltaTime();
+                blackBuildingsX -= speed * pppY * Gdx.graphics.getDeltaTime() / 4;
                 if (blackBuildingsX < -scrX) blackBuildingsX += scrX;
 
                 float lastPosition = barriersX;
                 barriersX -= speed * 0.65f * pppY * Gdx.graphics.getDeltaTime();
-                if(barriersX < plane.getX() && lastPosition > plane.getX()) score++;
-                else if(barriersX + scrY < plane.getX() && lastPosition + scrY > plane.getX()) score++;
+                for(int i = 0; i < barriers.length; i++){
+                    coins[i].setCoordinates(barriersX + 61.66f * pppY + scrY * (i - 1), coins[i].getY());
+                }
+
+                if(barriersX + 25 * pppY < plane.getX() && lastPosition + 25 * pppY > plane.getX() ||
+                        barriersX + 125 * pppY < plane.getX() && lastPosition + 125 * pppY > plane.getX()) {
+                    score++;
+                    scoreLabel.changeText(divisionDigits(score));
+                    if(score > bestScore){
+                        bestScoreLabel.changeText(divisionDigits(score));
+                    }
+                }
                 if(barriersX < - scrY / 2){
                     barriersX += scrY;
                     for(int i = 0; i < 3; i++){
                         barriers[i].setValues(barriers[i + 1].getBarrierId(), barriers[i + 1].getColliderLevel());
+                        coins[i].setCoordinates(coins[i + 1].getX(), coins[i + 1].getY());
+                        coins[i].isCollect = coins[i + 1].isCollect;
+                        coins[i].count = coins[i + 1].count;
                     }
-                    barriers[3].setRandomValues(barriers[2].getColliderLevel());
+                    barriers[3].setRandomValues(barriers[2].getBarrierId());
+                    coins[3].setCoordinates(barriersX + 361.66f * pppY, rand.nextInt((int)(30 * pppY)) + 47 * pppY);
+                    coins[3].isCollect = rand.nextInt(3) == 0;
+                    coins[3].count = getMoneyCount();
                 }
 
                 plane.draw(angle);
                 movingPlane();
                 pauseButton.draw();
+
+                localMoneyTexture.draw();
+                localMoneyLabel.draw();
+                scoreTexture.draw();
+                scoreLabel.draw();
+                bestScoreTexture.draw();
+                bestScoreLabel.draw();
                 break;
             case PAUSE:
                 resumeButton.draw();
+                restartButton.draw();
+                exitButton.draw();
+                break;
             case AFTER_DEATH:
                 restartButton.draw();
                 exitButton.draw();
+                if(score > bestScore) newBestScore.draw();
                 break;
             case EXPLOSION:
                 batch.draw(explosionFX[(int)(time * explosionFX.length / timeForExplosion)],
@@ -160,6 +238,12 @@ public class PlaneGame implements Screen {
         touchChecking();
 
         batch.end();
+    }
+
+    public int getMoneyCount(){
+        int moneyCount = (score + 3) / 10;
+        if(moneyCount >= 8) moneyCount = 7;
+        return rand.nextInt(3) + moneyCount;
     }
 
     public void movingPlane(){
@@ -189,6 +273,17 @@ public class PlaneGame implements Screen {
                 new Line(new Point(0, 0), new Point(scrX, 0)), angle)) death();
         else if(isCollision(planeCollider,
                 new Line(new Point(0, scrY), new Point(scrX, scrY)), angle)) death();
+
+        for(int i = 0; i < coins.length; i++){
+            if(coins[i].collide(new Rectangle(plane.getX(), plane.getY() + plane.getSizeY() / 5,
+                    plane.getSizeX(), plane.getSizeY() * 3 / 5), angle)) {
+                localMoney += (coins[i].count + 1);
+                money += (coins[i].count + 1);
+                savePrefs();
+                updateMoney();
+                localMoneyLabel.changeText(divisionDigits(localMoney));
+            }
+        }
     }
 
     public void touchChecking(){
@@ -204,6 +299,8 @@ public class PlaneGame implements Screen {
                     reset();
                 }else if(exitButton.isTouched()){
                     reset();
+                    planeMusic[musicIndex].stop();
+                    cityMusic.play();
                     game.setScreen(game.city);
                 }
                 break;
@@ -220,6 +317,10 @@ public class PlaneGame implements Screen {
 
     public void death(){
         explosionSound[rand.nextInt(explosionSound.length)].play(soundVolume * soundOn);
+        if(score > bestScore) {
+            prefs.putInteger("bestScore", score);
+            prefs.flush();
+        }
         state = PlaneState.EXPLOSION;
     }
 
@@ -228,10 +329,24 @@ public class PlaneGame implements Screen {
         plane.setCoordinates(20 * pppY, 44 * pppY);
         blackBuildingsX = 0;
 
+        score = 0;
+        localMoney = 0;
+        scoreLabel.changeText("0");
+        localMoneyLabel.changeText("0");
+        bestScore = prefs.getInteger("bestScore", 0);
+        bestScoreLabel.changeText(divisionDigits(bestScore));
+
         barriers[0].setRandomValues();
         for(int i = 1; i < 4; ++i){
             barriers[i].setRandomValues(barriers[i - 1].getBarrierId());
         }
+        for(int i = 0; i < barriers.length; ++i){
+            coins[i].setCoordinates(barriersX + 61.66f * pppY + scrY * (i - 1), rand.nextInt((int)(30 * pppY)) + 47 * pppY);
+            if(i == 0) continue;
+            coins[i].isCollect = rand.nextInt(3) == 0;
+            coins[i].count = getMoneyCount();
+        }
+        coins[0].isCollect = true;
 
         barriersX = scrX;
         angle = 0;
@@ -260,7 +375,21 @@ public class PlaneGame implements Screen {
         resumeButton.dispose();
         exitButton.dispose();
         restartButton.dispose();
+
+        scoreLabel.dispose();
+        localMoneyLabel.dispose();
+        bestScoreLabel.dispose();
+        scoreTexture.dispose();
+        localMoneyTexture.dispose();
+        bestScoreTexture.dispose();
+
+        newBestScore.dispose();
+        coinCollectSound.dispose();
+        for (int i = 0; i < coinsTextures.length; i++) {
+            coinsTextures[i].dispose();
+        }
     }
+
     @Override
     public void show() {
     }
@@ -279,5 +408,12 @@ public class PlaneGame implements Screen {
 
     @Override
     public void hide() {
+    }
+
+    enum PlaneState {
+        FLYING,
+        EXPLOSION,
+        PAUSE,
+        AFTER_DEATH
     }
 }

@@ -8,6 +8,7 @@ import com.mygdx.game.Languages;
 import com.mygdx.game.Main;
 import static com.mygdx.game.Main.*;
 import com.mygdx.game.RealClasses.Button;
+import com.mygdx.game.RealClasses.TextBox;
 
 import java.util.Random;
 
@@ -15,6 +16,7 @@ public class StartMenu implements Screen {
     Main game;
 
     Texture menuBackGround;
+    TextBox version;
 
     Texture[] carsTexture;
     Random rand;
@@ -35,7 +37,10 @@ public class StartMenu implements Screen {
         this.game = game;
         rand = new Random();
         carCoordinateX = pppX * 130;
-                
+
+        version = new TextBox(0, 98 * pppY, gameVersion, 0xffffffff, (int)(5 * pppY));
+        version.positionToRight(scrX - 2 * pppY);
+
         initializationTexturesAndButtons();
         carsTexture = new Texture[6];
         for(int i = 0; i < carsTexture.length; i++){
@@ -45,10 +50,10 @@ public class StartMenu implements Screen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0, 1);
 
         if (Gdx.input.justTouched()) {
             if (buttonPlay.isTouched()) {
+                cityMusic.play();
                 game.setScreen(game.city);
             } else if (buttonSettings.isTouched()) {
                 game.setScreen(game.settings);
@@ -70,6 +75,8 @@ public class StartMenu implements Screen {
         buttonSettings.draw();
         buttonExit.draw();
 
+        version.draw();
+
         carsMove();
 
         batch.end();
@@ -80,15 +87,9 @@ public class StartMenu implements Screen {
             isMovingRight  = rand.nextBoolean();
             carIndex = rand.nextInt(carsTexture.length);
             carSizeY = textureAspectRatio(carsTexture[carIndex], false) * 10 * pppX;
-            carSpeed = rand.nextFloat() + pppX * 15;
+            carSpeed = rand.nextInt((int)(pppX * 5)) + pppX * 15;
             if(isMovingRight) carCoordinateX = -20 * pppX;
             else carCoordinateX = 110 * pppX;
-
-            System.out.println();
-            System.out.println(carIndex);
-            System.out.println(carSizeY);
-            System.out.println(10 * pppX);
-            System.out.println(carSpeed);
         }
 
         if(isMovingRight) carCoordinateX += carSpeed * Gdx.graphics.getDeltaTime();
@@ -123,7 +124,7 @@ public class StartMenu implements Screen {
         for (Texture texture : carsTexture) {
             texture.dispose();
         }
-
+        version.dispose();
     }
     @Override
     public void show() {
