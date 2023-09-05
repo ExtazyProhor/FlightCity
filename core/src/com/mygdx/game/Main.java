@@ -136,7 +136,7 @@ public class Main extends Game {
 		roulette = new Roulette(this);
 		inventory = new Inventory(this);
 
-		setScreen(subwayGame);
+		setScreen(startMenu);
 	}
 
 	void initializationFont(){

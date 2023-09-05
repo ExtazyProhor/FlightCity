@@ -11,7 +11,7 @@ import com.mygdx.game.RealClasses.PictureBox;
 import java.util.ArrayList;
 
 public class Player extends PictureBox {
-    boolean exist;
+    public boolean exist;
     int pos;
     int reload;
 

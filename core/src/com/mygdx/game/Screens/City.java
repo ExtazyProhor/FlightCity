@@ -25,6 +25,7 @@ public class City implements Screen {
     PictureBox backGround;
     Button shopButton;
     Button planeButton;
+    Button subwayButton;
     Button inventoryButton;
     Button rouletteButton;
 
@@ -92,6 +93,8 @@ public class City implements Screen {
                 new Texture("buttons/shop.png"));
         planeButton = new Button(scrX - 18 * pppY, 63 * pppY, 15 * pppY, 15 * pppY,
                 new Texture("buttons/planeButton.png"));
+        subwayButton = new Button(scrX - 18 * pppY, 45 * pppY, 15 * pppY, 15 * pppY,
+                new Texture("buttons/carButton.png"));
         inventoryButton = new Button(3 * pppY, 46 * pppY, 15 * pppY, 15 * pppY,
                 new Texture("buttons/inventoryButton.png"));
         rouletteButton = new Button(3 * pppY, 28 * pppY, 15 * pppY, 15 * pppY,
@@ -176,7 +179,7 @@ public class City implements Screen {
         planeButton.draw();
         inventoryButton.draw();
         rouletteButton.draw();
-
+        subwayButton.draw();
         for (Building building : buildings) {
             if (building.isExist()) {
                 batch.draw(houseLevelBars[building.getLevel()], building.getX(),
@@ -204,9 +207,12 @@ public class City implements Screen {
                 game.planeGame.plane = new PictureBox(20 * pppY, 44 * pppY, 12 * pppY * game.planeGame.planeAspectRatio, 12 * pppY,
                         "planeGame/planes/plane-" + game.planeGame.selectedPlane + ".png");
                 game.setScreen(game.planeGame);
-            } else if (inventoryButton.isTouched()){
+            } else if (subwayButton.isTouched()){
+                cityMusic.stop();
+                game.setScreen(game.subwayGame);
+            }else if (inventoryButton.isTouched()){
                 game.setScreen(game.inventory);
-            }else if (rouletteButton.isTouched()){
+            } else if (rouletteButton.isTouched()){
                 game.roulette.spinCostText.setColor(1, 1, 1);
                 switch (Roulette.currencyType[game.roulette.rouletteIndex]){
                     case "coin":
