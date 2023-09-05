@@ -1,23 +1,11 @@
 package com.mygdx.game.Screens;
 
-import static com.mygdx.game.Main.batch;
-import static com.mygdx.game.Main.cityMusic;
-import static com.mygdx.game.Main.divisionDigits;
-import static com.mygdx.game.Main.musicIndex;
-import static com.mygdx.game.Main.parameter;
-import static com.mygdx.game.Main.planeMusic;
-import static com.mygdx.game.Main.pppX;
-import static com.mygdx.game.Main.pppY;
-import static com.mygdx.game.Main.prefs;
-import static com.mygdx.game.Main.savePrefs;
-import static com.mygdx.game.Main.scrX;
-import static com.mygdx.game.Main.scrY;
-import static com.mygdx.game.Main.selectedLanguage;
-import static com.mygdx.game.Main.updateMoney;
+import static com.mygdx.game.Main.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -71,8 +59,8 @@ public class SubwayGame implements Screen {
     int rTrash;
     int rTrashLast;
     boolean isTrashSpawn;
-    boolean incoin;
-    boolean intrash;
+    boolean incoin; // Находится ли камень в монете
+    boolean intrash; // Находится ли монета в камне
     int framecount;
     int framelimit;
     int score = 0;
@@ -143,7 +131,7 @@ public class SubwayGame implements Screen {
             musicIndex = (musicIndex + 1) % planeMusic.length;
             planeMusic[musicIndex].play();
         }
-        Main.batch.begin();
+        batch.begin();
         switch (state){
             case DRIVING:
                 ScreenUtils.clear(0.22f, 0.6f, 0.18f, 1);
@@ -159,7 +147,6 @@ public class SubwayGame implements Screen {
                         isTrashSpawn = false;
                     }
                     if (!trash.isExist()) {
-                        trash.dispose();
                         trashIterator.remove();
                     } else {
                         trash.update(ms * pppX);
@@ -169,10 +156,8 @@ public class SubwayGame implements Screen {
                 while (coinIterator.hasNext()) {
                     Coin coin = coinIterator.next();
                     if (!coin.isExist()) {
-                        coin.dispose();
                         coinIterator.remove();
                     } else if (new Rectangle(coin.getX(), coin.getY(), coin.getSizeX(), coin.getSizeY()).overlaps(playerhitbox)) {
-                        coin.dispose();
                         coinIterator.remove();
                         localMoney += 1;
                         Main.money += 1;
@@ -190,17 +175,17 @@ public class SubwayGame implements Screen {
                         rTrash = r.nextInt(6);
                         if (rTrashLast != rTrash) {
                             if (rTrash == 0) {
-                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX * 1.1f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.45f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.35f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.7f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.7f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms)));
+                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX * 1.1f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.45f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.35f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.7f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.7f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms)));
                             } else if (rTrash == 1) {
-                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.25f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.5f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.75f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 2f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 2.25f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 2.5f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms)));
+                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.25f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.5f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.75f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 2f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 2.25f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 2.5f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms)));
                             } else if (rTrash == 2) {
-                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.25f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.5f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.75f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 2f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 2.25f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 2.5f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms)));
+                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.25f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.5f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.75f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 2f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 2.25f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 2.5f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms)));
                             } else if (rTrash == 3) {
-                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.4f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.4f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.4f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.8f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.8f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.8f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms)));
+                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.4f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.4f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.4f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.8f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.8f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.8f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms)));
                             } else if (rTrash == 4) {
-                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.4f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.4f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.4f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.8f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.8f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.8f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms)));
+                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.4f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.4f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.4f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.8f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.8f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.8f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms)));
                             } else if (rTrash == 5) {
-                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.45f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.45f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.9f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 1.9f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 2.35f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 2.35f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 2.8f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms), new Trash(scrX * 2.8f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20, "subwaygame/stone1.png", pppX * ms)));
+                                trashesToAdd.addAll(Arrays.asList(new Trash(scrX, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.45f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.45f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.9f, pppY * 0 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 1.9f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 2.35f, pppY * 3 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 2.35f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 2.8f, pppY * 1 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms), new Trash(scrX * 2.8f, pppY * 2 * 25 + pppY * 5, pppY * 20, pppY * 20,  pppX * ms)));
 
                             }
                         }
@@ -235,12 +220,12 @@ public class SubwayGame implements Screen {
                             }
                         }
                     }
-                    coins.add(new Coin(scrX, pppY * rCoin * 25 + pppY * 7, pppY * 10, pppY * 10, "general/coin.png", pppX * ms));
+                    coins.add(new Coin(scrX, pppY * rCoin * 25 + pppY * 7, pppY * 10, pppY * 10, pppX * ms));
                     framecount = 0;
-                    framelimit = (int) ((20 * Math.random()) + 101 - (ms - 0.4f) * 100);
-                    if (ms < 1.4) {
+                    //framelimit = (int) ((20 * Math.random()) + 101 - (ms - 0.4f) * 100);
+                    /*if (ms < 1.4) {
                         ms += 0.005;
-                    }
+                    }*/
                 }
                 framecount += 1;
                 pauseButton.draw();
@@ -362,17 +347,8 @@ public class SubwayGame implements Screen {
         localMoneyLabel.changeText("0");
         bestScore = prefs.getInteger("bestScoreCar", 0);
         bestScoreLabel.changeText(divisionDigits(bestScore));
-        for (Trash trash: trashes) {
-            trash.dispose();
-        }
         trashes.clear();
-        for (Trash trash: trashesToAdd) {
-            trash.dispose();
-        }
         trashesToAdd.clear();
-        for (Coin coin: coins) {
-            coin.dispose();
-        }
         coins.clear();
         for (Road road: roads) {
             road.dispose();
